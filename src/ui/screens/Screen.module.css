@@ -32,11 +32,44 @@
 
 /* On narrow phones the right-hand spacer costs too much width; let the title use it. */
 @media (max-width: 420px) {
-  .topBar {
+  .topBar:has(> .topSpacer) {
     grid-template-columns: var(--tap-min) minmax(0, 1fr);
   }
 
-  .topBar > :last-child {
+  .topSpacer {
+    display: none;
+  }
+}
+
+.topEnd {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Two controls plus a title don't fit on the narrowest phones: the title gets its own row. */
+@media (max-width: 380px) {
+  .topBar:has(> .topEnd) {
+    grid-template-columns: var(--tap-min) minmax(0, 1fr) var(--tap-min);
+    grid-template-areas:
+      'start . end'
+      'title title title';
+    row-gap: 6px;
+  }
+
+  .topBar:has(> .topEnd) > .topStart {
+    grid-area: start;
+  }
+
+  .topBar:has(> .topEnd) > .topTitle {
+    grid-area: title;
+  }
+
+  .topBar:has(> .topEnd) > .topEnd {
+    grid-area: end;
+  }
+
+  /* The Welcome screen has no title in its bar; don't leave an empty row. */
+  .topBar:has(> .topEnd) > .topTitle:empty {
     display: none;
   }
 }

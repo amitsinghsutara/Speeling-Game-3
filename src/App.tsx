@@ -6,6 +6,8 @@ import { hintFor } from './game/hints.ts'
 import { seededRandom } from './game/random.ts'
 import { createGameModel, gameReducer, initialGameState, type GameAction, type Screen } from './game/session.ts'
 import { localPreferencesRepository, type PreferencesRepository } from './persistence/preferences.ts'
+import { detectExitBridge, type ExitBridge } from './platform/containerBridge.ts'
+import { ExitDialog } from './ui/components/ExitDialog.tsx'
 import { localProgressRepository, type ProgressRepository } from './persistence/progressRepository.ts'
 import type { TileState } from './ui/components/Play.tsx'
 import { ForestBackground } from './ui/components/decorations/ForestBackground.tsx'
@@ -18,6 +20,8 @@ export interface AppProps {
   repository?: ProgressRepository
   uiSounds?: UiSoundPlayer
   preferences?: PreferencesRepository
+  /** The container app's exit hook; detected from window.Android by default. */
+  exitBridge?: ExitBridge
   /** Seed for shuffles; fixed in tests, random in play. */
   seed?: number
   now?: () => number
@@ -42,6 +46,7 @@ export function App({
   repository: repositoryProp,
   uiSounds: uiSoundsProp,
   preferences: preferencesProp,
+  exitBridge: exitBridgeProp,
   seed,
   now = Date.now,
 }: AppProps) {
@@ -57,6 +62,9 @@ export function App({
   // Latest state, so taps landing before a re-render still apply in order.
   const latest = useRef(state)
   const [sound, setSound] = useState<SoundNotice>('none')
+  const exitBridge = useMemo(() => exitBridgeProp ?? detectExitBridge(), [exitBridgeProp])
+  const [confirmingExit, setConfirmingExit] = useState(false)
+  const onExit = exitBridge.canExit ? () => setConfirmingExit(true) : undefined
 
   useEffect(() => repository.save(state.progress), [repository, state.progress])
   useEffect(() => () => audio.stop(), [audio])
@@ -107,7 +115,7 @@ export function App({
   const content = (() => {
     switch (screen.name) {
       case 'welcome':
-        return <WelcomeScreen onPlay={() => dispatch({ type: 'play' })} sound={soundSetting} />
+        return <WelcomeScreen onPlay={() => dispatch({ type: 'play' })} sound={soundSetting} onExit={onExit} />
 
       case 'home':
         return (
@@ -117,6 +125,7 @@ export function App({
             starsOf={(n) => model.levelStars(state.progress, n)}
             onOpenLevel={(n) => dispatch({ type: 'openLevel', level: n })}
             sound={soundSetting}
+            onExit={onExit}
           />
         )
 
@@ -194,6 +203,17 @@ export function App({
     <>
       <ForestBackground />
       {content}
+      {confirmingExit && (
+        <ExitDialog
+          onStay={() => setConfirmingExit(false)}
+          onLeave={() => {
+            // Progress is already saved on every change; just stop sound and hand back to the container.
+            audio.stop()
+            setConfirmingExit(false)
+            exitBridge.exit()
+          }}
+        />
+      )}
     </>
   )
 }

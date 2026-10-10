@@ -11,6 +11,7 @@ import { Mascot, type MascotMood } from '../components/Mascot.tsx'
 import { AnswerGrid, AudioButton, type TileState } from '../components/Play.tsx'
 import { StarBadge } from '../components/StarBadge.tsx'
 import { Confetti } from '../components/decorations/Confetti.tsx'
+import { ExitButton } from '../components/ExitDialog.tsx'
 import { Stars } from '../components/decorations/Stars.tsx'
 import type { Choice } from '../../game/question.ts'
 import { useAfterPress } from '../press.ts'
@@ -30,20 +31,30 @@ export interface SoundSetting {
  * Three-column bar: a control on the left, the title centred, and an equal
  * empty column on the right, so the title can never slide under the control.
  */
-function TopBar({ start, children }: { start: ReactNode; children?: ReactNode }) {
+function TopBar({ start, end, children }: { start: ReactNode; end?: ReactNode; children?: ReactNode }) {
   return (
     <div className={styles.topBar}>
       <div className={styles.topStart}>{start}</div>
       <div className={styles.topTitle}>{children}</div>
-      <div aria-hidden="true" />
+      {end ? <div className={styles.topEnd}>{end}</div> : <div className={styles.topSpacer} aria-hidden="true" />}
     </div>
   )
 }
 
-export function WelcomeScreen({ onPlay, sound }: { onPlay: () => void; sound: SoundSetting }) {
+interface WelcomeScreenProps {
+  onPlay: () => void
+  sound: SoundSetting
+  /** Present only when the container app can close the game. */
+  onExit?: (() => void) | undefined
+}
+
+export function WelcomeScreen({ onPlay, sound, onExit }: WelcomeScreenProps) {
   return (
     <main className={`${styles.screen} ${styles.centered}`}>
-      <TopBar start={<SoundToggle on={sound.on} onToggle={sound.onToggle} />} />
+      <TopBar
+        start={<SoundToggle on={sound.on} onToggle={sound.onToggle} />}
+        end={onExit && <ExitButton onClick={onExit} />}
+      />
       <SignBoard>
         <h1 className={styles.title}>Spelling Adventure</h1>
       </SignBoard>
@@ -64,13 +75,14 @@ interface HomeScreenProps {
   starsOf: (level: number) => { earned: number; max: number }
   onOpenLevel: (level: number) => void
   sound: SoundSetting
+  onExit?: (() => void) | undefined
 }
 
-export function HomeScreen({ levels, statusOf, starsOf, onOpenLevel, sound }: HomeScreenProps) {
+export function HomeScreen({ levels, statusOf, starsOf, onOpenLevel, sound, onExit }: HomeScreenProps) {
   const afterPress = useAfterPress()
   return (
     <main className={styles.screen}>
-      <TopBar start={<SoundToggle on={sound.on} onToggle={sound.onToggle} />}>
+      <TopBar start={<SoundToggle on={sound.on} onToggle={sound.onToggle} />} end={onExit && <ExitButton onClick={onExit} />}>
         <SignBoard small>
           <h1>Pick a level</h1>
         </SignBoard>

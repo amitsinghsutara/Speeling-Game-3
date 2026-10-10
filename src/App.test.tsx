@@ -205,3 +205,53 @@ describe('App sound effects', () => {
     expect(word.played).toEqual(['sat'])
   })
 })
+
+describe('App exit button', () => {
+  const exitBridge = () => {
+    const exit = vi.fn<() => void>()
+    return { bridge: { canExit: true, exit }, exit }
+  }
+
+  it('is hidden in a normal browser', () => {
+    render(<App audio={fakeAudio().audio} repository={memoryRepository()} seed={1} />)
+    expect(screen.queryByRole('button', { name: 'Leave the game' })).not.toBeInTheDocument()
+  })
+
+  it('shows on the welcome and level screens but not during a puzzle', async () => {
+    const user = userEvent.setup()
+    const { bridge } = exitBridge()
+    render(<App audio={fakeAudio().audio} repository={memoryRepository()} exitBridge={bridge} seed={1} />)
+    expect(screen.getByRole('button', { name: 'Leave the game' })).toBeInTheDocument()
+    await tap(user, screen.getByRole('button', { name: 'Play!' }))
+    expect(screen.getByRole('button', { name: 'Leave the game' })).toBeInTheDocument()
+    await tap(user, screen.getByRole('button', { name: /^Level 1,/ }))
+    expect(screen.queryByRole('button', { name: 'Leave the game' })).not.toBeInTheDocument()
+  })
+
+  it('asks first, and "Keep playing" stays in the game', async () => {
+    const user = userEvent.setup()
+    const { bridge, exit } = exitBridge()
+    render(<App audio={fakeAudio().audio} repository={memoryRepository()} exitBridge={bridge} seed={1} />)
+    await user.click(screen.getByRole('button', { name: 'Leave the game' }))
+    const dialog = screen.getByRole('dialog', { name: 'Leave the forest?' })
+    expect(within(dialog).getByRole('button', { name: 'Keep playing' })).toHaveFocus()
+    await tap(user, within(dialog).getByRole('button', { name: 'Keep playing' }))
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    expect(exit).not.toHaveBeenCalled()
+  })
+
+  it('closes with Escape, and exits through the container on "Yes, leave"', async () => {
+    const user = userEvent.setup()
+    const { bridge, exit } = exitBridge()
+    const word = fakeAudio()
+    render(<App audio={word.audio} repository={memoryRepository()} exitBridge={bridge} seed={1} />)
+    await user.click(screen.getByRole('button', { name: 'Leave the game' }))
+    await user.keyboard('{Escape}')
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Leave the game' }))
+    await tap(user, screen.getByRole('button', { name: 'Yes, leave' }))
+    expect(exit).toHaveBeenCalledTimes(1)
+    expect(word.audio.stop).toHaveBeenCalled()
+  })
+})
