@@ -47,3 +47,19 @@ Foil-code meanings and difficulty tiers come from the FoilCodebook sheet, never 
 | `scripts/import-content.ts` | Reads the xlsx, hashes the `contentVersion`, writes the JSON |
 
 The `xlsx` dev dependency is installed from the SheetJS CDN (0.20.3), because the npm registry copy (0.18.5) has known advisories. It is used only at import time and is never bundled.
+
+## Deployment
+
+The app is hosted on Cloudflare Pages, in project `spelling-adventure`:
+
+- Production: https://spelling-adventure-68z.pages.dev
+- Game 2 stays separately at `forest-spelling-adventure.pages.dev`
+
+```bash
+npm run deploy   # check + build + upload dist/ to production (branch "main")
+```
+
+- **Sign-in:** you need `wrangler` signed in (`npx wrangler login`).
+- **Classic Pages project:** the project was created directly on Cloudflare Pages, which needed `--force` once at creation. Never pass `--force` again.
+- **Caching:** `public/_headers` sets the cache rules. The page always revalidates, so updates reach players. Hashed assets are cached permanently, and word audio for a week.
+- **Not yet offline:** there is no service worker until Phase 9, so the game is not yet installable or offline.

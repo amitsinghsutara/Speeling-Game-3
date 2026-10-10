@@ -70,4 +70,4 @@
 - [ ] T033 Add the PWA manifest and precaching of the app, content, and MP3s
 - [ ] T034 Test offline reload, gameplay, and resume
 - [ ] T035 Complete the accessibility pass (focus, labels, reduced motion, cues beyond colour)
-- [ ] T036 Run the full lint, typecheck, test, and build; document limitations; deploy a preview
+- [ ] T036 Run the full lint, typecheck, test, and build; document limitations; deploy a preview (first production deploy done 2026-10-10: spelling-adventure-68z.pages.dev; repeat after Phase 9)
