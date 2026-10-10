@@ -218,3 +218,60 @@ describe('where the API key may be sent', () => {
     expect(gemini).not.toHaveBeenCalled()
   })
 })
+
+describe('fallback model', () => {
+  const env: AdviserEnv = { ADVISER_ENABLED: 'true', GEMINI_API_KEY: 'k', GEMINI_MODEL: 'main-model', GEMINI_FALLBACK_MODEL: 'backup-model' }
+  const reply = (advice: unknown) => Response.json({ candidates: [{ content: { parts: [{ text: JSON.stringify(advice) }] } }] })
+  const run = (fetchImpl: typeof fetch, e: AdviserEnv = env, now: () => number = () => NOW) =>
+    handleAdviceRequest(new Request('https://example.test/api/advice', { method: 'POST', body: JSON.stringify(request()) }), e, {
+      fetch: fetchImpl,
+      now,
+      newId: () => 'id',
+      content,
+      rateLimiter: slidingWindowLimiter(99, 1000),
+    })
+  const modelOf = (call: Parameters<typeof fetch> | undefined) => /models\/([^:]+):/.exec(String(call?.[0]))?.[1]
+
+  it('uses the main model when it answers', async () => {
+    const f = vi.fn<typeof fetch>(async () => reply(goodAdvice))
+    const body = await (await run(f)).json()
+    expect(body).toMatchObject({ status: 'ok', model: 'main-model' })
+    expect(f).toHaveBeenCalledTimes(1)
+  })
+
+  it.each([
+    ['rate-limited', () => new Response('quota', { status: 429 })],
+    ['unavailable', () => new Response('down', { status: 503 })],
+    ['returning junk', () => reply('not advice')],
+  ])('falls back once when the main model is %s', async (_, failMain) => {
+    const f = vi.fn<typeof fetch>(async (url) => (String(url).includes('main-model') ? failMain() : reply(goodAdvice)))
+    const body = await (await run(f)).json()
+    expect(body).toMatchObject({ status: 'ok', model: 'backup-model' })
+    expect(f.mock.calls.map(modelOf)).toEqual(['main-model', 'backup-model'])
+  })
+
+  it('reports the last failure when both fail, and never tries more than twice', async () => {
+    const f = vi.fn<typeof fetch>(async () => new Response('quota', { status: 429 }))
+    const response = await run(f)
+    expect(response.status).toBe(502)
+    expect(await response.json()).toEqual({ status: 'unavailable', reason: 'upstream-429' })
+    expect(f).toHaveBeenCalledTimes(2)
+  })
+
+  it('makes one attempt when there is no fallback, or it is the same model', async () => {
+    const f = vi.fn<typeof fetch>(async () => new Response('x', { status: 500 }))
+    await run(f, { ...env, GEMINI_FALLBACK_MODEL: undefined })
+    await run(f, { ...env, GEMINI_FALLBACK_MODEL: 'main-model' })
+    expect(f).toHaveBeenCalledTimes(2)
+  })
+
+  it('skips the fallback when the time budget is already spent', async () => {
+    let clock = NOW
+    const f = vi.fn<typeof fetch>(async () => {
+      clock += 8000 // the main attempt used up the whole budget
+      return new Response('slow', { status: 504 })
+    })
+    await run(f, env, () => clock)
+    expect(f).toHaveBeenCalledTimes(1)
+  })
+})

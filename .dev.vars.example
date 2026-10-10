@@ -1,6 +1,8 @@
 # Copy to .dev.vars (git-ignored) for `npm run dev:full`.
 ADVISER_ENABLED=true
 GEMINI_MODEL=mock-model
+# Optional: tried once if the main model fails.
+GEMINI_FALLBACK_MODEL=
 # Fake key for the local mock. For real Gemini, put your own key here and remove GEMINI_API_BASE.
 GEMINI_API_KEY=local-test-not-a-real-key
 # Local testing only: send requests to `npm run mock:gemini` instead of Google.

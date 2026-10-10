@@ -108,6 +108,9 @@ The local key file is **`.dev.vars`** (git-ignored; copy `.dev.vars.example` to 
 2. Run `npm run dev:full`. This builds with the adviser switched on and serves the site and `/api/advice` at http://127.0.0.1:8788.
 3. Open the puzzle map. That triggers one background request (at most one every 2 minutes).
 
+- **Model ids:** `npm run gemini:models -- lite` lists the models your key can use (names only; the key is never printed).
+- **Fallback:** set `GEMINI_FALLBACK_MODEL` to have the function try a second model once, when the main one is unavailable, rate-limited, slow or returns bad output. Both attempts share a 7-second budget, which ends before the browser's 8-second timeout.
+
 **Without a key, against a fake Gemini:**
 
 1. Run `npm run mock:gemini` in one terminal.

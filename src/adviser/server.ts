@@ -17,6 +17,8 @@ export interface AdviserEnv {
   GEMINI_API_KEY?: string
   /** Required: the Gemini model id to call. Not defaulted, so nothing is guessed. */
   GEMINI_MODEL?: string
+  /** Optional: tried once if the main model fails (unavailable, rate-limited, timeout or bad output). */
+  GEMINI_FALLBACK_MODEL?: string
   /** Local testing only: point at a fake Gemini on this machine. Leave unset in production. */
   GEMINI_API_BASE?: string
 }
@@ -45,10 +47,16 @@ export interface ServerDeps {
   newId: () => string
   content: ContentDataset
   rateLimiter: RateLimiter
+  /** Per-model limit. */
   timeoutMs?: number
+  /** Total time for the main model and the fallback together. */
+  budgetMs?: number
 }
 
-export const GEMINI_TIMEOUT_MS = 6000
+/** Per attempt. */
+export const GEMINI_TIMEOUT_MS = 4500
+/** Both attempts together; ends before the browser's 8 s timeout. */
+export const GEMINI_BUDGET_MS = 7000
 
 /** Best-effort, per-instance sliding window. Serverless instances do not share it; see README. */
 export interface RateLimiter {
@@ -149,22 +157,44 @@ export async function handleAdviceRequest(request: Request, env: AdviserEnv, dep
   const parsed = adviceRequestSchema.safeParse(body)
   if (!parsed.success) return unavailable('bad-request', 400)
 
+  // The main model first, then the fallback once, all inside one time budget that ends
+  // before the browser gives up. Any failure on the last model means "no advice".
+  const models = [env.GEMINI_MODEL, env.GEMINI_FALLBACK_MODEL].filter((m): m is string => !!m && m.length > 0)
+  const deadline = deps.now() + (deps.budgetMs ?? GEMINI_BUDGET_MS)
+  let failure = { reason: 'upstream-unreachable', status: 502 }
+  for (const model of [...new Set(models)]) {
+    const remaining = deadline - deps.now()
+    if (remaining <= 0) break
+    const attempt = await askModel(base, model, env.GEMINI_API_KEY, parsed.data, Math.min(remaining, deps.timeoutMs ?? GEMINI_TIMEOUT_MS), deps)
+    if (attempt.kind === 'advice') return json({ status: 'ok', model, advice: attempt.advice }, 200)
+    failure = attempt
+  }
+  return unavailable(failure.reason, failure.status)
+}
+
+type Attempt = { kind: 'advice'; advice: RawAdvice } | { kind: 'failed'; reason: string; status: number }
+
+async function askModel(
+  base: string,
+  model: string,
+  key: string,
+  request: AdviceRequest,
+  timeoutMs: number,
+  deps: ServerDeps,
+): Promise<Attempt> {
   let upstream: Response
   try {
-    upstream = await deps.fetch(
-      `${base}/v1beta/models/${encodeURIComponent(env.GEMINI_MODEL)}:generateContent`,
-      {
-        method: 'POST',
-        headers: { 'content-type': 'application/json', 'x-goog-api-key': env.GEMINI_API_KEY },
-        body: JSON.stringify(geminiRequestBody(parsed.data)),
-        signal: AbortSignal.timeout(deps.timeoutMs ?? GEMINI_TIMEOUT_MS),
-      },
-    )
+    upstream = await deps.fetch(`${base}/v1beta/models/${encodeURIComponent(model)}:generateContent`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'x-goog-api-key': key },
+      body: JSON.stringify(geminiRequestBody(request)),
+      signal: AbortSignal.timeout(timeoutMs),
+    })
   } catch (error) {
     const timedOut = error instanceof DOMException && (error.name === 'TimeoutError' || error.name === 'AbortError')
-    return unavailable(timedOut ? 'upstream-timeout' : 'upstream-unreachable', timedOut ? 504 : 502)
+    return timedOut ? { kind: 'failed', reason: 'upstream-timeout', status: 504 } : { kind: 'failed', reason: 'upstream-unreachable', status: 502 }
   }
-  if (!upstream.ok) return unavailable(`upstream-${upstream.status}`, 502)
+  if (!upstream.ok) return { kind: 'failed', reason: `upstream-${upstream.status}`, status: 502 }
 
   let raw: unknown
   try {
@@ -173,16 +203,18 @@ export async function handleAdviceRequest(request: Request, env: AdviserEnv, dep
   } catch {
     raw = null
   }
-  const validated = validateAdvice(raw, { content: deps.content, request: parsed.data, adviceId: deps.newId(), receivedAt: deps.now() })
-  if (!validated) return unavailable('invalid-advice', 502)
+  const validated = validateAdvice(raw, { content: deps.content, request, adviceId: deps.newId(), receivedAt: deps.now() })
+  if (!validated) return { kind: 'failed', reason: 'invalid-advice', status: 502 }
 
   // Only curriculum-checked fields go back; the browser validates them again.
-  const advice: RawAdvice = {
-    focusFoilCode: validated.focusFoilCode,
-    reviewSkillId: validated.reviewSkillId,
-    preferItemIds: validated.preferItemIds,
-    candidateFoils: validated.candidateFoils,
-    rationale: validated.rationale,
+  return {
+    kind: 'advice',
+    advice: {
+      focusFoilCode: validated.focusFoilCode,
+      reviewSkillId: validated.reviewSkillId,
+      preferItemIds: validated.preferItemIds,
+      candidateFoils: validated.candidateFoils,
+      rationale: validated.rationale,
+    },
   }
-  return json({ status: 'ok', advice }, 200)
 }
