@@ -8,6 +8,7 @@
  */
 import type { ContentDataset } from '../content/schema.ts'
 import { LIMITS, adviceRequestSchema, type AdviceRequest, type AdviceResponse, type RawAdvice } from './schema.ts'
+import { callGemini, geminiBody } from './gemini.ts'
 import { validateAdvice } from './validate.ts'
 
 export interface AdviserEnv {
@@ -116,27 +117,8 @@ export const GEMINI_RESPONSE_SCHEMA = {
   required: ['focusFoilCode', 'reviewSkillId', 'preferItemIds', 'candidateFoils', 'rationale'],
 } as const
 
-export function geminiRequestBody(request: AdviceRequest) {
-  return {
-    systemInstruction: { parts: [{ text: SYSTEM_INSTRUCTION }] },
-    contents: [{ role: 'user', parts: [{ text: JSON.stringify(request) }] }],
-    generationConfig: {
-      responseMimeType: 'application/json',
-      responseSchema: GEMINI_RESPONSE_SCHEMA,
-      temperature: 0.2,
-      maxOutputTokens: 1024,
-    },
-  }
-}
-
-/** Pulls the JSON text out of a generateContent response; null if the shape is unexpected. */
-function geminiText(body: unknown): string | null {
-  const candidates = (body as { candidates?: { content?: { parts?: { text?: unknown }[] } }[] })?.candidates
-  const parts = candidates?.[0]?.content?.parts
-  if (!Array.isArray(parts)) return null
-  const text = parts.map((p) => (typeof p.text === 'string' ? p.text : '')).join('')
-  return text.length > 0 ? text : null
-}
+export const geminiRequestBody = (request: AdviceRequest) =>
+  geminiBody({ systemInstruction: SYSTEM_INSTRUCTION, responseSchema: GEMINI_RESPONSE_SCHEMA, input: request, maxOutputTokens: 1024 })
 
 /** Metadata only: what happened, which model, how long. Safe to keep in platform logs. */
 export interface ServerLogEntry {
@@ -180,70 +162,40 @@ export async function handleAdviceRequest(request: Request, env: AdviserEnv, dep
 
   // The main model first, then the fallback once, all inside one time budget that ends
   // before the browser gives up. Any failure on the last model means "no advice".
-  const models = [env.GEMINI_MODEL, env.GEMINI_FALLBACK_MODEL].filter((m): m is string => !!m && m.length > 0)
-  const deadline = deps.now() + (deps.budgetMs ?? GEMINI_BUDGET_MS)
-  let failure = { reason: 'upstream-unreachable', status: 502 }
-  const attempts: NonNullable<ServerLogEntry['attempts']> = []
-  for (const model of [...new Set(models)]) {
-    const remaining = deadline - deps.now()
-    if (remaining <= 0) break
-    const attemptStarted = deps.now()
-    const attempt = await askModel(base, model, env.GEMINI_API_KEY, parsed.data, Math.min(remaining, deps.timeoutMs ?? GEMINI_TIMEOUT_MS), deps)
-    attempts.push({ model, outcome: attempt.kind === 'advice' ? 'ok' : attempt.reason, ms: deps.now() - attemptStarted })
-    if (attempt.kind === 'advice') {
-      log({ outcome: 'ok', model, fallbackUsed: attempts.length > 1, attempts, rejectedSuggestions: attempt.rejected.length })
-      return json({ status: 'ok', model, advice: attempt.advice, rejected: attempt.rejected }, 200)
-    }
-    failure = attempt
-  }
-  log({ outcome: 'unavailable', reason: failure.reason, attempts })
-  return unavailable(failure.reason, failure.status)
-}
-
-type Attempt = { kind: 'advice'; advice: RawAdvice; rejected: string[] } | { kind: 'failed'; reason: string; status: number }
-
-async function askModel(
-  base: string,
-  model: string,
-  key: string,
-  request: AdviceRequest,
-  timeoutMs: number,
-  deps: ServerDeps,
-): Promise<Attempt> {
-  let upstream: Response
-  try {
-    upstream = await deps.fetch(`${base}/v1beta/models/${encodeURIComponent(model)}:generateContent`, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json', 'x-goog-api-key': key },
-      body: JSON.stringify(geminiRequestBody(request)),
-      signal: AbortSignal.timeout(timeoutMs),
-    })
-  } catch (error) {
-    const timedOut = error instanceof DOMException && (error.name === 'TimeoutError' || error.name === 'AbortError')
-    return timedOut ? { kind: 'failed', reason: 'upstream-timeout', status: 504 } : { kind: 'failed', reason: 'upstream-unreachable', status: 502 }
-  }
-  if (!upstream.ok) return { kind: 'failed', reason: `upstream-${upstream.status}`, status: 502 }
-
-  let raw: unknown
-  try {
-    const answer = geminiText(await upstream.json())
-    raw = answer === null ? null : JSON.parse(answer)
-  } catch {
-    raw = null
-  }
-  const validated = validateAdvice(raw, { content: deps.content, request, adviceId: deps.newId(), receivedAt: deps.now() })
-  if (!validated) return { kind: 'failed', reason: 'invalid-advice', status: 502 }
-
-  // Only curriculum-checked fields go back; the browser validates them again.
-  return {
-    kind: 'advice',
-    advice: {
-      focusFoilCode: validated.focusFoilCode,
-      reviewSkillId: validated.reviewSkillId,
-      preferItemIds: validated.preferItemIds,
-      candidateFoils: validated.candidateFoils,
-      rationale: validated.rationale,
+  let rejected: string[] = []
+  const result = await callGemini(
+    {
+      base,
+      key: env.GEMINI_API_KEY,
+      models: [env.GEMINI_MODEL, env.GEMINI_FALLBACK_MODEL],
+      systemInstruction: SYSTEM_INSTRUCTION,
+      responseSchema: GEMINI_RESPONSE_SCHEMA,
+      input: parsed.data,
+      maxOutputTokens: 1024,
+      budgetMs: deps.budgetMs ?? GEMINI_BUDGET_MS,
+      timeoutMs: deps.timeoutMs ?? GEMINI_TIMEOUT_MS,
+      invalidReason: 'invalid-advice',
+      parse: (raw) => {
+        const validated = validateAdvice(raw, { content: deps.content, request: parsed.data, adviceId: deps.newId(), receivedAt: deps.now() })
+        if (!validated) return null
+        rejected = validated.rejected
+        // Only curriculum-checked fields go back; the browser validates them again.
+        const advice: RawAdvice = {
+          focusFoilCode: validated.focusFoilCode,
+          reviewSkillId: validated.reviewSkillId,
+          preferItemIds: validated.preferItemIds,
+          candidateFoils: validated.candidateFoils,
+          rationale: validated.rationale,
+        }
+        return advice
+      },
     },
-    rejected: validated.rejected,
+    deps,
+  )
+  if (result.kind === 'ok') {
+    log({ outcome: 'ok', model: result.model, fallbackUsed: result.attempts.length > 1, attempts: result.attempts, rejectedSuggestions: rejected.length })
+    return json({ status: 'ok', model: result.model, advice: result.value, rejected }, 200)
   }
+  log({ outcome: 'unavailable', reason: result.reason, attempts: result.attempts })
+  return unavailable(result.reason, result.status)
 }

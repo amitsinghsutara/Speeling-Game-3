@@ -92,3 +92,30 @@
   font-weight: 700;
   letter-spacing: 0.02em;
 }
+
+.subheading {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.aiLabel {
+  display: inline-block;
+  padding: 2px 10px;
+  border: 2px dashed var(--ink-soft);
+  border-radius: var(--radius-md);
+  background: #eef8ff;
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+}
+
+.activityWords {
+  display: block;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* Space out the AI suggestions block (it sits inside a status region). */
+.card [role='status'] > * + * {
+  margin-top: 10px;
+}

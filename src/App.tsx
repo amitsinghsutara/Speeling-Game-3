@@ -5,6 +5,7 @@ import { createAdviserClient, type AdviserClient } from './adviser/client.ts'
 import { buildAdviceRequest } from './adviser/request.ts'
 import { buildLearnerModel } from './learner/model.ts'
 import { buildProgressReport } from './learner/report.ts'
+import { createInsightsClient, type InsightsClient } from './insights/client.ts'
 import { GrownUpsScreen } from './ui/screens/GrownUps.tsx'
 import { consoleLog } from './debug/log.ts'
 import { loadContent } from './content/loadContent.ts'
@@ -48,6 +49,8 @@ export interface AppProps {
   pwa?: PwaStatus
   /** Optional AI adviser. Off unless the build sets VITE_ADVISER_ENABLED=true (and the server agrees). */
   adviser?: AdviserClient
+  /** Optional grown-ups' AI suggestions. Off unless the build sets VITE_INSIGHTS_ENABLED=true (and the server agrees). */
+  insights?: InsightsClient
   /** Seed for shuffles; fixed in tests, random in play. */
   seed?: number
   now?: () => number
@@ -78,6 +81,7 @@ export function App({
   modelOptions,
   pwa = inertPwaStatus,
   adviser: adviserProp,
+  insights: insightsProp,
   seed,
   now = Date.now,
 }: AppProps) {
@@ -92,6 +96,11 @@ export function App({
 
   const [adviser] = useState(
     () => adviserProp ?? createAdviserClient({ enabled: import.meta.env.VITE_ADVISER_ENABLED === 'true', content: model.content }),
+  )
+  const [insights] = useState(
+    () =>
+      insightsProp ??
+      createInsightsClient({ enabled: import.meta.env.VITE_INSIGHTS_ENABLED === 'true', content: model.content, policy: model.policyConfig }),
   )
   const [state, setState] = useState(() => initialGameState(repository.load(), newId()))
   // Latest state, so taps landing before a re-render still apply in order.
@@ -234,10 +243,14 @@ export function App({
           />
         )
 
-      case 'grownUps':
+      case 'grownUps': {
+        const learner = buildLearnerModel(state.events, model.content, model.learnerConfig)
+        const report = buildProgressReport(learner, model.content, model.policyConfig)
         return (
           <GrownUpsScreen
-            report={buildProgressReport(buildLearnerModel(state.events, model.content, model.learnerConfig), model.content, model.policyConfig)}
+            report={report}
+            requestInsights={insights.enabled ? () => insights.request(learner, report) : undefined}
+            foilName={(code) => model.content.foilCodebook.find((e) => e.code === code)?.name ?? code}
             starsOf={(n) => model.levelStars(state.progress, n)}
             adviserOn={adviser.enabled}
             onBack={() => dispatch({ type: 'home' })}
@@ -250,6 +263,7 @@ export function App({
             }}
           />
         )
+      }
 
       case 'puzzles': {
         const info = level(screen.level)

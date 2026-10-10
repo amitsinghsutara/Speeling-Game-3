@@ -94,3 +94,55 @@ Set `ADVISER_ENABLED` to anything other than `true` in the Cloudflare project. T
 | Enabled in production | 2026-10-10: main model `gemini-3.5-flash-lite`, fallback `gemini-3.1-flash-lite`; settings stored as encrypted Cloudflare secrets |
 
 Revisit this section before rolling the adviser out to schools or other organisations.
+
+## 11. Addendum: AI suggestions for grown-ups
+
+**Status:** DRAFT, awaiting approval. Production stays off: `INSIGHTS_ENABLED` is not set on the Cloudflare project, and the browser button is only built with `VITE_INSIGHTS_ENABLED=true`.
+
+**Prepared:** 2026-10-10, from `src/insights/*` and `functions/api/insights.ts`.
+
+### What changes
+
+The grown-ups' screen gains a **"Get AI suggestions"** button. When a grown-up presses it, Gemini writes a short summary, tips for detected error patterns, and up to 3 home practice ideas. This is a new use of AI: it **describes a child's practice to an adult**, whereas the adviser in §1 only chooses among options the game already allows. The constitution requires an explicit product decision and this review before it is used. The product owner asked for the feature on 2026-10-10.
+
+### Data sent (`POST /api/insights`)
+
+- **Aggregates:** the same aggregate data as §3 (`stats`, built by the same code).
+- **Level labels:** the device's own label for each level the child has started, for example `practising`.
+- **Never sent:** the items listed in §4.
+- **Only on request:** a request is sent only when a grown-up presses the button. Nothing happens automatically or in the background.
+
+### Safeguards
+
+| Risk | Mitigation |
+|---|---|
+| Labelling or "diagnosing" a child (for example dyslexia, ADHD, "behind", "gifted", "mastered") | A banned-term check runs on every text field. One match discards the **whole** result, on the server and again in the browser. Test-covered. |
+| Contradicting the device's own numbers | Strengths are kept only for levels the device rates "doing well". Focus areas must be detected error patterns. |
+| Suggesting wrong spellings or unapproved words | Home-practice words must be approved **target** words at or below the child's level. Foils and invented words are removed. |
+| Links, products, contact details | Any link, email-like address or phone-like number discards the result. |
+| Over-trust | Shown under the label "AI-generated suggestions: they may not be right", below the device's own numbers, which stay the source of truth. |
+| Storage | Suggestions are not stored on the device or the server. The server log is metadata only (§5): outcome, model, timings and a removed-item count. |
+| Cost or abuse | Its own rate limit (10 per device IP per 10 minutes), a client wait of 30 seconds between requests, timeouts, and the fallback model. |
+
+### Live check (local, real Gemini, 2026-10-10)
+
+`gemini-3.5-flash-lite` answered in about 2 seconds on both runs:
+
+- **Tone:** warm, plain summaries with no labels.
+- **Agreement with the device:** no strengths for a level the device rates "still practising".
+- **Focus:** only the real vowel pattern.
+- **Home ideas:** use approved level-1 words; one wrong-answer word ("pan") was correctly removed.
+
+### Kill switch
+
+Set `INSIGHTS_ENABLED` to anything other than `true`. It is independent of the play adviser.
+
+### Approval of this addendum
+
+| | |
+|---|---|
+| Approved by | _(name, role)_ |
+| Date | _(YYYY-MM-DD)_ |
+| Conditions | _(for example: parent notice updated first)_ |
+
+The §9 open items (API tier, parent or school notice, logging) apply here too. A parent notice matters more for this feature, because it describes the child's practice to an adult.

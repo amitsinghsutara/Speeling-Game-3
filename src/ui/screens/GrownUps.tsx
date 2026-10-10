@@ -8,6 +8,8 @@ import { BackButton, Button } from '../components/Button.tsx'
 import { SignBoard } from '../components/Cartoon.tsx'
 import { ConfirmDialog } from '../components/ExitDialog.tsx'
 import { StarBadge } from '../components/StarBadge.tsx'
+import type { InsightsOutcome } from '../../insights/client.ts'
+import { AiSuggestions } from './AiSuggestions.tsx'
 import styles from './GrownUps.module.css'
 import screen from './Screen.module.css'
 
@@ -16,11 +18,14 @@ interface GrownUpsScreenProps {
   starsOf: (level: number) => { earned: number; max: number }
   /** True when advice from the optional AI adviser can be used on this device. */
   adviserOn: boolean
+  /** Present only when AI suggestions are switched on for this build. */
+  requestInsights?: (() => Promise<InsightsOutcome>) | undefined
+  foilName: (code: string) => string
   onBack: () => void
   onReset: () => void
 }
 
-export function GrownUpsScreen({ report, starsOf, adviserOn, onBack, onReset }: GrownUpsScreenProps) {
+export function GrownUpsScreen({ report, starsOf, adviserOn, requestInsights, foilName, onBack, onReset }: GrownUpsScreenProps) {
   const [confirmingReset, setConfirmingReset] = useState(false)
   const started = report.levels.filter((l) => l.status !== 'not-started')
 
@@ -113,12 +118,17 @@ export function GrownUpsScreen({ report, starsOf, adviserOn, onBack, onReset }: 
         </section>
       )}
 
+      {requestInsights && <AiSuggestions request={requestInsights} foilName={foilName} />}
+
       <section className={styles.card} aria-labelledby="about">
         <h2 id="about" className={styles.heading}>
           About these numbers
         </h2>
         <p className={styles.muted}>
-          Everything here is worked out on this device from your child&apos;s answers; nothing is sent anywhere to make this page.
+          The numbers and labels on this page are worked out on this device from your child&apos;s answers.
+          {requestInsights
+            ? ' Only if you press “Get AI suggestions” are the practice numbers (never your child’s name or answers) sent to an AI service.'
+            : ' Nothing is sent anywhere to make this page.'}
           {report.provisional && ' The rules behind the labels are still provisional and may change once they are reviewed by a teacher.'}
           {adviserOn && ' Optional teaching suggestions from an AI adviser are switched on: it only ever picks between options the game already allows.'}
         </p>

@@ -7,3 +7,6 @@ GEMINI_FALLBACK_MODEL=
 GEMINI_API_KEY=local-test-not-a-real-key
 # Local testing only: send requests to `npm run mock:gemini` instead of Google.
 GEMINI_API_BASE=http://127.0.0.1:8790
+
+# Optional: grown-ups AI suggestions (separate switch).
+INSIGHTS_ENABLED=false
