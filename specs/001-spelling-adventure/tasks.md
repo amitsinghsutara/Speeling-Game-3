@@ -67,7 +67,7 @@
 
 ## Phase 9: Offline, accessibility, and release [US5]
 
-- [ ] T033 Add the PWA manifest and precaching of the app, content, and MP3s
-- [ ] T034 Test offline reload, gameplay, and resume
-- [ ] T035 Complete the accessibility pass (focus, labels, reduced motion, cues beyond colour)
+- [x] T033 Add the PWA manifest (Fern icons) and precache the app, content, fonts and all 200 MP3s (218 entries, about 4.9 MB); updates apply only on the Welcome and level screens; the container is notified through `window.Android.cachedStatus(true)`
+- [x] T034 Test offline reload, gameplay and resume on a production build with the server shut down (Chrome, 2026-10-10): the page, saved progress, a new puzzle and word audio all worked. Still to do: a real device and the container WebView (T019c)
+- [x] T035 Accessibility pass: axe-core on every screen and the exit dialog (0 violations), WCAG contrast computed for all text/background pairs, and every target word has audio
 - [ ] T036 Run the full lint, typecheck, test, and build; document limitations; deploy a preview (first production deploy done 2026-10-10: spelling-adventure-68z.pages.dev; repeat after Phase 9)

@@ -62,4 +62,12 @@ npm run deploy   # check + build + upload dist/ to production (branch "main")
 - **Sign-in:** you need `wrangler` signed in (`npx wrangler login`).
 - **Classic Pages project:** the project was created directly on Cloudflare Pages, which needed `--force` once at creation. Never pass `--force` again.
 - **Caching:** `public/_headers` sets the cache rules. The page always revalidates, so updates reach players. Hashed assets are cached permanently, and word audio for a week.
-- **Not yet offline:** there is no service worker until Phase 9, so the game is not yet installable or offline.
+
+## Offline and install
+
+- **Precache:** a service worker (vite-plugin-pwa / Workbox) caches the app, content, fonts, icons and every word MP3 on the first visit, so the game installs and plays offline.
+- **Updates:** a new version downloads in the background and is applied only on the Welcome or level screens, never mid-puzzle. Progress is saved on every change.
+- **Container:** in the container app, the game calls `window.Android.cachedStatus(true)` once it is fully cached.
+- **Icons:** regenerate them with `npm run gen:icons` (dependency-free; it draws Fern's face).
+- **Dev server:** `npm run dev` does not register the service worker. To test offline, use `npm run build && npx vite preview`.
+- **Local testing:** old service workers from Game 2 can linger on `localhost` ports and serve Game 2. Use a fresh port, or `127.0.0.1`.
