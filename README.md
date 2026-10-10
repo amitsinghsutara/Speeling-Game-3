@@ -72,7 +72,14 @@ npm run deploy   # check + build + upload dist/ to production (branch "main")
 - **Dev server:** `npm run dev` does not register the service worker. To test offline, use `npm run build && npx vite preview`.
 - **Local testing:** old service workers from Game 2 can linger on `localhost` ports and serve Game 2. Use a fresh port, or `127.0.0.1`.
 
-## Optional AI adviser (Gemini): off by default
+## Optional AI adviser (Gemini)
+
+**Production status (2026-10-10): on.** Main model `gemini-3.5-flash-lite`, fallback `gemini-3.1-flash-lite`. All four settings (`ADVISER_ENABLED`, `GEMINI_MODEL`, `GEMINI_FALLBACK_MODEL`, `GEMINI_API_KEY`) are encrypted Cloudflare secrets on the production environment. Deploy with `npm run deploy:adviser`; a plain `npm run deploy` builds with the browser switch off.
+
+- **Players update on their next launch.** A running game keeps its current version until it reloads.
+- **Kill switch:** `printf false | npx wrangler pages secret put ADVISER_ENABLED --project-name=spelling-adventure`, then redeploy. Settings apply to new deployments.
+
+### How it works
 
 The adviser can suggest which detected error pattern to practise first, which eligible words to use, which due skill to review, and which approved foils to keep when scaffolding. Its limits:
 

@@ -65,7 +65,7 @@
 - [x] T031 Build the client adviser (timeout, curriculum check, eligible-only application, fallback reason codes)
 - [x] T032 Add adversarial tests (unknown words, invalid JSON, slow or failing responses)
 
-- [x] T032a Privacy review recorded (docs/privacy/adviser-review.md: approved 2026-10-10, open items deferred), then the adviser enabled in production (constitution VI): set ADVISER_ENABLED, GEMINI_MODEL and the GEMINI_API_KEY secret, and build with VITE_ADVISER_ENABLED=true
+- [x] T032a Privacy review recorded (docs/privacy/adviser-review.md: approved 2026-10-10, open items deferred). Enabled in production on 2026-10-10 and verified live (HTTP 200 in about 2.3 s from the puzzle map), then the adviser enabled in production (constitution VI): set ADVISER_ENABLED, GEMINI_MODEL and the GEMINI_API_KEY secret, and build with VITE_ADVISER_ENABLED=true
 - [x] T032b Choose the Gemini model and run a live check (2026-10-10, local): main model gemini-3.5-flash-lite, fallback gemini-3.1-flash-lite. Real advice took 1.6–2.6 s in the background, used only approved words and foils, and its focus matched the detected V pattern. A real decision recorded FOCUS_ERROR_PATTERN plus SCAFFOLD_REDUCE_CHOICES with ADVISER_ACCEPTED
 
 ## Phase 9: Offline, accessibility, and release [US5]

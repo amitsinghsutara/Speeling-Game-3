@@ -91,4 +91,6 @@ Set `ADVISER_ENABLED` to anything other than `true` in the Cloudflare project. T
 | Conditions | None set. The §9 open items (API tier and terms, parent or school notice, Cloudflare logging) were **deferred by the approver** to be decided later. |
 | Model tier | The approver intends to use a **free-tier** Gemini model. Under §5, Google's terms for unpaid tiers may allow it to use the aggregate prompts to improve its products. This was accepted for now, with the §9 decision still to be made. |
 
+| Enabled in production | 2026-10-10: main model `gemini-3.5-flash-lite`, fallback `gemini-3.1-flash-lite`; settings stored as encrypted Cloudflare secrets |
+
 Revisit this section before rolling the adviser out to schools or other organisations.
