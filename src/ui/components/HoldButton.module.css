@@ -1,0 +1,59 @@
+.hold {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: var(--tap-min);
+  padding: 0.3em 1.1em 0.3em 0.5em;
+  border: var(--outline);
+  border-radius: var(--radius-pill);
+  background: var(--paper);
+  box-shadow: var(--ledge-sm);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--ink-soft);
+  cursor: pointer;
+  touch-action: none;
+  -webkit-touch-callout: none;
+}
+
+.hold:focus-visible {
+  box-shadow: var(--ledge-sm), var(--focus-ring);
+}
+
+.ring {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border: 3px solid var(--ink);
+  border-radius: 50%;
+  background: conic-gradient(var(--lime) calc(var(--fill, 0) * 1turn), #fff 0);
+}
+
+.holding .ring {
+  animation: fill var(--hold-ms) linear forwards;
+}
+
+@property --fill {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+@keyframes fill {
+  from {
+    --fill: 0;
+  }
+  to {
+    --fill: 1;
+  }
+}
+
+/* Reduced motion: no sweeping animation, just a clear "holding" state. */
+@media (prefers-reduced-motion: reduce) {
+  .holding .ring {
+    animation: none;
+    background: var(--lime);
+  }
+}

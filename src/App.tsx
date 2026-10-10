@@ -4,6 +4,8 @@ import { isUiSound, webAudioUiSounds, type UiSound, type UiSoundPlayer } from '.
 import { createAdviserClient, type AdviserClient } from './adviser/client.ts'
 import { buildAdviceRequest } from './adviser/request.ts'
 import { buildLearnerModel } from './learner/model.ts'
+import { buildProgressReport } from './learner/report.ts'
+import { GrownUpsScreen } from './ui/screens/GrownUps.tsx'
 import { consoleLog } from './debug/log.ts'
 import { loadContent } from './content/loadContent.ts'
 import { hintFor } from './game/hints.ts'
@@ -228,6 +230,24 @@ export function App({
             onOpenLevel={(n) => dispatch({ type: 'openLevel', level: n })}
             sound={soundSetting}
             onExit={onExit}
+            onOpenGrownUps={() => dispatch({ type: 'openGrownUps' })}
+          />
+        )
+
+      case 'grownUps':
+        return (
+          <GrownUpsScreen
+            report={buildProgressReport(buildLearnerModel(state.events, model.content, model.learnerConfig), model.content, model.policyConfig)}
+            starsOf={(n) => model.levelStars(state.progress, n)}
+            adviserOn={adviser.enabled}
+            onBack={() => dispatch({ type: 'home' })}
+            onReset={() => {
+              // Clear storage first, then the in-memory state; failures must not block a reset.
+              repository.clear()
+              void eventStore.then((s) => s.clear()).catch(() => {})
+              saved.current.clear()
+              dispatch({ type: 'resetProgress' })
+            }}
           />
         )
 

@@ -3,13 +3,14 @@
  * cannot be measured in jsdom (no layout), so it is checked separately in
  * scripts/contrast.test.ts.
  */
-import { act, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import axe from 'axe-core'
 import { describe, expect, it } from 'vitest'
 import { App } from './App.tsx'
 import type { AudioProvider } from './audio/AudioProvider.ts'
 import { localProgressRepository } from './persistence/progressRepository.ts'
+import { HOLD_MS } from './ui/components/HoldButton.tsx'
 import { PRESS_ACTION_DELAY_MS } from './ui/press.ts'
 
 const audio: AudioProvider = { name: 'silent', play: async () => 'played', stop: () => {} }
@@ -61,6 +62,21 @@ describe('accessibility (axe)', () => {
     expect(await violations(), 'after a wrong answer').toEqual([])
     await user.click(screen.getByRole('button', { name: target }))
     expect(await violations(), 'after the right answer').toEqual([])
+  })
+
+  it('has no violations on the grown-ups screen or its reset dialog', async () => {
+    const user = userEvent.setup()
+    render(<App audio={audio} repository={memoryRepository()} seed={1} />)
+    await user.click(screen.getByRole('button', { name: 'Play!' }))
+    await settle()
+    const hold = screen.getByRole('button', { name: /For grown-ups: press and hold/ })
+    fireEvent.pointerDown(hold, { button: 0 })
+    await act(() => new Promise<void>((r) => setTimeout(r, HOLD_MS + 50)))
+    expect(screen.getByRole('heading', { level: 1, name: 'For grown-ups' })).toBeInTheDocument()
+    expect(await violations(), 'grown-ups').toEqual([])
+    await user.click(screen.getByRole('button', { name: 'Reset progress' }))
+    await settle()
+    expect(await violations(), 'reset dialog').toEqual([])
   })
 
   it('gives the page one main region and a top-level heading on every menu screen', async () => {

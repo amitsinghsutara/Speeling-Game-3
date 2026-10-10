@@ -1,0 +1,94 @@
+/* Calmer than the play screens: same cartoon outlines, more reading-friendly layout. */
+.topBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.card {
+  width: 100%;
+  padding: 16px 18px;
+  background: var(--paper);
+  border: var(--outline);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--ledge-sm);
+  font-family: var(--font-reading);
+  font-size: 1.05rem;
+  line-height: 1.45;
+}
+
+.card > * + * {
+  margin-top: 10px;
+}
+
+.heading {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin: 10px 0 0;
+}
+
+.stats div {
+  padding: 10px 12px;
+  border: 3px solid var(--ink);
+  border-radius: var(--radius-md);
+  background: #fff;
+}
+
+.stats dt {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+.stats dd {
+  margin: 2px 0 0;
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.list {
+  margin: 0;
+  padding-left: 1.2em;
+}
+
+.list > li + li {
+  margin-top: 10px;
+}
+
+.level {
+  list-style: none;
+  margin-left: -1.2em;
+  padding: 10px 12px;
+  border: 3px solid var(--ink);
+  border-radius: var(--radius-md);
+  background: #fff;
+}
+
+.levelTitle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+}
+
+.status {
+  font-weight: 700;
+}
+
+.muted {
+  color: var(--text-muted);
+}
+
+.words {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}

@@ -16,16 +16,22 @@ export function ExitButton({ onClick }: { onClick: () => void }) {
   )
 }
 
-interface ExitDialogProps {
+interface ConfirmDialogProps {
+  title: string
+  text: string
+  /** The safe choice: listed first and focused. */
+  stayLabel: string
+  confirmLabel: string
   onStay: () => void
-  onLeave: () => void
+  onConfirm: () => void
 }
 
 /**
- * Friendly "are you sure?" so a child cannot leave by accident. In-app rather
- * than window.confirm, which looks foreign and can be blocked in WebViews.
+ * Friendly "are you sure?" for anything that cannot be undone by accident. In-app
+ * rather than window.confirm, which looks foreign and can be blocked in WebViews.
+ * Escape always means "stay".
  */
-export function ExitDialog({ onStay, onLeave }: ExitDialogProps) {
+export function ConfirmDialog({ title, text, stayLabel, confirmLabel, onStay, onConfirm }: ConfirmDialogProps) {
   const titleId = useId()
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -40,19 +46,32 @@ export function ExitDialog({ onStay, onLeave }: ExitDialogProps) {
       <div className={styles.panel} role="dialog" aria-modal="true" aria-labelledby={titleId}>
         <Mascot mood="encouraging" size="sm" />
         <h2 id={titleId} className={styles.title}>
-          Leave the forest?
+          {title}
         </h2>
-        <p className={styles.text}>Your stars are saved. Come back soon!</p>
+        <p className={styles.text}>{text}</p>
         {/* The safe choice comes first and has focus. */}
         <div className={styles.actions}>
           <Button colour="lime" onClick={onStay} autoFocus>
-            Keep playing
+            {stayLabel}
           </Button>
-          <Button colour="paper" sound="back" onClick={onLeave}>
-            Yes, leave
+          <Button colour="paper" sound="back" onClick={onConfirm}>
+            {confirmLabel}
           </Button>
         </div>
       </div>
     </div>
+  )
+}
+
+export function ExitDialog({ onStay, onLeave }: { onStay: () => void; onLeave: () => void }) {
+  return (
+    <ConfirmDialog
+      title="Leave the forest?"
+      text="Your stars are saved. Come back soon!"
+      stayLabel="Keep playing"
+      confirmLabel="Yes, leave"
+      onStay={onStay}
+      onConfirm={onLeave}
+    />
   )
 }

@@ -12,6 +12,7 @@ import { AnswerGrid, AudioButton, type TileState } from '../components/Play.tsx'
 import { StarBadge } from '../components/StarBadge.tsx'
 import { Confetti } from '../components/decorations/Confetti.tsx'
 import { ExitButton } from '../components/ExitDialog.tsx'
+import { HoldButton } from '../components/HoldButton.tsx'
 import { Stars } from '../components/decorations/Stars.tsx'
 import type { Choice } from '../../game/question.ts'
 import { useAfterPress } from '../press.ts'
@@ -76,9 +77,10 @@ interface HomeScreenProps {
   onOpenLevel: (level: number) => void
   sound: SoundSetting
   onExit?: (() => void) | undefined
+  onOpenGrownUps: () => void
 }
 
-export function HomeScreen({ levels, statusOf, starsOf, onOpenLevel, sound, onExit }: HomeScreenProps) {
+export function HomeScreen({ levels, statusOf, starsOf, onOpenLevel, sound, onExit, onOpenGrownUps }: HomeScreenProps) {
   const afterPress = useAfterPress()
   return (
     <main className={styles.screen}>
@@ -123,6 +125,9 @@ export function HomeScreen({ levels, statusOf, starsOf, onOpenLevel, sound, onEx
           )
         })}
       </div>
+      <HoldButton label="For grown-ups: press and hold to open" onComplete={onOpenGrownUps}>
+        For grown-ups (press and hold)
+      </HoldButton>
     </main>
   )
 }

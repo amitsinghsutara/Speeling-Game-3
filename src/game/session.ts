@@ -15,7 +15,7 @@ import type { ContentDataset, Item } from '../content/schema.ts'
 import { DEFAULT_LEARNER_MODEL_CONFIG, type LearnerModelConfig } from '../learner/config.ts'
 import { createLearningEvent, type LearningEvent } from '../learner/events.ts'
 import { buildLearnerModel } from '../learner/model.ts'
-import type { SavedProgress } from '../persistence/progressRepository.ts'
+import { emptyProgress, type SavedProgress } from '../persistence/progressRepository.ts'
 import { answer, startQuestion, type AnswerOutcome, type QuestionState } from './answer.ts'
 import { buildPuzzles, levelStatuses, puzzleStatuses, type Puzzle, type Status } from './progression.ts'
 import { buildQuestion } from './question.ts'
@@ -25,6 +25,7 @@ import { MAX_STARS, bestStars, starsForMistakes } from './scoring.ts'
 export type Screen =
   | { name: 'welcome' }
   | { name: 'home' }
+  | { name: 'grownUps' }
   | { name: 'puzzles'; level: number }
   | {
       name: 'question'
@@ -69,6 +70,9 @@ export type GameAction =
   | { type: 'backToPuzzles' }
   | { type: 'nextPuzzle'; env: StepEnv }
   | { type: 'nextLevel' }
+  | { type: 'openGrownUps' }
+  /** Clears stars, unlocks, events, decisions and advice (storage is cleared by the app). */
+  | { type: 'resetProgress' }
   /** Stored events finished loading; merge them under anything recorded meanwhile. */
   | { type: 'eventsLoaded'; events: readonly LearningEvent[] }
   /** Validated advice arrived in the background. */
@@ -268,7 +272,7 @@ export function gameReducer(model: GameModel, state: GameState, action: GameActi
     }
 
     case 'backToPuzzles':
-      if (screen.name === 'welcome' || screen.name === 'home') return state
+      if (screen.name === 'welcome' || screen.name === 'home' || screen.name === 'grownUps') return state
       return { ...state, screen: { name: 'puzzles', level: screen.level } }
 
     case 'nextPuzzle': {
@@ -282,6 +286,13 @@ export function gameReducer(model: GameModel, state: GameState, action: GameActi
       if (screen.name !== 'levelComplete') return state
       return gameReducer(model, state, { type: 'openLevel', level: screen.level + 1 })
     }
+
+    case 'openGrownUps':
+      return screen.name === 'home' ? { ...state, screen: { name: 'grownUps' } } : state
+
+    case 'resetProgress':
+      if (screen.name !== 'grownUps') return state
+      return { ...state, screen: { name: 'home' }, progress: emptyProgress(), events: [], decisions: [], advice: null }
 
     case 'eventsLoaded':
       return { ...state, events: mergeEvents(action.events, state.events) }

@@ -1,4 +1,4 @@
-import { act, render, screen, within } from '@testing-library/react'
+import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { App } from './App.tsx'
@@ -10,6 +10,7 @@ import { memoryLearningEventStore } from './persistence/learningEventStore.ts'
 import { localPreferencesRepository } from './persistence/preferences.ts'
 import { createPwaStatus } from './pwa/status.ts'
 import { localProgressRepository } from './persistence/progressRepository.ts'
+import { HOLD_MS } from './ui/components/HoldButton.tsx'
 import { PRESS_ACTION_DELAY_MS } from './ui/press.ts'
 
 function fakeAudio(outcome: PlayOutcome = 'played') {
@@ -379,4 +380,60 @@ describe('App adviser', () => {
     await openFirstPuzzle(user)
     expect(request).not.toHaveBeenCalled()
   })
+})
+
+describe('App grown-ups screen', () => {
+  async function openGrownUps() {
+    const hold = screen.getByRole('button', { name: /For grown-ups: press and hold/ })
+    fireEvent.pointerDown(hold, { button: 0 })
+    await act(() => new Promise<void>((r) => setTimeout(r, HOLD_MS + 50)))
+    fireEvent.pointerUp(hold)
+  }
+
+  it('opens only by press-and-hold, and reports progress in plain language', async () => {
+    const user = userEvent.setup()
+    const word = fakeAudio()
+    render(<App audio={word.audio} repository={memoryRepository()} eventStore={memoryLearningEventStore()} seed={1} />)
+    await openFirstPuzzle(user)
+    await user.click(screen.getByRole('button', { name: word.lastWord() }))
+    await tap(user, screen.getByRole('button', { name: 'Back to the puzzle map' }))
+    await tap(user, screen.getByRole('button', { name: 'Back to levels' }))
+
+    await user.click(screen.getByRole('button', { name: /For grown-ups: press and hold/ }))
+    expect(screen.queryByRole('heading', { name: 'For grown-ups' })).not.toBeInTheDocument()
+
+    await openGrownUps()
+    expect(screen.getByRole('heading', { name: 'For grown-ups' })).toBeInTheDocument()
+    expect(screen.getByText('Questions answered').nextElementSibling).toHaveTextContent('1')
+    expect(screen.getByText(/Just getting started/)).toBeInTheDocument()
+    expect(screen.queryByText(/master/i)).not.toBeInTheDocument()
+  })
+
+  it('resets everything only after confirming', async () => {
+    const user = userEvent.setup()
+    const repository = memoryRepository()
+    const eventStore = memoryLearningEventStore()
+    const word = fakeAudio()
+    render(<App audio={word.audio} repository={repository} eventStore={eventStore} seed={1} />)
+    await openFirstPuzzle(user)
+    for (let i = 0; i < 5; i++) {
+      await user.click(screen.getByRole('button', { name: word.lastWord() }))
+      await tap(user, screen.getByRole('button', { name: /next/i }))
+    }
+    await tap(user, screen.getByRole('button', { name: 'Map' }))
+    await tap(user, screen.getByRole('button', { name: 'Back to levels' }))
+    expect(repository.load().completedPuzzleIds).toEqual(['level-1/puzzle-1'])
+
+    await openGrownUps()
+    await tap(user, screen.getByRole('button', { name: 'Reset progress' }))
+    await tap(user, screen.getByRole('button', { name: 'Keep progress' }))
+    expect(repository.load().completedPuzzleIds).toEqual(['level-1/puzzle-1'])
+
+    await tap(user, screen.getByRole('button', { name: 'Reset progress' }))
+    await tap(user, screen.getByRole('button', { name: 'Yes, reset' }))
+    expect(screen.getByRole('heading', { name: 'Pick a level' })).toBeInTheDocument()
+    expect(repository.load().completedPuzzleIds).toEqual([])
+    expect((await eventStore.load()).events).toEqual([])
+    expect(await eventStore.loadDecisions()).toEqual([])
+  }, 15_000)
 })
