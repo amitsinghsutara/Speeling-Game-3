@@ -86,8 +86,6 @@ Set `ADVISER_ENABLED` to anything other than `true` in the Cloudflare project. T
 
 | | |
 |---|---|
-| | |
-|---|---|
 | Approved by | Project owner (amit@sutara.org) |
 | Date | 2026-10-10 |
 | Conditions | None set. The §9 open items (API tier and terms, parent or school notice, Cloudflare logging) were **deferred by the approver** to be decided later. |
