@@ -1,0 +1,5711 @@
+{
+  "schemaVersion": 1,
+  "contentVersion": "68b831aa0a923e6931cd4420b9c126553ee9d801bd4fe6af61178666266363cf",
+  "source": {
+    "file": "English_Spelling_Words_and_Foils.xlsx",
+    "sha256": "4e5adbb73619797a2f9e7d370b7e2dc04130d36f00c0cf47addb632c9fc76926"
+  },
+  "levels": [
+    {
+      "level": 1,
+      "skillId": "level-1",
+      "skillPattern": "CVC, short vowels",
+      "targetWordCount": 25,
+      "foilDesignLogic": "Each foil differs from the audio target by exactly ONE phoneme, placed at a different position (onset / vowel / coda), so the child must check every sound. Foils are mostly real CVC neighbours because the CVC neighbourhood is dense; a few visual (b/d) and L1-tagged foils (r/l, final voicing) are included.",
+      "researchRationale": "Beginning spellers represent initial and final consonants before medial vowels (Read, 1971; Treiman, 1993). Placing the contrast at each position trains full-word sound-to-letter mapping (Ehri, 2005: partial to full alphabetic phase). b/d letter-form confusions are common at ages 5-7 (Treiman, 1993)."
+    },
+    {
+      "level": 2,
+      "skillId": "level-2",
+      "skillPattern": "Consonant blends (CCVC, CVCC)",
+      "targetWordCount": 25,
+      "foilDesignLogic": "Each item: (a) a cluster-omission foil (stop > sop), (b) a vowel foil, (c) a coda substitution (often a voicing or nasal contrast). S-cluster items swap in an L1 prothesis/epenthesis foil.",
+      "researchRationale": "Beginners often drop the second consonant of an onset cluster and the nasal before a final stop (Bruck & Treiman, 1990; Treiman, 1993), so omission foils reflect authentic spelling errors. L1 vowel insertion or prothesis is a documented transfer pattern (Swan & Smith, 2001)."
+    },
+    {
+      "level": 3,
+      "skillId": "level-3",
+      "skillPattern": "Consonant digraphs (sh, ch, th, wh, ck, ng, nk)",
+      "targetWordCount": 25,
+      "foilDesignLogic": "Foils include: a rival digraph (sh/ch), a single-letter omission of the digraph, a vowel foil, and for ck / ng / nk a phonetically-plausible or contrast form. L1 th substitutions (t, d, s) replace one foil on th words.",
+      "researchRationale": "A digraph functions as one grapheme; learners must treat two letters as one unit (Ehri, 2005). ck > k appears here as the first pseudohomophone because ck is a positional orthographic convention (Kessler & Treiman, 2001)."
+    },
+    {
+      "level": 4,
+      "skillId": "level-4",
+      "skillPattern": "Silent-e (CVCe) long vowels",
+      "targetWordCount": 20,
+      "foilDesignLogic": "First level where foils include PSEUDOHOMOPHONES (kake, maik). Also: missing-e foil (cak = short vowel reading) and a wrong-vowel + e foil.",
+      "researchRationale": "Once children read decodable words reliably, spelling choice tasks with phonologically equivalent alternatives separate orthographic knowledge from phonological decoding (Olson et al., 1994; Share, 1995). Children invent spellings such as kake / maik before learning conventional patterns (Read, 1971; Treiman, 1993)."
+    },
+    {
+      "level": 5,
+      "skillId": "level-5",
+      "skillPattern": "Vowel teams (ai, ay, ee, ea, oa, ow, oo, igh)",
+      "targetWordCount": 30,
+      "foilDesignLogic": "Vowel-team words: a pseudohomophone with an alternate spelling of the same vowel (bote, leef), a short-vowel omission foil, and a wrong-team or letter-order foil (oa > ao).",
+      "researchRationale": "English long vowels have several possible spellings; the correct team is often position- or word-specific (Kessler & Treiman, 2001), so only orthographic knowledge separates the target from the pseudohomophone. Position-constraint errors (ao) show whether letter order is stored (Treiman & Bourassa, 2000)."
+    },
+    {
+      "level": 6,
+      "skillId": "level-6",
+      "skillPattern": "R-controlled vowels and diphthongs",
+      "targetWordCount": 20,
+      "foilDesignLogic": "R-controlled and diphthong items: r omission, an alternate r-controlled spelling (bird > burd), wrong vowel, and diphthong swaps (oi/oy, ow/ou).",
+      "researchRationale": "Vowel + r and diphthongs have many spellings; the same-sound alternatives (er/ir/ur) are the classic hard spellings (Bear et al., Words Their Way). Omitting r also reflects non-rhotic varieties, so record audio with a clear /r/."
+    },
+    {
+      "level": 7,
+      "skillId": "level-7",
+      "skillPattern": "Irregular high-frequency words, silent letters, soft c/g",
+      "targetWordCount": 20,
+      "foilDesignLogic": "Irregular high-frequency words (Dolch / Fry): regularized spelling (sed, wuz), letter-order foil (was > saw), and omission. Silent letters (kn, mb) and soft c/g: pseudohomophones (fase, caje).",
+      "researchRationale": "High-frequency irregular words must be learned as specific letter sequences; regularizations are the typical error (Ehri, 2005; Treiman, 1993). Word list based on Dolch (1936) and Fry (1980)."
+    },
+    {
+      "level": 8,
+      "skillId": "level-8",
+      "skillPattern": "Inflections and common suffixes",
+      "targetWordCount": 15,
+      "foilDesignLogic": "Inflection and suffix items: sound-based spelling of the suffix (jumpt, dogz), missing or excess doubling, keep-e / no y>i changes (makeing, babys), -full for -ful.",
+      "researchRationale": "Children rely on sound for suffixes until morphological knowledge develops (Treiman & Cassar, 1996; Nunes, Bryant & Bindman, 1997). Double letters are learned early as an orthographic pattern (Cassar & Treiman, 1997)."
+    },
+    {
+      "level": 9,
+      "skillId": "level-9",
+      "skillPattern": "Multisyllable words (syllable types)",
+      "targetWordCount": 10,
+      "foilDesignLogic": "Two-syllable and longer words: unstressed-vowel substitution, syllable omission, letter transposition, doubling errors, pseudohomophone (pensil, elefant).",
+      "researchRationale": "Unstressed (schwa) vowels are phonologically ambiguous, so spelling must draw on orthographic memory; syllable-level omission and transposition foils reflect real errors (Treiman & Bourassa, 2000)."
+    },
+    {
+      "level": 10,
+      "skillId": "level-10",
+      "skillPattern": "Advanced patterns (-tion, ough, ch=/k/, ph/gh, etc.)",
+      "targetWordCount": 10,
+      "foilDesignLogic": "Low-consistency patterns (-tion, ough, gh/ph = /f/, ch = /k/, sc = /s/). Foils are mostly pseudohomophones that follow more-regular mappings.",
+      "researchRationale": "The most opaque spellings are where phonologically plausible alternatives are most tempting; distractors built from plausible errors discriminate best (Haladyna, Downing & Rodriguez, 2002)."
+    }
+  ],
+  "foilCodebook": [
+    {
+      "code": "IC",
+      "name": "Initial-consonant substitution",
+      "definition": "Onset differs by one phoneme from the target.",
+      "example": "cat > bat",
+      "probe": "Attention to the first sound; grapheme-phoneme mapping at word start",
+      "tier": 1,
+      "tierLabel": "Tier 1 (easy)",
+      "isL1Transfer": false
+    },
+    {
+      "code": "FC",
+      "name": "Final-consonant substitution",
+      "definition": "Coda differs by one phoneme (often place or voicing contrast).",
+      "example": "cat > cap",
+      "probe": "Attention to the last sound; end-of-word phoneme segmentation",
+      "tier": 1,
+      "tierLabel": "Tier 1 (easy)",
+      "isL1Transfer": false
+    },
+    {
+      "code": "V",
+      "name": "Vowel substitution",
+      "definition": "Medial vowel replaced by a different vowel letter with a different sound.",
+      "example": "cat > cot",
+      "probe": "Vowel grapheme-phoneme mapping (vowels are the last position children master)",
+      "tier": 2,
+      "tierLabel": "Tier 2",
+      "isL1Transfer": false
+    },
+    {
+      "code": "VIS",
+      "name": "Visual-confusable letter",
+      "definition": "Target letter replaced by a mirror/rotation twin (b/d, p/q, m/w, n/u).",
+      "example": "bed > ded",
+      "probe": "Letter-form discrimination in beginning readers (ages 5-7)",
+      "tier": 2,
+      "tierLabel": "Tier 2",
+      "isL1Transfer": false
+    },
+    {
+      "code": "OM",
+      "name": "Omission",
+      "definition": "A grapheme (cluster member, final letter, silent letter, r, e, vowel) is dropped so the string no longer represents all the sounds or the pattern.",
+      "example": "stop > sop; cake > cak",
+      "probe": "Phonemic completeness (cluster reduction) and knowledge of orthographic patterns (silent e)",
+      "tier": 2,
+      "tierLabel": "Tier 2",
+      "isL1Transfer": false
+    },
+    {
+      "code": "DIG",
+      "name": "Digraph confusion",
+      "definition": "One digraph replaced with a neighbouring digraph.",
+      "example": "ship > chip",
+      "probe": "Treating two letters as one grapheme; sh/ch/th contrasts",
+      "tier": 2,
+      "tierLabel": "Tier 2",
+      "isL1Transfer": false
+    },
+    {
+      "code": "TR",
+      "name": "Transposition / reversal",
+      "definition": "Two adjacent letters swapped, or a whole-word reversal.",
+      "example": "was > saw; boat > baot",
+      "probe": "Serial letter-order knowledge (orthographic coding)",
+      "tier": 3,
+      "tierLabel": "Tier 3",
+      "isL1Transfer": false
+    },
+    {
+      "code": "PH",
+      "name": "Pseudohomophone (phonologically plausible misspelling)",
+      "definition": "Non-word (or rare form) that sounds identical to the target when decoded but is not the conventional spelling.",
+      "example": "boat > bote; rain > rane",
+      "probe": "Orthographic knowledge beyond phonics; the 'orthographic choice' logic",
+      "tier": 4,
+      "tierLabel": "Tier 4 (hardest)",
+      "isL1Transfer": false
+    },
+    {
+      "code": "REG",
+      "name": "Regularization",
+      "definition": "An irregular word spelled the way its sounds would be spelled by the most typical rules.",
+      "example": "said > sed; was > wuz",
+      "probe": "Word-specific (lexical) spelling memory for irregular words",
+      "tier": 4,
+      "tierLabel": "Tier 4 (hardest)",
+      "isL1Transfer": false
+    },
+    {
+      "code": "OVR",
+      "name": "Over-generalization / wrong pattern",
+      "definition": "A legitimate English pattern applied where it does not belong (wrong vowel team, keep-e, -full, -ed as -id, no y>i change).",
+      "example": "helpful > helpfull; making > makeing",
+      "probe": "Rule and morphology knowledge; pattern position constraints",
+      "tier": 3,
+      "tierLabel": "Tier 3",
+      "isL1Transfer": false
+    },
+    {
+      "code": "DBL",
+      "name": "Doubling error",
+      "definition": "Missing or unnecessary double letter.",
+      "example": "running > runing; of > off",
+      "probe": "Knowledge of consonant doubling in short-vowel + suffix contexts",
+      "tier": 3,
+      "tierLabel": "Tier 3",
+      "isL1Transfer": false
+    },
+    {
+      "code": "INS",
+      "name": "Insertion",
+      "definition": "Extra letter/syllable inserted.",
+      "example": "sadness > sadeness",
+      "probe": "Morpheme boundary knowledge",
+      "tier": 3,
+      "tierLabel": "Tier 3",
+      "isL1Transfer": false
+    },
+    {
+      "code": "L1-RL",
+      "name": "L1 transfer: /r/-/l/ confusion",
+      "definition": "Onset r and l swapped. Common in learners whose L1 has one liquid phoneme or a different r/l contrast.",
+      "example": "red > led",
+      "probe": "Language-specific phonology (e.g., some East Asian and Bantu L1 backgrounds). Swan & Smith (2001)",
+      "tier": 2,
+      "tierLabel": "Tier 2",
+      "isL1Transfer": true
+    },
+    {
+      "code": "L1-VD",
+      "name": "L1 transfer: final devoicing",
+      "definition": "Final voiced stop written as voiceless (d>t) where L1 lacks final voiced obstruents.",
+      "example": "bed > bet",
+      "probe": "Language-specific phonology. Swan & Smith (2001)",
+      "tier": 2,
+      "tierLabel": "Tier 2",
+      "isL1Transfer": true
+    },
+    {
+      "code": "L1-PRO",
+      "name": "L1 transfer: prothetic vowel before s-cluster",
+      "definition": "Vowel added before word-initial s+consonant.",
+      "example": "stop > istop",
+      "probe": "Spanish, Hindi/Urdu and other L1s where s-clusters are not permitted word-initially. Swan & Smith (2001)",
+      "tier": 2,
+      "tierLabel": "Tier 2",
+      "isL1Transfer": true
+    },
+    {
+      "code": "L1-EPN",
+      "name": "L1 transfer: epenthesis in a cluster",
+      "definition": "Vowel inserted between consonants of a cluster.",
+      "example": "frog > ferog",
+      "probe": "L1s with simple CV syllable structure (many Bantu languages). Swan & Smith (2001)",
+      "tier": 2,
+      "tierLabel": "Tier 2",
+      "isL1Transfer": true
+    },
+    {
+      "code": "L1-TH",
+      "name": "L1 transfer: th substitution",
+      "definition": "/th/ replaced by t, d or s where L1 lacks dental fricatives.",
+      "example": "thin > tin; this > dis",
+      "probe": "Hindi/Urdu, Hausa, Arabic, French, and other L1 backgrounds. Swan & Smith (2001)",
+      "tier": 2,
+      "tierLabel": "Tier 2",
+      "isL1Transfer": true
+    },
+    {
+      "code": "L1-VOW",
+      "name": "L1 transfer: short/long vowel merger",
+      "definition": "/I/ vs /i:/ contrast collapsed (ship/sheep).",
+      "example": "ship > sheep",
+      "probe": "L1s with a single high front vowel (e.g., Spanish, many South Asian languages). Swan & Smith (2001)",
+      "tier": 2,
+      "tierLabel": "Tier 2",
+      "isL1Transfer": true
+    }
+  ],
+  "items": [
+    {
+      "id": "item-001",
+      "sourceRow": 2,
+      "level": 1,
+      "itemNumber": 1,
+      "sequenceInLevel": 1,
+      "skillId": "level-1",
+      "skillPattern": "CVC, short vowels",
+      "target": "sat",
+      "foils": [
+        {
+          "word": "sit",
+          "code": "V"
+        },
+        {
+          "word": "sap",
+          "code": "FC"
+        },
+        {
+          "word": "hat",
+          "code": "IC"
+        }
+      ],
+      "realWordFoilCount": 3,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-002",
+      "sourceRow": 3,
+      "level": 1,
+      "itemNumber": 2,
+      "sequenceInLevel": 2,
+      "skillId": "level-1",
+      "skillPattern": "CVC, short vowels",
+      "target": "mat",
+      "foils": [
+        {
+          "word": "met",
+          "code": "V"
+        },
+        {
+          "word": "map",
+          "code": "FC"
+        },
+        {
+          "word": "fat",
+          "code": "IC"
+        }
+      ],
+      "realWordFoilCount": 3,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-003",
+      "sourceRow": 4,
+      "level": 1,
+      "itemNumber": 3,
+      "sequenceInLevel": 3,
+      "skillId": "level-1",
+      "skillPattern": "CVC, short vowels",
+      "target": "cat",
+      "foils": [
+        {
+          "word": "cot",
+          "code": "V"
+        },
+        {
+          "word": "cap",
+          "code": "FC"
+        },
+        {
+          "word": "bat",
+          "code": "IC"
+        }
+      ],
+      "realWordFoilCount": 3,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-004",
+      "sourceRow": 5,
+      "level": 1,
+      "itemNumber": 4,
+      "sequenceInLevel": 4,
+      "skillId": "level-1",
+      "skillPattern": "CVC, short vowels",
+      "target": "map",
+      "foils": [
+        {
+          "word": "mop",
+          "code": "V"
+        },
+        {
+          "word": "mat",
+          "code": "FC"
+        },
+        {
+          "word": "nap",
+          "code": "IC"
+        }
+      ],
+      "realWordFoilCount": 3,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-005",
+      "sourceRow": 6,
+      "level": 1,
+      "itemNumber": 5,
+      "sequenceInLevel": 5,
+      "skillId": "level-1",
+      "skillPattern": "CVC, short vowels",
+      "target": "sit",
+      "foils": [
+        {
+          "word": "sat",
+          "code": "V"
+        },
+        {
+          "word": "sip",
+          "code": "FC"
+        },
+        {
+          "word": "fit",
+          "code": "IC"
+        }
+      ],
+      "realWordFoilCount": 3,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-006",
+      "sourceRow": 7,
+      "level": 1,
+      "itemNumber": 6,
+      "sequenceInLevel": 6,
+      "skillId": "level-1",
+      "skillPattern": "CVC, short vowels",
+      "target": "pin",
+      "foils": [
+        {
+          "word": "pan",
+          "code": "V"
+        },
+        {
+          "word": "pit",
+          "code": "FC"
+        },
+        {
+          "word": "tin",
+          "code": "IC"
+        }
+      ],
+      "realWordFoilCount": 3,
+      "l1TransferFoilCount": 0,
+      "designNote": "Vowel foil 'pan' chosen (not 'pen') to avoid the pin/pen merger in some dialects."
+    },
+    {
+      "id": "item-007",
+      "sourceRow": 8,
+      "level": 1,
+      "itemNumber": 7,
+      "sequenceInLevel": 7,
+      "skillId": "level-1",
+      "skillPattern": "CVC, short vowels",
+      "target": "tip",
+      "foils": [
+        {
+          "word": "tap",
+          "code": "V"
+        },
+        {
+          "word": "tin",
+          "code": "FC"
+        },
+        {
+          "word": "dip",
+          "code": "IC"
+        }
+      ],
+      "realWordFoilCount": 3,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-008",
+      "sourceRow": 9,
+      "level": 1,
+      "itemNumber": 8,
+      "sequenceInLevel": 8,
+      "skillId": "level-1",
+      "skillPattern": "CVC, short vowels",
+      "target": "dig",
+      "foils": [
+        {
+          "word": "dog",
+          "code": "V"
+        },
+        {
+          "word": "dip",
+          "code": "FC"
+        },
+        {
+          "word": "pig",
+          "code": "IC"
+        }
+      ],
+      "realWordFoilCount": 3,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-009",
+      "sourceRow": 10,
+      "level": 1,
+      "itemNumber": 9,
+      "sequenceInLevel": 9,
+      "skillId": "level-1",
+      "skillPattern": "CVC, short vowels",
+      "target": "pot",
+      "foils": [
+        {
+          "word": "pit",
+          "code": "V"
+        },
+        {
+          "word": "pop",
+          "code": "FC"
+        },
+        {
+          "word": "hot",
+          "code": "IC"
+        }
+      ],
+      "realWordFoilCount": 3,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-010",
+      "sourceRow": 11,
+      "level": 1,
+      "itemNumber": 10,
+      "sequenceInLevel": 10,
+      "skillId": "level-1",
+      "skillPattern": "CVC, short vowels",
+      "target": "hot",
+      "foils": [
+        {
+          "word": "hit",
+          "code": "V"
+        },
+        {
+          "word": "hop",
+          "code": "FC"
+        },
+        {
+          "word": "dot",
+          "code": "IC"
+        }
+      ],
+      "realWordFoilCount": 3,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-011",
+      "sourceRow": 12,
+      "level": 1,
+      "itemNumber": 11,
+      "sequenceInLevel": 11,
+      "skillId": "level-1",
+      "skillPattern": "CVC, short vowels",
+      "target": "mop",
+      "foils": [
+        {
+          "word": "map",
+          "code": "V"
+        },
+        {
+          "word": "mob",
+          "code": "FC"
+        },
+        {
+          "word": "top",
+          "code": "IC"
+        }
+      ],
+      "realWordFoilCount": 3,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-012",
+      "sourceRow": 13,
+      "level": 1,
+      "itemNumber": 12,
+      "sequenceInLevel": 12,
+      "skillId": "level-1",
+      "skillPattern": "CVC, short vowels",
+      "target": "cup",
+      "foils": [
+        {
+          "word": "cap",
+          "code": "V"
+        },
+        {
+          "word": "cub",
+          "code": "FC"
+        },
+        {
+          "word": "pup",
+          "code": "IC"
+        }
+      ],
+      "realWordFoilCount": 3,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-013",
+      "sourceRow": 14,
+      "level": 1,
+      "itemNumber": 13,
+      "sequenceInLevel": 13,
+      "skillId": "level-1",
+      "skillPattern": "CVC, short vowels",
+      "target": "sun",
+      "foils": [
+        {
+          "word": "sin",
+          "code": "V"
+        },
+        {
+          "word": "sub",
+          "code": "FC"
+        },
+        {
+          "word": "fun",
+          "code": "IC"
+        }
+      ],
+      "realWordFoilCount": 3,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-014",
+      "sourceRow": 15,
+      "level": 1,
+      "itemNumber": 14,
+      "sequenceInLevel": 14,
+      "skillId": "level-1",
+      "skillPattern": "CVC, short vowels",
+      "target": "bug",
+      "foils": [
+        {
+          "word": "beg",
+          "code": "V"
+        },
+        {
+          "word": "bud",
+          "code": "FC"
+        },
+        {
+          "word": "dug",
+          "code": "IC"
+        }
+      ],
+      "realWordFoilCount": 3,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-015",
+      "sourceRow": 16,
+      "level": 1,
+      "itemNumber": 15,
+      "sequenceInLevel": 15,
+      "skillId": "level-1",
+      "skillPattern": "CVC, short vowels",
+      "target": "net",
+      "foils": [
+        {
+          "word": "nut",
+          "code": "V"
+        },
+        {
+          "word": "nep",
+          "code": "FC"
+        },
+        {
+          "word": "pet",
+          "code": "IC"
+        }
+      ],
+      "realWordFoilCount": 2,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-016",
+      "sourceRow": 17,
+      "level": 1,
+      "itemNumber": 16,
+      "sequenceInLevel": 16,
+      "skillId": "level-1",
+      "skillPattern": "CVC, short vowels",
+      "target": "pen",
+      "foils": [
+        {
+          "word": "pan",
+          "code": "V"
+        },
+        {
+          "word": "pet",
+          "code": "FC"
+        },
+        {
+          "word": "men",
+          "code": "IC"
+        }
+      ],
+      "realWordFoilCount": 3,
+      "l1TransferFoilCount": 0,
+      "designNote": "Vowel foil 'pan' chosen (not 'pin') to avoid the pin/pen merger in some dialects."
+    },
+    {
+      "id": "item-017",
+      "sourceRow": 18,
+      "level": 1,
+      "itemNumber": 17,
+      "sequenceInLevel": 17,
+      "skillId": "level-1",
+      "skillPattern": "CVC, short vowels",
+      "target": "red",
+      "foils": [
+        {
+          "word": "rid",
+          "code": "V"
+        },
+        {
+          "word": "ret",
+          "code": "FC"
+        },
+        {
+          "word": "led",
+          "code": "L1-RL"
+        }
+      ],
+      "realWordFoilCount": 3,
+      "l1TransferFoilCount": 1,
+      "designNote": null
+    },
+    {
+      "id": "item-018",
+      "sourceRow": 19,
+      "level": 1,
+      "itemNumber": 18,
+      "sequenceInLevel": 18,
+      "skillId": "level-1",
+      "skillPattern": "CVC, short vowels",
+      "target": "bed",
+      "foils": [
+        {
+          "word": "bad",
+          "code": "V"
+        },
+        {
+          "word": "ded",
+          "code": "VIS"
+        },
+        {
+          "word": "bet",
+          "code": "L1-VD"
+        }
+      ],
+      "realWordFoilCount": 2,
+      "l1TransferFoilCount": 1,
+      "designNote": null
+    },
+    {
+      "id": "item-019",
+      "sourceRow": 20,
+      "level": 1,
+      "itemNumber": 19,
+      "sequenceInLevel": 19,
+      "skillId": "level-1",
+      "skillPattern": "CVC, short vowels",
+      "target": "fan",
+      "foils": [
+        {
+          "word": "fin",
+          "code": "V"
+        },
+        {
+          "word": "fat",
+          "code": "FC"
+        },
+        {
+          "word": "van",
+          "code": "IC"
+        }
+      ],
+      "realWordFoilCount": 3,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-020",
+      "sourceRow": 21,
+      "level": 1,
+      "itemNumber": 20,
+      "sequenceInLevel": 20,
+      "skillId": "level-1",
+      "skillPattern": "CVC, short vowels",
+      "target": "dog",
+      "foils": [
+        {
+          "word": "dig",
+          "code": "V"
+        },
+        {
+          "word": "dot",
+          "code": "FC"
+        },
+        {
+          "word": "bog",
+          "code": "VIS"
+        }
+      ],
+      "realWordFoilCount": 3,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-021",
+      "sourceRow": 22,
+      "level": 1,
+      "itemNumber": 21,
+      "sequenceInLevel": 21,
+      "skillId": "level-1",
+      "skillPattern": "CVC, short vowels",
+      "target": "lip",
+      "foils": [
+        {
+          "word": "lap",
+          "code": "V"
+        },
+        {
+          "word": "lit",
+          "code": "FC"
+        },
+        {
+          "word": "rip",
+          "code": "L1-RL"
+        }
+      ],
+      "realWordFoilCount": 3,
+      "l1TransferFoilCount": 1,
+      "designNote": null
+    },
+    {
+      "id": "item-022",
+      "sourceRow": 23,
+      "level": 1,
+      "itemNumber": 22,
+      "sequenceInLevel": 22,
+      "skillId": "level-1",
+      "skillPattern": "CVC, short vowels",
+      "target": "hen",
+      "foils": [
+        {
+          "word": "hin",
+          "code": "V"
+        },
+        {
+          "word": "hem",
+          "code": "FC"
+        },
+        {
+          "word": "ten",
+          "code": "IC"
+        }
+      ],
+      "realWordFoilCount": 2,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-023",
+      "sourceRow": 24,
+      "level": 1,
+      "itemNumber": 23,
+      "sequenceInLevel": 23,
+      "skillId": "level-1",
+      "skillPattern": "CVC, short vowels",
+      "target": "run",
+      "foils": [
+        {
+          "word": "ran",
+          "code": "V"
+        },
+        {
+          "word": "rub",
+          "code": "FC"
+        },
+        {
+          "word": "lun",
+          "code": "L1-RL"
+        }
+      ],
+      "realWordFoilCount": 2,
+      "l1TransferFoilCount": 1,
+      "designNote": null
+    },
+    {
+      "id": "item-024",
+      "sourceRow": 25,
+      "level": 1,
+      "itemNumber": 24,
+      "sequenceInLevel": 24,
+      "skillId": "level-1",
+      "skillPattern": "CVC, short vowels",
+      "target": "jam",
+      "foils": [
+        {
+          "word": "jum",
+          "code": "V"
+        },
+        {
+          "word": "jab",
+          "code": "FC"
+        },
+        {
+          "word": "ham",
+          "code": "IC"
+        }
+      ],
+      "realWordFoilCount": 2,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-025",
+      "sourceRow": 26,
+      "level": 1,
+      "itemNumber": 25,
+      "sequenceInLevel": 25,
+      "skillId": "level-1",
+      "skillPattern": "CVC, short vowels",
+      "target": "top",
+      "foils": [
+        {
+          "word": "tip",
+          "code": "V"
+        },
+        {
+          "word": "tob",
+          "code": "FC"
+        },
+        {
+          "word": "hop",
+          "code": "IC"
+        }
+      ],
+      "realWordFoilCount": 2,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-026",
+      "sourceRow": 27,
+      "level": 2,
+      "itemNumber": 26,
+      "sequenceInLevel": 1,
+      "skillId": "level-2",
+      "skillPattern": "Consonant blends (CCVC, CVCC)",
+      "target": "stop",
+      "foils": [
+        {
+          "word": "sop",
+          "code": "OM"
+        },
+        {
+          "word": "step",
+          "code": "V"
+        },
+        {
+          "word": "istop",
+          "code": "L1-PRO"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 1,
+      "designNote": null
+    },
+    {
+      "id": "item-027",
+      "sourceRow": 28,
+      "level": 2,
+      "itemNumber": 27,
+      "sequenceInLevel": 2,
+      "skillId": "level-2",
+      "skillPattern": "Consonant blends (CCVC, CVCC)",
+      "target": "frog",
+      "foils": [
+        {
+          "word": "fog",
+          "code": "OM"
+        },
+        {
+          "word": "frug",
+          "code": "V"
+        },
+        {
+          "word": "ferog",
+          "code": "L1-EPN"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 1,
+      "designNote": null
+    },
+    {
+      "id": "item-028",
+      "sourceRow": 29,
+      "level": 2,
+      "itemNumber": 28,
+      "sequenceInLevel": 3,
+      "skillId": "level-2",
+      "skillPattern": "Consonant blends (CCVC, CVCC)",
+      "target": "drum",
+      "foils": [
+        {
+          "word": "dum",
+          "code": "OM"
+        },
+        {
+          "word": "dram",
+          "code": "V"
+        },
+        {
+          "word": "drun",
+          "code": "FC"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-029",
+      "sourceRow": 30,
+      "level": 2,
+      "itemNumber": 29,
+      "sequenceInLevel": 4,
+      "skillId": "level-2",
+      "skillPattern": "Consonant blends (CCVC, CVCC)",
+      "target": "flag",
+      "foils": [
+        {
+          "word": "lag",
+          "code": "OM"
+        },
+        {
+          "word": "flig",
+          "code": "V"
+        },
+        {
+          "word": "flab",
+          "code": "FC"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-030",
+      "sourceRow": 31,
+      "level": 2,
+      "itemNumber": 30,
+      "sequenceInLevel": 5,
+      "skillId": "level-2",
+      "skillPattern": "Consonant blends (CCVC, CVCC)",
+      "target": "clap",
+      "foils": [
+        {
+          "word": "cap",
+          "code": "OM"
+        },
+        {
+          "word": "clip",
+          "code": "V"
+        },
+        {
+          "word": "clab",
+          "code": "FC"
+        }
+      ],
+      "realWordFoilCount": 2,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-031",
+      "sourceRow": 32,
+      "level": 2,
+      "itemNumber": 31,
+      "sequenceInLevel": 6,
+      "skillId": "level-2",
+      "skillPattern": "Consonant blends (CCVC, CVCC)",
+      "target": "crab",
+      "foils": [
+        {
+          "word": "cab",
+          "code": "OM"
+        },
+        {
+          "word": "crib",
+          "code": "V"
+        },
+        {
+          "word": "grab",
+          "code": "IC"
+        }
+      ],
+      "realWordFoilCount": 3,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-032",
+      "sourceRow": 33,
+      "level": 2,
+      "itemNumber": 32,
+      "sequenceInLevel": 7,
+      "skillId": "level-2",
+      "skillPattern": "Consonant blends (CCVC, CVCC)",
+      "target": "swim",
+      "foils": [
+        {
+          "word": "sim",
+          "code": "OM"
+        },
+        {
+          "word": "swam",
+          "code": "V"
+        },
+        {
+          "word": "swin",
+          "code": "FC"
+        }
+      ],
+      "realWordFoilCount": 2,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-033",
+      "sourceRow": 34,
+      "level": 2,
+      "itemNumber": 33,
+      "sequenceInLevel": 8,
+      "skillId": "level-2",
+      "skillPattern": "Consonant blends (CCVC, CVCC)",
+      "target": "snap",
+      "foils": [
+        {
+          "word": "sap",
+          "code": "OM"
+        },
+        {
+          "word": "snip",
+          "code": "V"
+        },
+        {
+          "word": "isnap",
+          "code": "L1-PRO"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 1,
+      "designNote": null
+    },
+    {
+      "id": "item-034",
+      "sourceRow": 35,
+      "level": 2,
+      "itemNumber": 34,
+      "sequenceInLevel": 9,
+      "skillId": "level-2",
+      "skillPattern": "Consonant blends (CCVC, CVCC)",
+      "target": "plan",
+      "foils": [
+        {
+          "word": "pan",
+          "code": "OM"
+        },
+        {
+          "word": "plin",
+          "code": "V"
+        },
+        {
+          "word": "plam",
+          "code": "FC"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-035",
+      "sourceRow": 36,
+      "level": 2,
+      "itemNumber": 35,
+      "sequenceInLevel": 10,
+      "skillId": "level-2",
+      "skillPattern": "Consonant blends (CCVC, CVCC)",
+      "target": "trip",
+      "foils": [
+        {
+          "word": "tip",
+          "code": "OM"
+        },
+        {
+          "word": "trap",
+          "code": "V"
+        },
+        {
+          "word": "trib",
+          "code": "FC"
+        }
+      ],
+      "realWordFoilCount": 2,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-036",
+      "sourceRow": 37,
+      "level": 2,
+      "itemNumber": 36,
+      "sequenceInLevel": 11,
+      "skillId": "level-2",
+      "skillPattern": "Consonant blends (CCVC, CVCC)",
+      "target": "skip",
+      "foils": [
+        {
+          "word": "sip",
+          "code": "OM"
+        },
+        {
+          "word": "skap",
+          "code": "V"
+        },
+        {
+          "word": "iskip",
+          "code": "L1-PRO"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 1,
+      "designNote": null
+    },
+    {
+      "id": "item-037",
+      "sourceRow": 38,
+      "level": 2,
+      "itemNumber": 37,
+      "sequenceInLevel": 12,
+      "skillId": "level-2",
+      "skillPattern": "Consonant blends (CCVC, CVCC)",
+      "target": "spot",
+      "foils": [
+        {
+          "word": "sot",
+          "code": "OM"
+        },
+        {
+          "word": "spit",
+          "code": "V"
+        },
+        {
+          "word": "spod",
+          "code": "FC"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-038",
+      "sourceRow": 39,
+      "level": 2,
+      "itemNumber": 38,
+      "sequenceInLevel": 13,
+      "skillId": "level-2",
+      "skillPattern": "Consonant blends (CCVC, CVCC)",
+      "target": "slip",
+      "foils": [
+        {
+          "word": "sip",
+          "code": "OM"
+        },
+        {
+          "word": "slap",
+          "code": "V"
+        },
+        {
+          "word": "slib",
+          "code": "FC"
+        }
+      ],
+      "realWordFoilCount": 2,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-039",
+      "sourceRow": 40,
+      "level": 2,
+      "itemNumber": 39,
+      "sequenceInLevel": 14,
+      "skillId": "level-2",
+      "skillPattern": "Consonant blends (CCVC, CVCC)",
+      "target": "hand",
+      "foils": [
+        {
+          "word": "had",
+          "code": "OM"
+        },
+        {
+          "word": "hund",
+          "code": "V"
+        },
+        {
+          "word": "hant",
+          "code": "FC"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-040",
+      "sourceRow": 41,
+      "level": 2,
+      "itemNumber": 40,
+      "sequenceInLevel": 15,
+      "skillId": "level-2",
+      "skillPattern": "Consonant blends (CCVC, CVCC)",
+      "target": "milk",
+      "foils": [
+        {
+          "word": "mik",
+          "code": "OM"
+        },
+        {
+          "word": "malk",
+          "code": "V"
+        },
+        {
+          "word": "milp",
+          "code": "FC"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-041",
+      "sourceRow": 42,
+      "level": 2,
+      "itemNumber": 41,
+      "sequenceInLevel": 16,
+      "skillId": "level-2",
+      "skillPattern": "Consonant blends (CCVC, CVCC)",
+      "target": "lamp",
+      "foils": [
+        {
+          "word": "lap",
+          "code": "OM"
+        },
+        {
+          "word": "limp",
+          "code": "V"
+        },
+        {
+          "word": "lamb",
+          "code": "FC"
+        }
+      ],
+      "realWordFoilCount": 3,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-042",
+      "sourceRow": 43,
+      "level": 2,
+      "itemNumber": 42,
+      "sequenceInLevel": 17,
+      "skillId": "level-2",
+      "skillPattern": "Consonant blends (CCVC, CVCC)",
+      "target": "jump",
+      "foils": [
+        {
+          "word": "jup",
+          "code": "OM"
+        },
+        {
+          "word": "jomp",
+          "code": "V"
+        },
+        {
+          "word": "jumb",
+          "code": "FC"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-043",
+      "sourceRow": 44,
+      "level": 2,
+      "itemNumber": 43,
+      "sequenceInLevel": 18,
+      "skillId": "level-2",
+      "skillPattern": "Consonant blends (CCVC, CVCC)",
+      "target": "nest",
+      "foils": [
+        {
+          "word": "nes",
+          "code": "OM"
+        },
+        {
+          "word": "nast",
+          "code": "V"
+        },
+        {
+          "word": "nesk",
+          "code": "FC"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-044",
+      "sourceRow": 45,
+      "level": 2,
+      "itemNumber": 44,
+      "sequenceInLevel": 19,
+      "skillId": "level-2",
+      "skillPattern": "Consonant blends (CCVC, CVCC)",
+      "target": "tent",
+      "foils": [
+        {
+          "word": "tet",
+          "code": "OM"
+        },
+        {
+          "word": "tint",
+          "code": "V"
+        },
+        {
+          "word": "tend",
+          "code": "FC"
+        }
+      ],
+      "realWordFoilCount": 2,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-045",
+      "sourceRow": 46,
+      "level": 2,
+      "itemNumber": 45,
+      "sequenceInLevel": 20,
+      "skillId": "level-2",
+      "skillPattern": "Consonant blends (CCVC, CVCC)",
+      "target": "gift",
+      "foils": [
+        {
+          "word": "gif",
+          "code": "OM"
+        },
+        {
+          "word": "gaft",
+          "code": "V"
+        },
+        {
+          "word": "gilt",
+          "code": "FC"
+        }
+      ],
+      "realWordFoilCount": 2,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-046",
+      "sourceRow": 47,
+      "level": 2,
+      "itemNumber": 46,
+      "sequenceInLevel": 21,
+      "skillId": "level-2",
+      "skillPattern": "Consonant blends (CCVC, CVCC)",
+      "target": "desk",
+      "foils": [
+        {
+          "word": "dek",
+          "code": "OM"
+        },
+        {
+          "word": "disk",
+          "code": "V"
+        },
+        {
+          "word": "desp",
+          "code": "FC"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-047",
+      "sourceRow": 48,
+      "level": 2,
+      "itemNumber": 47,
+      "sequenceInLevel": 22,
+      "skillId": "level-2",
+      "skillPattern": "Consonant blends (CCVC, CVCC)",
+      "target": "belt",
+      "foils": [
+        {
+          "word": "bet",
+          "code": "OM"
+        },
+        {
+          "word": "bolt",
+          "code": "V"
+        },
+        {
+          "word": "belk",
+          "code": "FC"
+        }
+      ],
+      "realWordFoilCount": 2,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-048",
+      "sourceRow": 49,
+      "level": 2,
+      "itemNumber": 48,
+      "sequenceInLevel": 23,
+      "skillId": "level-2",
+      "skillPattern": "Consonant blends (CCVC, CVCC)",
+      "target": "camp",
+      "foils": [
+        {
+          "word": "cap",
+          "code": "OM"
+        },
+        {
+          "word": "comp",
+          "code": "V"
+        },
+        {
+          "word": "cand",
+          "code": "FC"
+        }
+      ],
+      "realWordFoilCount": 2,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-049",
+      "sourceRow": 50,
+      "level": 2,
+      "itemNumber": 49,
+      "sequenceInLevel": 24,
+      "skillId": "level-2",
+      "skillPattern": "Consonant blends (CCVC, CVCC)",
+      "target": "sand",
+      "foils": [
+        {
+          "word": "sad",
+          "code": "OM"
+        },
+        {
+          "word": "send",
+          "code": "V"
+        },
+        {
+          "word": "sant",
+          "code": "FC"
+        }
+      ],
+      "realWordFoilCount": 2,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-050",
+      "sourceRow": 51,
+      "level": 2,
+      "itemNumber": 50,
+      "sequenceInLevel": 25,
+      "skillId": "level-2",
+      "skillPattern": "Consonant blends (CCVC, CVCC)",
+      "target": "help",
+      "foils": [
+        {
+          "word": "hep",
+          "code": "OM"
+        },
+        {
+          "word": "halp",
+          "code": "V"
+        },
+        {
+          "word": "helk",
+          "code": "FC"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-051",
+      "sourceRow": 52,
+      "level": 3,
+      "itemNumber": 51,
+      "sequenceInLevel": 1,
+      "skillId": "level-3",
+      "skillPattern": "Consonant digraphs (sh, ch, th, wh, ck, ng, nk)",
+      "target": "ship",
+      "foils": [
+        {
+          "word": "chip",
+          "code": "DIG"
+        },
+        {
+          "word": "sip",
+          "code": "OM"
+        },
+        {
+          "word": "sheep",
+          "code": "L1-VOW"
+        }
+      ],
+      "realWordFoilCount": 3,
+      "l1TransferFoilCount": 1,
+      "designNote": "Foil 'sheep' is an L1-transfer foil (short-i / long-e merger); swap for a generic foil (e.g., 'shep') if not needed."
+    },
+    {
+      "id": "item-052",
+      "sourceRow": 53,
+      "level": 3,
+      "itemNumber": 52,
+      "sequenceInLevel": 2,
+      "skillId": "level-3",
+      "skillPattern": "Consonant digraphs (sh, ch, th, wh, ck, ng, nk)",
+      "target": "shop",
+      "foils": [
+        {
+          "word": "chop",
+          "code": "DIG"
+        },
+        {
+          "word": "sop",
+          "code": "OM"
+        },
+        {
+          "word": "shup",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-053",
+      "sourceRow": 54,
+      "level": 3,
+      "itemNumber": 53,
+      "sequenceInLevel": 3,
+      "skillId": "level-3",
+      "skillPattern": "Consonant digraphs (sh, ch, th, wh, ck, ng, nk)",
+      "target": "fish",
+      "foils": [
+        {
+          "word": "fich",
+          "code": "DIG"
+        },
+        {
+          "word": "fis",
+          "code": "OM"
+        },
+        {
+          "word": "fush",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-054",
+      "sourceRow": 55,
+      "level": 3,
+      "itemNumber": 54,
+      "sequenceInLevel": 4,
+      "skillId": "level-3",
+      "skillPattern": "Consonant digraphs (sh, ch, th, wh, ck, ng, nk)",
+      "target": "dish",
+      "foils": [
+        {
+          "word": "dich",
+          "code": "DIG"
+        },
+        {
+          "word": "dis",
+          "code": "OM"
+        },
+        {
+          "word": "desh",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-055",
+      "sourceRow": 56,
+      "level": 3,
+      "itemNumber": 55,
+      "sequenceInLevel": 5,
+      "skillId": "level-3",
+      "skillPattern": "Consonant digraphs (sh, ch, th, wh, ck, ng, nk)",
+      "target": "chip",
+      "foils": [
+        {
+          "word": "ship",
+          "code": "DIG"
+        },
+        {
+          "word": "cip",
+          "code": "OM"
+        },
+        {
+          "word": "cheap",
+          "code": "L1-VOW"
+        }
+      ],
+      "realWordFoilCount": 2,
+      "l1TransferFoilCount": 1,
+      "designNote": "Foil 'cheap' is an L1-transfer foil (short-i / long-e merger); swap for a generic foil (e.g., 'chap') if not needed."
+    },
+    {
+      "id": "item-056",
+      "sourceRow": 57,
+      "level": 3,
+      "itemNumber": 56,
+      "sequenceInLevel": 6,
+      "skillId": "level-3",
+      "skillPattern": "Consonant digraphs (sh, ch, th, wh, ck, ng, nk)",
+      "target": "chin",
+      "foils": [
+        {
+          "word": "shin",
+          "code": "DIG"
+        },
+        {
+          "word": "cin",
+          "code": "OM"
+        },
+        {
+          "word": "chan",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 2,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-057",
+      "sourceRow": 58,
+      "level": 3,
+      "itemNumber": 57,
+      "sequenceInLevel": 7,
+      "skillId": "level-3",
+      "skillPattern": "Consonant digraphs (sh, ch, th, wh, ck, ng, nk)",
+      "target": "much",
+      "foils": [
+        {
+          "word": "mush",
+          "code": "DIG"
+        },
+        {
+          "word": "muc",
+          "code": "OM"
+        },
+        {
+          "word": "mich",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-058",
+      "sourceRow": 59,
+      "level": 3,
+      "itemNumber": 58,
+      "sequenceInLevel": 8,
+      "skillId": "level-3",
+      "skillPattern": "Consonant digraphs (sh, ch, th, wh, ck, ng, nk)",
+      "target": "thin",
+      "foils": [
+        {
+          "word": "tin",
+          "code": "L1-TH"
+        },
+        {
+          "word": "shin",
+          "code": "DIG"
+        },
+        {
+          "word": "thon",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 2,
+      "l1TransferFoilCount": 1,
+      "designNote": null
+    },
+    {
+      "id": "item-059",
+      "sourceRow": 60,
+      "level": 3,
+      "itemNumber": 59,
+      "sequenceInLevel": 9,
+      "skillId": "level-3",
+      "skillPattern": "Consonant digraphs (sh, ch, th, wh, ck, ng, nk)",
+      "target": "this",
+      "foils": [
+        {
+          "word": "dis",
+          "code": "L1-TH"
+        },
+        {
+          "word": "thes",
+          "code": "V"
+        },
+        {
+          "word": "thin",
+          "code": "FC"
+        }
+      ],
+      "realWordFoilCount": 2,
+      "l1TransferFoilCount": 1,
+      "designNote": null
+    },
+    {
+      "id": "item-060",
+      "sourceRow": 61,
+      "level": 3,
+      "itemNumber": 60,
+      "sequenceInLevel": 10,
+      "skillId": "level-3",
+      "skillPattern": "Consonant digraphs (sh, ch, th, wh, ck, ng, nk)",
+      "target": "bath",
+      "foils": [
+        {
+          "word": "bat",
+          "code": "OM"
+        },
+        {
+          "word": "beth",
+          "code": "V"
+        },
+        {
+          "word": "bas",
+          "code": "L1-TH"
+        }
+      ],
+      "realWordFoilCount": 3,
+      "l1TransferFoilCount": 1,
+      "designNote": null
+    },
+    {
+      "id": "item-061",
+      "sourceRow": 62,
+      "level": 3,
+      "itemNumber": 61,
+      "sequenceInLevel": 11,
+      "skillId": "level-3",
+      "skillPattern": "Consonant digraphs (sh, ch, th, wh, ck, ng, nk)",
+      "target": "with",
+      "foils": [
+        {
+          "word": "wit",
+          "code": "OM"
+        },
+        {
+          "word": "wath",
+          "code": "V"
+        },
+        {
+          "word": "wid",
+          "code": "L1-TH"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 1,
+      "designNote": null
+    },
+    {
+      "id": "item-062",
+      "sourceRow": 63,
+      "level": 3,
+      "itemNumber": 62,
+      "sequenceInLevel": 12,
+      "skillId": "level-3",
+      "skillPattern": "Consonant digraphs (sh, ch, th, wh, ck, ng, nk)",
+      "target": "when",
+      "foils": [
+        {
+          "word": "wen",
+          "code": "PH"
+        },
+        {
+          "word": "whan",
+          "code": "V"
+        },
+        {
+          "word": "wehn",
+          "code": "TR"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": "'wen' is treated as a pseudohomophone (wh/w merger in most dialects); 'whan' tests vowel."
+    },
+    {
+      "id": "item-063",
+      "sourceRow": 64,
+      "level": 3,
+      "itemNumber": 63,
+      "sequenceInLevel": 13,
+      "skillId": "level-3",
+      "skillPattern": "Consonant digraphs (sh, ch, th, wh, ck, ng, nk)",
+      "target": "whip",
+      "foils": [
+        {
+          "word": "wip",
+          "code": "OM"
+        },
+        {
+          "word": "whep",
+          "code": "V"
+        },
+        {
+          "word": "ship",
+          "code": "DIG"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-064",
+      "sourceRow": 65,
+      "level": 3,
+      "itemNumber": 64,
+      "sequenceInLevel": 14,
+      "skillId": "level-3",
+      "skillPattern": "Consonant digraphs (sh, ch, th, wh, ck, ng, nk)",
+      "target": "duck",
+      "foils": [
+        {
+          "word": "duk",
+          "code": "PH"
+        },
+        {
+          "word": "dack",
+          "code": "V"
+        },
+        {
+          "word": "dug",
+          "code": "FC"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-065",
+      "sourceRow": 66,
+      "level": 3,
+      "itemNumber": 65,
+      "sequenceInLevel": 15,
+      "skillId": "level-3",
+      "skillPattern": "Consonant digraphs (sh, ch, th, wh, ck, ng, nk)",
+      "target": "sock",
+      "foils": [
+        {
+          "word": "sok",
+          "code": "PH"
+        },
+        {
+          "word": "sack",
+          "code": "V"
+        },
+        {
+          "word": "sog",
+          "code": "FC"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-066",
+      "sourceRow": 67,
+      "level": 3,
+      "itemNumber": 66,
+      "sequenceInLevel": 16,
+      "skillId": "level-3",
+      "skillPattern": "Consonant digraphs (sh, ch, th, wh, ck, ng, nk)",
+      "target": "neck",
+      "foils": [
+        {
+          "word": "nek",
+          "code": "PH"
+        },
+        {
+          "word": "nick",
+          "code": "V"
+        },
+        {
+          "word": "ned",
+          "code": "FC"
+        }
+      ],
+      "realWordFoilCount": 2,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-067",
+      "sourceRow": 68,
+      "level": 3,
+      "itemNumber": 67,
+      "sequenceInLevel": 17,
+      "skillId": "level-3",
+      "skillPattern": "Consonant digraphs (sh, ch, th, wh, ck, ng, nk)",
+      "target": "back",
+      "foils": [
+        {
+          "word": "bak",
+          "code": "PH"
+        },
+        {
+          "word": "beck",
+          "code": "V"
+        },
+        {
+          "word": "bag",
+          "code": "FC"
+        }
+      ],
+      "realWordFoilCount": 2,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-068",
+      "sourceRow": 69,
+      "level": 3,
+      "itemNumber": 68,
+      "sequenceInLevel": 18,
+      "skillId": "level-3",
+      "skillPattern": "Consonant digraphs (sh, ch, th, wh, ck, ng, nk)",
+      "target": "ring",
+      "foils": [
+        {
+          "word": "rin",
+          "code": "OM"
+        },
+        {
+          "word": "rang",
+          "code": "V"
+        },
+        {
+          "word": "rink",
+          "code": "FC"
+        }
+      ],
+      "realWordFoilCount": 3,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-069",
+      "sourceRow": 70,
+      "level": 3,
+      "itemNumber": 69,
+      "sequenceInLevel": 19,
+      "skillId": "level-3",
+      "skillPattern": "Consonant digraphs (sh, ch, th, wh, ck, ng, nk)",
+      "target": "king",
+      "foils": [
+        {
+          "word": "kin",
+          "code": "OM"
+        },
+        {
+          "word": "kang",
+          "code": "V"
+        },
+        {
+          "word": "kink",
+          "code": "FC"
+        }
+      ],
+      "realWordFoilCount": 3,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-070",
+      "sourceRow": 71,
+      "level": 3,
+      "itemNumber": 70,
+      "sequenceInLevel": 20,
+      "skillId": "level-3",
+      "skillPattern": "Consonant digraphs (sh, ch, th, wh, ck, ng, nk)",
+      "target": "song",
+      "foils": [
+        {
+          "word": "son",
+          "code": "OM"
+        },
+        {
+          "word": "sing",
+          "code": "V"
+        },
+        {
+          "word": "sonk",
+          "code": "FC"
+        }
+      ],
+      "realWordFoilCount": 2,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-071",
+      "sourceRow": 72,
+      "level": 3,
+      "itemNumber": 71,
+      "sequenceInLevel": 21,
+      "skillId": "level-3",
+      "skillPattern": "Consonant digraphs (sh, ch, th, wh, ck, ng, nk)",
+      "target": "long",
+      "foils": [
+        {
+          "word": "lon",
+          "code": "OM"
+        },
+        {
+          "word": "lung",
+          "code": "V"
+        },
+        {
+          "word": "lonk",
+          "code": "FC"
+        }
+      ],
+      "realWordFoilCount": 2,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-072",
+      "sourceRow": 73,
+      "level": 3,
+      "itemNumber": 72,
+      "sequenceInLevel": 22,
+      "skillId": "level-3",
+      "skillPattern": "Consonant digraphs (sh, ch, th, wh, ck, ng, nk)",
+      "target": "wing",
+      "foils": [
+        {
+          "word": "win",
+          "code": "OM"
+        },
+        {
+          "word": "wang",
+          "code": "V"
+        },
+        {
+          "word": "wink",
+          "code": "FC"
+        }
+      ],
+      "realWordFoilCount": 3,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-073",
+      "sourceRow": 74,
+      "level": 3,
+      "itemNumber": 73,
+      "sequenceInLevel": 23,
+      "skillId": "level-3",
+      "skillPattern": "Consonant digraphs (sh, ch, th, wh, ck, ng, nk)",
+      "target": "sink",
+      "foils": [
+        {
+          "word": "sin",
+          "code": "OM"
+        },
+        {
+          "word": "sank",
+          "code": "V"
+        },
+        {
+          "word": "sing",
+          "code": "FC"
+        }
+      ],
+      "realWordFoilCount": 3,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-074",
+      "sourceRow": 75,
+      "level": 3,
+      "itemNumber": 74,
+      "sequenceInLevel": 24,
+      "skillId": "level-3",
+      "skillPattern": "Consonant digraphs (sh, ch, th, wh, ck, ng, nk)",
+      "target": "pink",
+      "foils": [
+        {
+          "word": "pin",
+          "code": "OM"
+        },
+        {
+          "word": "punk",
+          "code": "V"
+        },
+        {
+          "word": "ping",
+          "code": "FC"
+        }
+      ],
+      "realWordFoilCount": 3,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-075",
+      "sourceRow": 76,
+      "level": 3,
+      "itemNumber": 75,
+      "sequenceInLevel": 25,
+      "skillId": "level-3",
+      "skillPattern": "Consonant digraphs (sh, ch, th, wh, ck, ng, nk)",
+      "target": "thank",
+      "foils": [
+        {
+          "word": "tank",
+          "code": "L1-TH"
+        },
+        {
+          "word": "thenk",
+          "code": "V"
+        },
+        {
+          "word": "thang",
+          "code": "FC"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 1,
+      "designNote": null
+    },
+    {
+      "id": "item-076",
+      "sourceRow": 77,
+      "level": 4,
+      "itemNumber": 76,
+      "sequenceInLevel": 1,
+      "skillId": "level-4",
+      "skillPattern": "Silent-e (CVCe) long vowels",
+      "target": "cake",
+      "foils": [
+        {
+          "word": "cak",
+          "code": "OM"
+        },
+        {
+          "word": "kake",
+          "code": "PH"
+        },
+        {
+          "word": "cike",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-077",
+      "sourceRow": 78,
+      "level": 4,
+      "itemNumber": 77,
+      "sequenceInLevel": 2,
+      "skillId": "level-4",
+      "skillPattern": "Silent-e (CVCe) long vowels",
+      "target": "make",
+      "foils": [
+        {
+          "word": "mak",
+          "code": "OM"
+        },
+        {
+          "word": "maik",
+          "code": "PH"
+        },
+        {
+          "word": "muke",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-078",
+      "sourceRow": 79,
+      "level": 4,
+      "itemNumber": 78,
+      "sequenceInLevel": 3,
+      "skillId": "level-4",
+      "skillPattern": "Silent-e (CVCe) long vowels",
+      "target": "game",
+      "foils": [
+        {
+          "word": "gam",
+          "code": "OM"
+        },
+        {
+          "word": "gaim",
+          "code": "PH"
+        },
+        {
+          "word": "gome",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-079",
+      "sourceRow": 80,
+      "level": 4,
+      "itemNumber": 79,
+      "sequenceInLevel": 4,
+      "skillId": "level-4",
+      "skillPattern": "Silent-e (CVCe) long vowels",
+      "target": "late",
+      "foils": [
+        {
+          "word": "lat",
+          "code": "OM"
+        },
+        {
+          "word": "layt",
+          "code": "PH"
+        },
+        {
+          "word": "lite",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 2,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-080",
+      "sourceRow": 81,
+      "level": 4,
+      "itemNumber": 80,
+      "sequenceInLevel": 5,
+      "skillId": "level-4",
+      "skillPattern": "Silent-e (CVCe) long vowels",
+      "target": "wave",
+      "foils": [
+        {
+          "word": "wav",
+          "code": "OM"
+        },
+        {
+          "word": "waiv",
+          "code": "PH"
+        },
+        {
+          "word": "wive",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-081",
+      "sourceRow": 82,
+      "level": 4,
+      "itemNumber": 81,
+      "sequenceInLevel": 6,
+      "skillId": "level-4",
+      "skillPattern": "Silent-e (CVCe) long vowels",
+      "target": "bike",
+      "foils": [
+        {
+          "word": "bik",
+          "code": "OM"
+        },
+        {
+          "word": "biek",
+          "code": "PH"
+        },
+        {
+          "word": "boke",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-082",
+      "sourceRow": 83,
+      "level": 4,
+      "itemNumber": 82,
+      "sequenceInLevel": 7,
+      "skillId": "level-4",
+      "skillPattern": "Silent-e (CVCe) long vowels",
+      "target": "time",
+      "foils": [
+        {
+          "word": "tim",
+          "code": "OM"
+        },
+        {
+          "word": "tyme",
+          "code": "PH"
+        },
+        {
+          "word": "tome",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 2,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-083",
+      "sourceRow": 84,
+      "level": 4,
+      "itemNumber": 83,
+      "sequenceInLevel": 8,
+      "skillId": "level-4",
+      "skillPattern": "Silent-e (CVCe) long vowels",
+      "target": "kite",
+      "foils": [
+        {
+          "word": "kit",
+          "code": "OM"
+        },
+        {
+          "word": "kyte",
+          "code": "PH"
+        },
+        {
+          "word": "kote",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-084",
+      "sourceRow": 85,
+      "level": 4,
+      "itemNumber": 84,
+      "sequenceInLevel": 9,
+      "skillId": "level-4",
+      "skillPattern": "Silent-e (CVCe) long vowels",
+      "target": "five",
+      "foils": [
+        {
+          "word": "fiv",
+          "code": "OM"
+        },
+        {
+          "word": "fyve",
+          "code": "PH"
+        },
+        {
+          "word": "fove",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-085",
+      "sourceRow": 86,
+      "level": 4,
+      "itemNumber": 85,
+      "sequenceInLevel": 10,
+      "skillId": "level-4",
+      "skillPattern": "Silent-e (CVCe) long vowels",
+      "target": "hide",
+      "foils": [
+        {
+          "word": "hid",
+          "code": "OM"
+        },
+        {
+          "word": "hied",
+          "code": "PH"
+        },
+        {
+          "word": "hade",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-086",
+      "sourceRow": 87,
+      "level": 4,
+      "itemNumber": 86,
+      "sequenceInLevel": 11,
+      "skillId": "level-4",
+      "skillPattern": "Silent-e (CVCe) long vowels",
+      "target": "home",
+      "foils": [
+        {
+          "word": "hom",
+          "code": "OM"
+        },
+        {
+          "word": "hoam",
+          "code": "PH"
+        },
+        {
+          "word": "hame",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-087",
+      "sourceRow": 88,
+      "level": 4,
+      "itemNumber": 87,
+      "sequenceInLevel": 12,
+      "skillId": "level-4",
+      "skillPattern": "Silent-e (CVCe) long vowels",
+      "target": "bone",
+      "foils": [
+        {
+          "word": "bon",
+          "code": "OM"
+        },
+        {
+          "word": "boan",
+          "code": "PH"
+        },
+        {
+          "word": "bane",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 2,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-088",
+      "sourceRow": 89,
+      "level": 4,
+      "itemNumber": 88,
+      "sequenceInLevel": 13,
+      "skillId": "level-4",
+      "skillPattern": "Silent-e (CVCe) long vowels",
+      "target": "nose",
+      "foils": [
+        {
+          "word": "nos",
+          "code": "OM"
+        },
+        {
+          "word": "noze",
+          "code": "PH"
+        },
+        {
+          "word": "nase",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-089",
+      "sourceRow": 90,
+      "level": 4,
+      "itemNumber": 89,
+      "sequenceInLevel": 14,
+      "skillId": "level-4",
+      "skillPattern": "Silent-e (CVCe) long vowels",
+      "target": "rope",
+      "foils": [
+        {
+          "word": "rop",
+          "code": "OM"
+        },
+        {
+          "word": "roap",
+          "code": "PH"
+        },
+        {
+          "word": "rupe",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-090",
+      "sourceRow": 91,
+      "level": 4,
+      "itemNumber": 90,
+      "sequenceInLevel": 15,
+      "skillId": "level-4",
+      "skillPattern": "Silent-e (CVCe) long vowels",
+      "target": "hope",
+      "foils": [
+        {
+          "word": "hop",
+          "code": "OM"
+        },
+        {
+          "word": "hoap",
+          "code": "PH"
+        },
+        {
+          "word": "hupe",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-091",
+      "sourceRow": 92,
+      "level": 4,
+      "itemNumber": 91,
+      "sequenceInLevel": 16,
+      "skillId": "level-4",
+      "skillPattern": "Silent-e (CVCe) long vowels",
+      "target": "cube",
+      "foils": [
+        {
+          "word": "cub",
+          "code": "OM"
+        },
+        {
+          "word": "kube",
+          "code": "PH"
+        },
+        {
+          "word": "cabe",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-092",
+      "sourceRow": 93,
+      "level": 4,
+      "itemNumber": 92,
+      "sequenceInLevel": 17,
+      "skillId": "level-4",
+      "skillPattern": "Silent-e (CVCe) long vowels",
+      "target": "tube",
+      "foils": [
+        {
+          "word": "tub",
+          "code": "OM"
+        },
+        {
+          "word": "toob",
+          "code": "PH"
+        },
+        {
+          "word": "tabe",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-093",
+      "sourceRow": 94,
+      "level": 4,
+      "itemNumber": 93,
+      "sequenceInLevel": 18,
+      "skillId": "level-4",
+      "skillPattern": "Silent-e (CVCe) long vowels",
+      "target": "cute",
+      "foils": [
+        {
+          "word": "cut",
+          "code": "OM"
+        },
+        {
+          "word": "kute",
+          "code": "PH"
+        },
+        {
+          "word": "cote",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-094",
+      "sourceRow": 95,
+      "level": 4,
+      "itemNumber": 94,
+      "sequenceInLevel": 19,
+      "skillId": "level-4",
+      "skillPattern": "Silent-e (CVCe) long vowels",
+      "target": "rude",
+      "foils": [
+        {
+          "word": "rud",
+          "code": "OM"
+        },
+        {
+          "word": "rood",
+          "code": "PH"
+        },
+        {
+          "word": "rede",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-095",
+      "sourceRow": 96,
+      "level": 4,
+      "itemNumber": 95,
+      "sequenceInLevel": 20,
+      "skillId": "level-4",
+      "skillPattern": "Silent-e (CVCe) long vowels",
+      "target": "gate",
+      "foils": [
+        {
+          "word": "gat",
+          "code": "OM"
+        },
+        {
+          "word": "gayt",
+          "code": "PH"
+        },
+        {
+          "word": "gite",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-096",
+      "sourceRow": 97,
+      "level": 5,
+      "itemNumber": 96,
+      "sequenceInLevel": 1,
+      "skillId": "level-5",
+      "skillPattern": "Vowel teams (ai, ay, ee, ea, oa, ow, oo, igh)",
+      "target": "rain",
+      "foils": [
+        {
+          "word": "rane",
+          "code": "PH"
+        },
+        {
+          "word": "ran",
+          "code": "OM"
+        },
+        {
+          "word": "rean",
+          "code": "OVR"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-097",
+      "sourceRow": 98,
+      "level": 5,
+      "itemNumber": 97,
+      "sequenceInLevel": 2,
+      "skillId": "level-5",
+      "skillPattern": "Vowel teams (ai, ay, ee, ea, oa, ow, oo, igh)",
+      "target": "tail",
+      "foils": [
+        {
+          "word": "tayl",
+          "code": "PH"
+        },
+        {
+          "word": "tal",
+          "code": "OM"
+        },
+        {
+          "word": "teel",
+          "code": "OVR"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": "'tale' deliberately NOT used as a foil: homophone of the target."
+    },
+    {
+      "id": "item-098",
+      "sourceRow": 99,
+      "level": 5,
+      "itemNumber": 98,
+      "sequenceInLevel": 3,
+      "skillId": "level-5",
+      "skillPattern": "Vowel teams (ai, ay, ee, ea, oa, ow, oo, igh)",
+      "target": "train",
+      "foils": [
+        {
+          "word": "trane",
+          "code": "PH"
+        },
+        {
+          "word": "tran",
+          "code": "OM"
+        },
+        {
+          "word": "treen",
+          "code": "OVR"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-099",
+      "sourceRow": 100,
+      "level": 5,
+      "itemNumber": 99,
+      "sequenceInLevel": 4,
+      "skillId": "level-5",
+      "skillPattern": "Vowel teams (ai, ay, ee, ea, oa, ow, oo, igh)",
+      "target": "day",
+      "foils": [
+        {
+          "word": "dai",
+          "code": "PH"
+        },
+        {
+          "word": "da",
+          "code": "OM"
+        },
+        {
+          "word": "doy",
+          "code": "OVR"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-100",
+      "sourceRow": 101,
+      "level": 5,
+      "itemNumber": 100,
+      "sequenceInLevel": 5,
+      "skillId": "level-5",
+      "skillPattern": "Vowel teams (ai, ay, ee, ea, oa, ow, oo, igh)",
+      "target": "play",
+      "foils": [
+        {
+          "word": "plai",
+          "code": "PH"
+        },
+        {
+          "word": "pla",
+          "code": "OM"
+        },
+        {
+          "word": "ploy",
+          "code": "OVR"
+        }
+      ],
+      "realWordFoilCount": 2,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-101",
+      "sourceRow": 102,
+      "level": 5,
+      "itemNumber": 101,
+      "sequenceInLevel": 6,
+      "skillId": "level-5",
+      "skillPattern": "Vowel teams (ai, ay, ee, ea, oa, ow, oo, igh)",
+      "target": "say",
+      "foils": [
+        {
+          "word": "sai",
+          "code": "PH"
+        },
+        {
+          "word": "sa",
+          "code": "OM"
+        },
+        {
+          "word": "soy",
+          "code": "OVR"
+        }
+      ],
+      "realWordFoilCount": 2,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-102",
+      "sourceRow": 103,
+      "level": 5,
+      "itemNumber": 102,
+      "sequenceInLevel": 7,
+      "skillId": "level-5",
+      "skillPattern": "Vowel teams (ai, ay, ee, ea, oa, ow, oo, igh)",
+      "target": "tree",
+      "foils": [
+        {
+          "word": "tre",
+          "code": "OM"
+        },
+        {
+          "word": "trea",
+          "code": "PH"
+        },
+        {
+          "word": "troo",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-103",
+      "sourceRow": 104,
+      "level": 5,
+      "itemNumber": 103,
+      "sequenceInLevel": 8,
+      "skillId": "level-5",
+      "skillPattern": "Vowel teams (ai, ay, ee, ea, oa, ow, oo, igh)",
+      "target": "seed",
+      "foils": [
+        {
+          "word": "sead",
+          "code": "PH"
+        },
+        {
+          "word": "sed",
+          "code": "OM"
+        },
+        {
+          "word": "sood",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": "'cede' deliberately NOT used as a foil: homophone of the target."
+    },
+    {
+      "id": "item-104",
+      "sourceRow": 105,
+      "level": 5,
+      "itemNumber": 104,
+      "sequenceInLevel": 9,
+      "skillId": "level-5",
+      "skillPattern": "Vowel teams (ai, ay, ee, ea, oa, ow, oo, igh)",
+      "target": "feet",
+      "foils": [
+        {
+          "word": "fet",
+          "code": "OM"
+        },
+        {
+          "word": "foot",
+          "code": "V"
+        },
+        {
+          "word": "fiet",
+          "code": "OVR"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": "'feat' deliberately NOT used as a foil: homophone of the target."
+    },
+    {
+      "id": "item-105",
+      "sourceRow": 106,
+      "level": 5,
+      "itemNumber": 105,
+      "sequenceInLevel": 10,
+      "skillId": "level-5",
+      "skillPattern": "Vowel teams (ai, ay, ee, ea, oa, ow, oo, igh)",
+      "target": "green",
+      "foils": [
+        {
+          "word": "gren",
+          "code": "OM"
+        },
+        {
+          "word": "grean",
+          "code": "PH"
+        },
+        {
+          "word": "grin",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-106",
+      "sourceRow": 107,
+      "level": 5,
+      "itemNumber": 106,
+      "sequenceInLevel": 11,
+      "skillId": "level-5",
+      "skillPattern": "Vowel teams (ai, ay, ee, ea, oa, ow, oo, igh)",
+      "target": "sleep",
+      "foils": [
+        {
+          "word": "slep",
+          "code": "OM"
+        },
+        {
+          "word": "sleap",
+          "code": "PH"
+        },
+        {
+          "word": "sloop",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-107",
+      "sourceRow": 108,
+      "level": 5,
+      "itemNumber": 107,
+      "sequenceInLevel": 12,
+      "skillId": "level-5",
+      "skillPattern": "Vowel teams (ai, ay, ee, ea, oa, ow, oo, igh)",
+      "target": "eat",
+      "foils": [
+        {
+          "word": "et",
+          "code": "OM"
+        },
+        {
+          "word": "eet",
+          "code": "PH"
+        },
+        {
+          "word": "oat",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-108",
+      "sourceRow": 109,
+      "level": 5,
+      "itemNumber": 108,
+      "sequenceInLevel": 13,
+      "skillId": "level-5",
+      "skillPattern": "Vowel teams (ai, ay, ee, ea, oa, ow, oo, igh)",
+      "target": "leaf",
+      "foils": [
+        {
+          "word": "lef",
+          "code": "OM"
+        },
+        {
+          "word": "leef",
+          "code": "PH"
+        },
+        {
+          "word": "loaf",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-109",
+      "sourceRow": 110,
+      "level": 5,
+      "itemNumber": 109,
+      "sequenceInLevel": 14,
+      "skillId": "level-5",
+      "skillPattern": "Vowel teams (ai, ay, ee, ea, oa, ow, oo, igh)",
+      "target": "team",
+      "foils": [
+        {
+          "word": "tem",
+          "code": "OM"
+        },
+        {
+          "word": "teme",
+          "code": "PH"
+        },
+        {
+          "word": "tome",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": "'teem' deliberately NOT used as a foil: homophone of the target."
+    },
+    {
+      "id": "item-110",
+      "sourceRow": 111,
+      "level": 5,
+      "itemNumber": 110,
+      "sequenceInLevel": 15,
+      "skillId": "level-5",
+      "skillPattern": "Vowel teams (ai, ay, ee, ea, oa, ow, oo, igh)",
+      "target": "reach",
+      "foils": [
+        {
+          "word": "rech",
+          "code": "OM"
+        },
+        {
+          "word": "reech",
+          "code": "PH"
+        },
+        {
+          "word": "roach",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": "Chosen over 'beach' to avoid the homophone 'beech'."
+    },
+    {
+      "id": "item-111",
+      "sourceRow": 112,
+      "level": 5,
+      "itemNumber": 111,
+      "sequenceInLevel": 16,
+      "skillId": "level-5",
+      "skillPattern": "Vowel teams (ai, ay, ee, ea, oa, ow, oo, igh)",
+      "target": "dream",
+      "foils": [
+        {
+          "word": "drem",
+          "code": "OM"
+        },
+        {
+          "word": "dreem",
+          "code": "PH"
+        },
+        {
+          "word": "droam",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-112",
+      "sourceRow": 113,
+      "level": 5,
+      "itemNumber": 112,
+      "sequenceInLevel": 17,
+      "skillId": "level-5",
+      "skillPattern": "Vowel teams (ai, ay, ee, ea, oa, ow, oo, igh)",
+      "target": "boat",
+      "foils": [
+        {
+          "word": "bot",
+          "code": "OM"
+        },
+        {
+          "word": "bote",
+          "code": "PH"
+        },
+        {
+          "word": "baot",
+          "code": "TR"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-113",
+      "sourceRow": 114,
+      "level": 5,
+      "itemNumber": 113,
+      "sequenceInLevel": 18,
+      "skillId": "level-5",
+      "skillPattern": "Vowel teams (ai, ay, ee, ea, oa, ow, oo, igh)",
+      "target": "coat",
+      "foils": [
+        {
+          "word": "cot",
+          "code": "OM"
+        },
+        {
+          "word": "koat",
+          "code": "PH"
+        },
+        {
+          "word": "caot",
+          "code": "TR"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": "'cote' deliberately NOT used as a foil: homophone of the target."
+    },
+    {
+      "id": "item-114",
+      "sourceRow": 115,
+      "level": 5,
+      "itemNumber": 114,
+      "sequenceInLevel": 19,
+      "skillId": "level-5",
+      "skillPattern": "Vowel teams (ai, ay, ee, ea, oa, ow, oo, igh)",
+      "target": "road",
+      "foils": [
+        {
+          "word": "rod",
+          "code": "OM"
+        },
+        {
+          "word": "roade",
+          "code": "PH"
+        },
+        {
+          "word": "raod",
+          "code": "TR"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": "'rode' deliberately NOT used as a foil: homophone of the target."
+    },
+    {
+      "id": "item-115",
+      "sourceRow": 116,
+      "level": 5,
+      "itemNumber": 115,
+      "sequenceInLevel": 20,
+      "skillId": "level-5",
+      "skillPattern": "Vowel teams (ai, ay, ee, ea, oa, ow, oo, igh)",
+      "target": "soap",
+      "foils": [
+        {
+          "word": "sop",
+          "code": "OM"
+        },
+        {
+          "word": "sope",
+          "code": "PH"
+        },
+        {
+          "word": "saop",
+          "code": "TR"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-116",
+      "sourceRow": 117,
+      "level": 5,
+      "itemNumber": 116,
+      "sequenceInLevel": 21,
+      "skillId": "level-5",
+      "skillPattern": "Vowel teams (ai, ay, ee, ea, oa, ow, oo, igh)",
+      "target": "snow",
+      "foils": [
+        {
+          "word": "sno",
+          "code": "OM"
+        },
+        {
+          "word": "snoe",
+          "code": "PH"
+        },
+        {
+          "word": "snew",
+          "code": "OVR"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-117",
+      "sourceRow": 118,
+      "level": 5,
+      "itemNumber": 117,
+      "sequenceInLevel": 22,
+      "skillId": "level-5",
+      "skillPattern": "Vowel teams (ai, ay, ee, ea, oa, ow, oo, igh)",
+      "target": "grow",
+      "foils": [
+        {
+          "word": "gro",
+          "code": "PH"
+        },
+        {
+          "word": "groe",
+          "code": "PH"
+        },
+        {
+          "word": "grew",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-118",
+      "sourceRow": 119,
+      "level": 5,
+      "itemNumber": 118,
+      "sequenceInLevel": 23,
+      "skillId": "level-5",
+      "skillPattern": "Vowel teams (ai, ay, ee, ea, oa, ow, oo, igh)",
+      "target": "moon",
+      "foils": [
+        {
+          "word": "mon",
+          "code": "OM"
+        },
+        {
+          "word": "mune",
+          "code": "PH"
+        },
+        {
+          "word": "moan",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 2,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-119",
+      "sourceRow": 120,
+      "level": 5,
+      "itemNumber": 119,
+      "sequenceInLevel": 24,
+      "skillId": "level-5",
+      "skillPattern": "Vowel teams (ai, ay, ee, ea, oa, ow, oo, igh)",
+      "target": "food",
+      "foils": [
+        {
+          "word": "fod",
+          "code": "OM"
+        },
+        {
+          "word": "fude",
+          "code": "PH"
+        },
+        {
+          "word": "foud",
+          "code": "OVR"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-120",
+      "sourceRow": 121,
+      "level": 5,
+      "itemNumber": 120,
+      "sequenceInLevel": 25,
+      "skillId": "level-5",
+      "skillPattern": "Vowel teams (ai, ay, ee, ea, oa, ow, oo, igh)",
+      "target": "boot",
+      "foils": [
+        {
+          "word": "bot",
+          "code": "OM"
+        },
+        {
+          "word": "bewt",
+          "code": "PH"
+        },
+        {
+          "word": "bout",
+          "code": "OVR"
+        }
+      ],
+      "realWordFoilCount": 2,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-121",
+      "sourceRow": 122,
+      "level": 5,
+      "itemNumber": 121,
+      "sequenceInLevel": 26,
+      "skillId": "level-5",
+      "skillPattern": "Vowel teams (ai, ay, ee, ea, oa, ow, oo, igh)",
+      "target": "zoo",
+      "foils": [
+        {
+          "word": "zo",
+          "code": "OM"
+        },
+        {
+          "word": "zue",
+          "code": "PH"
+        },
+        {
+          "word": "zou",
+          "code": "OVR"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-122",
+      "sourceRow": 123,
+      "level": 5,
+      "itemNumber": 122,
+      "sequenceInLevel": 27,
+      "skillId": "level-5",
+      "skillPattern": "Vowel teams (ai, ay, ee, ea, oa, ow, oo, igh)",
+      "target": "book",
+      "foils": [
+        {
+          "word": "buk",
+          "code": "PH"
+        },
+        {
+          "word": "bok",
+          "code": "OM"
+        },
+        {
+          "word": "boak",
+          "code": "OVR"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-123",
+      "sourceRow": 124,
+      "level": 5,
+      "itemNumber": 123,
+      "sequenceInLevel": 28,
+      "skillId": "level-5",
+      "skillPattern": "Vowel teams (ai, ay, ee, ea, oa, ow, oo, igh)",
+      "target": "look",
+      "foils": [
+        {
+          "word": "luk",
+          "code": "PH"
+        },
+        {
+          "word": "lok",
+          "code": "OM"
+        },
+        {
+          "word": "leek",
+          "code": "OVR"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-124",
+      "sourceRow": 125,
+      "level": 5,
+      "itemNumber": 124,
+      "sequenceInLevel": 29,
+      "skillId": "level-5",
+      "skillPattern": "Vowel teams (ai, ay, ee, ea, oa, ow, oo, igh)",
+      "target": "foot",
+      "foils": [
+        {
+          "word": "fut",
+          "code": "PH"
+        },
+        {
+          "word": "fot",
+          "code": "OM"
+        },
+        {
+          "word": "fout",
+          "code": "OVR"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-125",
+      "sourceRow": 126,
+      "level": 5,
+      "itemNumber": 125,
+      "sequenceInLevel": 30,
+      "skillId": "level-5",
+      "skillPattern": "Vowel teams (ai, ay, ee, ea, oa, ow, oo, igh)",
+      "target": "night",
+      "foils": [
+        {
+          "word": "nite",
+          "code": "PH"
+        },
+        {
+          "word": "nit",
+          "code": "OM"
+        },
+        {
+          "word": "neet",
+          "code": "OVR"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": "'knight' deliberately NOT used as a foil: homophone of the target."
+    },
+    {
+      "id": "item-126",
+      "sourceRow": 127,
+      "level": 6,
+      "itemNumber": 126,
+      "sequenceInLevel": 1,
+      "skillId": "level-6",
+      "skillPattern": "R-controlled vowels and diphthongs",
+      "target": "car",
+      "foils": [
+        {
+          "word": "ca",
+          "code": "OM"
+        },
+        {
+          "word": "kar",
+          "code": "PH"
+        },
+        {
+          "word": "cor",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 2,
+      "l1TransferFoilCount": 0,
+      "designNote": "r-omission foil 'ca' also mirrors non-rhotic accents; record audio with a clear /r/."
+    },
+    {
+      "id": "item-127",
+      "sourceRow": 128,
+      "level": 6,
+      "itemNumber": 127,
+      "sequenceInLevel": 2,
+      "skillId": "level-6",
+      "skillPattern": "R-controlled vowels and diphthongs",
+      "target": "star",
+      "foils": [
+        {
+          "word": "sta",
+          "code": "OM"
+        },
+        {
+          "word": "stor",
+          "code": "V"
+        },
+        {
+          "word": "stur",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": "r-omission foil 'sta' also mirrors non-rhotic accents; record audio with a clear /r/."
+    },
+    {
+      "id": "item-128",
+      "sourceRow": 129,
+      "level": 6,
+      "itemNumber": 128,
+      "sequenceInLevel": 3,
+      "skillId": "level-6",
+      "skillPattern": "R-controlled vowels and diphthongs",
+      "target": "farm",
+      "foils": [
+        {
+          "word": "fam",
+          "code": "OM"
+        },
+        {
+          "word": "form",
+          "code": "V"
+        },
+        {
+          "word": "fahm",
+          "code": "PH"
+        }
+      ],
+      "realWordFoilCount": 2,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-129",
+      "sourceRow": 130,
+      "level": 6,
+      "itemNumber": 129,
+      "sequenceInLevel": 4,
+      "skillId": "level-6",
+      "skillPattern": "R-controlled vowels and diphthongs",
+      "target": "corn",
+      "foils": [
+        {
+          "word": "con",
+          "code": "OM"
+        },
+        {
+          "word": "carn",
+          "code": "V"
+        },
+        {
+          "word": "korn",
+          "code": "PH"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-130",
+      "sourceRow": 131,
+      "level": 6,
+      "itemNumber": 130,
+      "sequenceInLevel": 5,
+      "skillId": "level-6",
+      "skillPattern": "R-controlled vowels and diphthongs",
+      "target": "fork",
+      "foils": [
+        {
+          "word": "fok",
+          "code": "OM"
+        },
+        {
+          "word": "fark",
+          "code": "V"
+        },
+        {
+          "word": "forc",
+          "code": "PH"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-131",
+      "sourceRow": 132,
+      "level": 6,
+      "itemNumber": 131,
+      "sequenceInLevel": 6,
+      "skillId": "level-6",
+      "skillPattern": "R-controlled vowels and diphthongs",
+      "target": "bird",
+      "foils": [
+        {
+          "word": "bid",
+          "code": "OM"
+        },
+        {
+          "word": "burd",
+          "code": "PH"
+        },
+        {
+          "word": "bard",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 2,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-132",
+      "sourceRow": 133,
+      "level": 6,
+      "itemNumber": 132,
+      "sequenceInLevel": 7,
+      "skillId": "level-6",
+      "skillPattern": "R-controlled vowels and diphthongs",
+      "target": "girl",
+      "foils": [
+        {
+          "word": "gil",
+          "code": "OM"
+        },
+        {
+          "word": "gurl",
+          "code": "PH"
+        },
+        {
+          "word": "garl",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-133",
+      "sourceRow": 134,
+      "level": 6,
+      "itemNumber": 133,
+      "sequenceInLevel": 8,
+      "skillId": "level-6",
+      "skillPattern": "R-controlled vowels and diphthongs",
+      "target": "turn",
+      "foils": [
+        {
+          "word": "tun",
+          "code": "OM"
+        },
+        {
+          "word": "tirn",
+          "code": "PH"
+        },
+        {
+          "word": "torn",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": "'tern' deliberately NOT used as a foil: homophone of the target."
+    },
+    {
+      "id": "item-134",
+      "sourceRow": 135,
+      "level": 6,
+      "itemNumber": 134,
+      "sequenceInLevel": 9,
+      "skillId": "level-6",
+      "skillPattern": "R-controlled vowels and diphthongs",
+      "target": "burn",
+      "foils": [
+        {
+          "word": "bun",
+          "code": "OM"
+        },
+        {
+          "word": "bern",
+          "code": "PH"
+        },
+        {
+          "word": "born",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 2,
+      "l1TransferFoilCount": 0,
+      "designNote": "Foil 'bern' is a plausible ur/er alternate spelling."
+    },
+    {
+      "id": "item-135",
+      "sourceRow": 136,
+      "level": 6,
+      "itemNumber": 135,
+      "sequenceInLevel": 10,
+      "skillId": "level-6",
+      "skillPattern": "R-controlled vowels and diphthongs",
+      "target": "nurse",
+      "foils": [
+        {
+          "word": "nus",
+          "code": "OM"
+        },
+        {
+          "word": "nerse",
+          "code": "PH"
+        },
+        {
+          "word": "norse",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-136",
+      "sourceRow": 137,
+      "level": 6,
+      "itemNumber": 136,
+      "sequenceInLevel": 11,
+      "skillId": "level-6",
+      "skillPattern": "R-controlled vowels and diphthongs",
+      "target": "cloud",
+      "foils": [
+        {
+          "word": "clod",
+          "code": "OM"
+        },
+        {
+          "word": "clowd",
+          "code": "PH"
+        },
+        {
+          "word": "claud",
+          "code": "OVR"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-137",
+      "sourceRow": 138,
+      "level": 6,
+      "itemNumber": 137,
+      "sequenceInLevel": 12,
+      "skillId": "level-6",
+      "skillPattern": "R-controlled vowels and diphthongs",
+      "target": "house",
+      "foils": [
+        {
+          "word": "hose",
+          "code": "V"
+        },
+        {
+          "word": "hows",
+          "code": "PH"
+        },
+        {
+          "word": "hus",
+          "code": "OM"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": "Foil 'hose' is a real word; item tests vowel-diphthong mapping."
+    },
+    {
+      "id": "item-138",
+      "sourceRow": 139,
+      "level": 6,
+      "itemNumber": 138,
+      "sequenceInLevel": 13,
+      "skillId": "level-6",
+      "skillPattern": "R-controlled vowels and diphthongs",
+      "target": "cow",
+      "foils": [
+        {
+          "word": "co",
+          "code": "OM"
+        },
+        {
+          "word": "cou",
+          "code": "PH"
+        },
+        {
+          "word": "caw",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-139",
+      "sourceRow": 140,
+      "level": 6,
+      "itemNumber": 139,
+      "sequenceInLevel": 14,
+      "skillId": "level-6",
+      "skillPattern": "R-controlled vowels and diphthongs",
+      "target": "town",
+      "foils": [
+        {
+          "word": "ton",
+          "code": "OM"
+        },
+        {
+          "word": "toun",
+          "code": "PH"
+        },
+        {
+          "word": "tawn",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-140",
+      "sourceRow": 141,
+      "level": 6,
+      "itemNumber": 140,
+      "sequenceInLevel": 15,
+      "skillId": "level-6",
+      "skillPattern": "R-controlled vowels and diphthongs",
+      "target": "coin",
+      "foils": [
+        {
+          "word": "con",
+          "code": "OM"
+        },
+        {
+          "word": "coyn",
+          "code": "PH"
+        },
+        {
+          "word": "coan",
+          "code": "OVR"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-141",
+      "sourceRow": 142,
+      "level": 6,
+      "itemNumber": 141,
+      "sequenceInLevel": 16,
+      "skillId": "level-6",
+      "skillPattern": "R-controlled vowels and diphthongs",
+      "target": "boy",
+      "foils": [
+        {
+          "word": "bo",
+          "code": "OM"
+        },
+        {
+          "word": "boi",
+          "code": "PH"
+        },
+        {
+          "word": "bou",
+          "code": "OVR"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-142",
+      "sourceRow": 143,
+      "level": 6,
+      "itemNumber": 142,
+      "sequenceInLevel": 17,
+      "skillId": "level-6",
+      "skillPattern": "R-controlled vowels and diphthongs",
+      "target": "toy",
+      "foils": [
+        {
+          "word": "to",
+          "code": "OM"
+        },
+        {
+          "word": "toi",
+          "code": "PH"
+        },
+        {
+          "word": "tay",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 2,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-143",
+      "sourceRow": 144,
+      "level": 6,
+      "itemNumber": 143,
+      "sequenceInLevel": 18,
+      "skillId": "level-6",
+      "skillPattern": "R-controlled vowels and diphthongs",
+      "target": "oil",
+      "foils": [
+        {
+          "word": "ol",
+          "code": "OM"
+        },
+        {
+          "word": "oyl",
+          "code": "PH"
+        },
+        {
+          "word": "owl",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 2,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-144",
+      "sourceRow": 145,
+      "level": 6,
+      "itemNumber": 144,
+      "sequenceInLevel": 19,
+      "skillId": "level-6",
+      "skillPattern": "R-controlled vowels and diphthongs",
+      "target": "saw",
+      "foils": [
+        {
+          "word": "so",
+          "code": "OM"
+        },
+        {
+          "word": "sau",
+          "code": "PH"
+        },
+        {
+          "word": "sew",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 2,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-145",
+      "sourceRow": 146,
+      "level": 6,
+      "itemNumber": 145,
+      "sequenceInLevel": 20,
+      "skillId": "level-6",
+      "skillPattern": "R-controlled vowels and diphthongs",
+      "target": "draw",
+      "foils": [
+        {
+          "word": "dro",
+          "code": "OM"
+        },
+        {
+          "word": "drau",
+          "code": "PH"
+        },
+        {
+          "word": "drew",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-146",
+      "sourceRow": 147,
+      "level": 7,
+      "itemNumber": 146,
+      "sequenceInLevel": 1,
+      "skillId": "level-7",
+      "skillPattern": "Irregular high-frequency words, silent letters, soft c/g",
+      "target": "was",
+      "foils": [
+        {
+          "word": "saw",
+          "code": "TR"
+        },
+        {
+          "word": "wuz",
+          "code": "REG"
+        },
+        {
+          "word": "wos",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": "Foil 'saw' is a real word; item tests letter-order sensitivity. Audio disambiguates."
+    },
+    {
+      "id": "item-147",
+      "sourceRow": 148,
+      "level": 7,
+      "itemNumber": 147,
+      "sequenceInLevel": 2,
+      "skillId": "level-7",
+      "skillPattern": "Irregular high-frequency words, silent letters, soft c/g",
+      "target": "said",
+      "foils": [
+        {
+          "word": "sed",
+          "code": "REG"
+        },
+        {
+          "word": "sad",
+          "code": "OM"
+        },
+        {
+          "word": "sayd",
+          "code": "PH"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-148",
+      "sourceRow": 149,
+      "level": 7,
+      "itemNumber": 148,
+      "sequenceInLevel": 3,
+      "skillId": "level-7",
+      "skillPattern": "Irregular high-frequency words, silent letters, soft c/g",
+      "target": "come",
+      "foils": [
+        {
+          "word": "kum",
+          "code": "REG"
+        },
+        {
+          "word": "com",
+          "code": "OM"
+        },
+        {
+          "word": "cume",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": "Kept away from foil 'cum'-type forms; regularized foil is 'kum'."
+    },
+    {
+      "id": "item-149",
+      "sourceRow": 150,
+      "level": 7,
+      "itemNumber": 149,
+      "sequenceInLevel": 4,
+      "skillId": "level-7",
+      "skillPattern": "Irregular high-frequency words, silent letters, soft c/g",
+      "target": "some",
+      "foils": [
+        {
+          "word": "som",
+          "code": "OM"
+        },
+        {
+          "word": "sume",
+          "code": "REG"
+        },
+        {
+          "word": "soam",
+          "code": "OVR"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": "'sum' deliberately NOT used as a foil: homophone of the target."
+    },
+    {
+      "id": "item-150",
+      "sourceRow": 151,
+      "level": 7,
+      "itemNumber": 150,
+      "sequenceInLevel": 5,
+      "skillId": "level-7",
+      "skillPattern": "Irregular high-frequency words, silent letters, soft c/g",
+      "target": "one",
+      "foils": [
+        {
+          "word": "on",
+          "code": "OM"
+        },
+        {
+          "word": "wun",
+          "code": "REG"
+        },
+        {
+          "word": "ane",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": "'won' deliberately NOT used as a foil: homophone of the target."
+    },
+    {
+      "id": "item-151",
+      "sourceRow": 152,
+      "level": 7,
+      "itemNumber": 151,
+      "sequenceInLevel": 6,
+      "skillId": "level-7",
+      "skillPattern": "Irregular high-frequency words, silent letters, soft c/g",
+      "target": "they",
+      "foils": [
+        {
+          "word": "thay",
+          "code": "REG"
+        },
+        {
+          "word": "the",
+          "code": "OM"
+        },
+        {
+          "word": "dey",
+          "code": "L1-TH"
+        }
+      ],
+      "realWordFoilCount": 2,
+      "l1TransferFoilCount": 1,
+      "designNote": null
+    },
+    {
+      "id": "item-152",
+      "sourceRow": 153,
+      "level": 7,
+      "itemNumber": 152,
+      "sequenceInLevel": 7,
+      "skillId": "level-7",
+      "skillPattern": "Irregular high-frequency words, silent letters, soft c/g",
+      "target": "have",
+      "foils": [
+        {
+          "word": "hav",
+          "code": "REG"
+        },
+        {
+          "word": "hive",
+          "code": "V"
+        },
+        {
+          "word": "haev",
+          "code": "TR"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-153",
+      "sourceRow": 154,
+      "level": 7,
+      "itemNumber": 153,
+      "sequenceInLevel": 8,
+      "skillId": "level-7",
+      "skillPattern": "Irregular high-frequency words, silent letters, soft c/g",
+      "target": "of",
+      "foils": [
+        {
+          "word": "ov",
+          "code": "REG"
+        },
+        {
+          "word": "off",
+          "code": "DBL"
+        },
+        {
+          "word": "if",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 2,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-154",
+      "sourceRow": 155,
+      "level": 7,
+      "itemNumber": 154,
+      "sequenceInLevel": 9,
+      "skillId": "level-7",
+      "skillPattern": "Irregular high-frequency words, silent letters, soft c/g",
+      "target": "you",
+      "foils": [
+        {
+          "word": "yu",
+          "code": "PH"
+        },
+        {
+          "word": "yoo",
+          "code": "PH"
+        },
+        {
+          "word": "yuo",
+          "code": "TR"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-155",
+      "sourceRow": 156,
+      "level": 7,
+      "itemNumber": 155,
+      "sequenceInLevel": 10,
+      "skillId": "level-7",
+      "skillPattern": "Irregular high-frequency words, silent letters, soft c/g",
+      "target": "what",
+      "foils": [
+        {
+          "word": "wot",
+          "code": "REG"
+        },
+        {
+          "word": "wat",
+          "code": "OM"
+        },
+        {
+          "word": "whut",
+          "code": "PH"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-156",
+      "sourceRow": 157,
+      "level": 7,
+      "itemNumber": 156,
+      "sequenceInLevel": 11,
+      "skillId": "level-7",
+      "skillPattern": "Irregular high-frequency words, silent letters, soft c/g",
+      "target": "were",
+      "foils": [
+        {
+          "word": "wer",
+          "code": "OM"
+        },
+        {
+          "word": "wur",
+          "code": "PH"
+        },
+        {
+          "word": "wher",
+          "code": "OVR"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-157",
+      "sourceRow": 158,
+      "level": 7,
+      "itemNumber": 157,
+      "sequenceInLevel": 12,
+      "skillId": "level-7",
+      "skillPattern": "Irregular high-frequency words, silent letters, soft c/g",
+      "target": "friend",
+      "foils": [
+        {
+          "word": "frend",
+          "code": "PH"
+        },
+        {
+          "word": "freind",
+          "code": "TR"
+        },
+        {
+          "word": "fried",
+          "code": "OM"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": "Real-word foil 'fried' (letter omission) is a genuine word; audio disambiguates."
+    },
+    {
+      "id": "item-158",
+      "sourceRow": 159,
+      "level": 7,
+      "itemNumber": 158,
+      "sequenceInLevel": 13,
+      "skillId": "level-7",
+      "skillPattern": "Irregular high-frequency words, silent letters, soft c/g",
+      "target": "would",
+      "foils": [
+        {
+          "word": "wud",
+          "code": "PH"
+        },
+        {
+          "word": "woud",
+          "code": "OM"
+        },
+        {
+          "word": "wold",
+          "code": "OVR"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": "'wood' deliberately NOT used as a foil: homophone of the target."
+    },
+    {
+      "id": "item-159",
+      "sourceRow": 160,
+      "level": 7,
+      "itemNumber": 159,
+      "sequenceInLevel": 14,
+      "skillId": "level-7",
+      "skillPattern": "Irregular high-frequency words, silent letters, soft c/g",
+      "target": "knife",
+      "foils": [
+        {
+          "word": "nife",
+          "code": "OM"
+        },
+        {
+          "word": "knif",
+          "code": "OM"
+        },
+        {
+          "word": "knyfe",
+          "code": "PH"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-160",
+      "sourceRow": 161,
+      "level": 7,
+      "itemNumber": 160,
+      "sequenceInLevel": 15,
+      "skillId": "level-7",
+      "skillPattern": "Irregular high-frequency words, silent letters, soft c/g",
+      "target": "knot",
+      "foils": [
+        {
+          "word": "nott",
+          "code": "PH"
+        },
+        {
+          "word": "knit",
+          "code": "V"
+        },
+        {
+          "word": "knut",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": "'not' deliberately NOT used as a foil: it is a homophone of the target."
+    },
+    {
+      "id": "item-161",
+      "sourceRow": 162,
+      "level": 7,
+      "itemNumber": 161,
+      "sequenceInLevel": 16,
+      "skillId": "level-7",
+      "skillPattern": "Irregular high-frequency words, silent letters, soft c/g",
+      "target": "lamb",
+      "foils": [
+        {
+          "word": "lamp",
+          "code": "FC"
+        },
+        {
+          "word": "limb",
+          "code": "V"
+        },
+        {
+          "word": "lamm",
+          "code": "PH"
+        }
+      ],
+      "realWordFoilCount": 2,
+      "l1TransferFoilCount": 0,
+      "designNote": "'lam' deliberately NOT used as a foil: homophone of the target."
+    },
+    {
+      "id": "item-162",
+      "sourceRow": 163,
+      "level": 7,
+      "itemNumber": 162,
+      "sequenceInLevel": 17,
+      "skillId": "level-7",
+      "skillPattern": "Irregular high-frequency words, silent letters, soft c/g",
+      "target": "comb",
+      "foils": [
+        {
+          "word": "com",
+          "code": "OM"
+        },
+        {
+          "word": "coam",
+          "code": "PH"
+        },
+        {
+          "word": "camb",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-163",
+      "sourceRow": 164,
+      "level": 7,
+      "itemNumber": 163,
+      "sequenceInLevel": 18,
+      "skillId": "level-7",
+      "skillPattern": "Irregular high-frequency words, silent letters, soft c/g",
+      "target": "face",
+      "foils": [
+        {
+          "word": "fase",
+          "code": "PH"
+        },
+        {
+          "word": "fac",
+          "code": "OM"
+        },
+        {
+          "word": "fice",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-164",
+      "sourceRow": 165,
+      "level": 7,
+      "itemNumber": 164,
+      "sequenceInLevel": 19,
+      "skillId": "level-7",
+      "skillPattern": "Irregular high-frequency words, silent letters, soft c/g",
+      "target": "city",
+      "foils": [
+        {
+          "word": "sity",
+          "code": "PH"
+        },
+        {
+          "word": "citty",
+          "code": "DBL"
+        },
+        {
+          "word": "cety",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-165",
+      "sourceRow": 166,
+      "level": 7,
+      "itemNumber": 165,
+      "sequenceInLevel": 20,
+      "skillId": "level-7",
+      "skillPattern": "Irregular high-frequency words, silent letters, soft c/g",
+      "target": "cage",
+      "foils": [
+        {
+          "word": "caje",
+          "code": "PH"
+        },
+        {
+          "word": "cag",
+          "code": "OM"
+        },
+        {
+          "word": "coge",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-166",
+      "sourceRow": 167,
+      "level": 8,
+      "itemNumber": 166,
+      "sequenceInLevel": 1,
+      "skillId": "level-8",
+      "skillPattern": "Inflections and common suffixes",
+      "target": "jumped",
+      "foils": [
+        {
+          "word": "jumpt",
+          "code": "PH"
+        },
+        {
+          "word": "jump",
+          "code": "OM"
+        },
+        {
+          "word": "jumpid",
+          "code": "OVR"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-167",
+      "sourceRow": 168,
+      "level": 8,
+      "itemNumber": 167,
+      "sequenceInLevel": 2,
+      "skillId": "level-8",
+      "skillPattern": "Inflections and common suffixes",
+      "target": "played",
+      "foils": [
+        {
+          "word": "playd",
+          "code": "PH"
+        },
+        {
+          "word": "plaid",
+          "code": "V"
+        },
+        {
+          "word": "plade",
+          "code": "OVR"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-168",
+      "sourceRow": 169,
+      "level": 8,
+      "itemNumber": 168,
+      "sequenceInLevel": 3,
+      "skillId": "level-8",
+      "skillPattern": "Inflections and common suffixes",
+      "target": "dogs",
+      "foils": [
+        {
+          "word": "dogz",
+          "code": "PH"
+        },
+        {
+          "word": "dog",
+          "code": "OM"
+        },
+        {
+          "word": "dags",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-169",
+      "sourceRow": 170,
+      "level": 8,
+      "itemNumber": 169,
+      "sequenceInLevel": 4,
+      "skillId": "level-8",
+      "skillPattern": "Inflections and common suffixes",
+      "target": "boxes",
+      "foils": [
+        {
+          "word": "boxs",
+          "code": "OM"
+        },
+        {
+          "word": "boxez",
+          "code": "PH"
+        },
+        {
+          "word": "boxis",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-170",
+      "sourceRow": 171,
+      "level": 8,
+      "itemNumber": 170,
+      "sequenceInLevel": 5,
+      "skillId": "level-8",
+      "skillPattern": "Inflections and common suffixes",
+      "target": "running",
+      "foils": [
+        {
+          "word": "runing",
+          "code": "DBL"
+        },
+        {
+          "word": "runnin",
+          "code": "OM"
+        },
+        {
+          "word": "ranning",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-171",
+      "sourceRow": 172,
+      "level": 8,
+      "itemNumber": 171,
+      "sequenceInLevel": 6,
+      "skillId": "level-8",
+      "skillPattern": "Inflections and common suffixes",
+      "target": "hopping",
+      "foils": [
+        {
+          "word": "hoping",
+          "code": "DBL"
+        },
+        {
+          "word": "hopeing",
+          "code": "OVR"
+        },
+        {
+          "word": "hoppin",
+          "code": "OM"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": "Real-word foil 'hoping' is a genuine doubling-rule minimal pair; tests the rule, not the meaning."
+    },
+    {
+      "id": "item-172",
+      "sourceRow": 173,
+      "level": 8,
+      "itemNumber": 172,
+      "sequenceInLevel": 7,
+      "skillId": "level-8",
+      "skillPattern": "Inflections and common suffixes",
+      "target": "making",
+      "foils": [
+        {
+          "word": "makeing",
+          "code": "OVR"
+        },
+        {
+          "word": "makin",
+          "code": "OM"
+        },
+        {
+          "word": "maiking",
+          "code": "PH"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-173",
+      "sourceRow": 174,
+      "level": 8,
+      "itemNumber": 173,
+      "sequenceInLevel": 8,
+      "skillId": "level-8",
+      "skillPattern": "Inflections and common suffixes",
+      "target": "babies",
+      "foils": [
+        {
+          "word": "babys",
+          "code": "OVR"
+        },
+        {
+          "word": "babyes",
+          "code": "OVR"
+        },
+        {
+          "word": "babeez",
+          "code": "PH"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-174",
+      "sourceRow": 175,
+      "level": 8,
+      "itemNumber": 174,
+      "sequenceInLevel": 9,
+      "skillId": "level-8",
+      "skillPattern": "Inflections and common suffixes",
+      "target": "happy",
+      "foils": [
+        {
+          "word": "hapy",
+          "code": "DBL"
+        },
+        {
+          "word": "happie",
+          "code": "PH"
+        },
+        {
+          "word": "heppy",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-175",
+      "sourceRow": 176,
+      "level": 8,
+      "itemNumber": 175,
+      "sequenceInLevel": 10,
+      "skillId": "level-8",
+      "skillPattern": "Inflections and common suffixes",
+      "target": "quickly",
+      "foils": [
+        {
+          "word": "quikly",
+          "code": "OM"
+        },
+        {
+          "word": "quickle",
+          "code": "OVR"
+        },
+        {
+          "word": "quicky",
+          "code": "OM"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-176",
+      "sourceRow": 177,
+      "level": 8,
+      "itemNumber": 176,
+      "sequenceInLevel": 11,
+      "skillId": "level-8",
+      "skillPattern": "Inflections and common suffixes",
+      "target": "bigger",
+      "foils": [
+        {
+          "word": "biger",
+          "code": "DBL"
+        },
+        {
+          "word": "bigur",
+          "code": "PH"
+        },
+        {
+          "word": "beger",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-177",
+      "sourceRow": 178,
+      "level": 8,
+      "itemNumber": 177,
+      "sequenceInLevel": 12,
+      "skillId": "level-8",
+      "skillPattern": "Inflections and common suffixes",
+      "target": "helpful",
+      "foils": [
+        {
+          "word": "helpfull",
+          "code": "OVR"
+        },
+        {
+          "word": "helpfool",
+          "code": "PH"
+        },
+        {
+          "word": "helpfl",
+          "code": "OM"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-178",
+      "sourceRow": 179,
+      "level": 8,
+      "itemNumber": 178,
+      "sequenceInLevel": 13,
+      "skillId": "level-8",
+      "skillPattern": "Inflections and common suffixes",
+      "target": "teacher",
+      "foils": [
+        {
+          "word": "teachur",
+          "code": "PH"
+        },
+        {
+          "word": "techer",
+          "code": "OM"
+        },
+        {
+          "word": "teecher",
+          "code": "PH"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-179",
+      "sourceRow": 180,
+      "level": 8,
+      "itemNumber": 179,
+      "sequenceInLevel": 14,
+      "skillId": "level-8",
+      "skillPattern": "Inflections and common suffixes",
+      "target": "wanted",
+      "foils": [
+        {
+          "word": "wantid",
+          "code": "PH"
+        },
+        {
+          "word": "want",
+          "code": "OM"
+        },
+        {
+          "word": "wantted",
+          "code": "DBL"
+        }
+      ],
+      "realWordFoilCount": 1,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-180",
+      "sourceRow": 181,
+      "level": 8,
+      "itemNumber": 180,
+      "sequenceInLevel": 15,
+      "skillId": "level-8",
+      "skillPattern": "Inflections and common suffixes",
+      "target": "sadness",
+      "foils": [
+        {
+          "word": "sadnes",
+          "code": "OM"
+        },
+        {
+          "word": "sadnis",
+          "code": "PH"
+        },
+        {
+          "word": "sadeness",
+          "code": "INS"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-181",
+      "sourceRow": 182,
+      "level": 9,
+      "itemNumber": 181,
+      "sequenceInLevel": 1,
+      "skillId": "level-9",
+      "skillPattern": "Multisyllable words (syllable types)",
+      "target": "rabbit",
+      "foils": [
+        {
+          "word": "rabit",
+          "code": "DBL"
+        },
+        {
+          "word": "rabbet",
+          "code": "V"
+        },
+        {
+          "word": "rabbt",
+          "code": "OM"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-182",
+      "sourceRow": 183,
+      "level": 9,
+      "itemNumber": 182,
+      "sequenceInLevel": 2,
+      "skillId": "level-9",
+      "skillPattern": "Multisyllable words (syllable types)",
+      "target": "kitten",
+      "foils": [
+        {
+          "word": "kiten",
+          "code": "DBL"
+        },
+        {
+          "word": "kittin",
+          "code": "V"
+        },
+        {
+          "word": "kitn",
+          "code": "OM"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-183",
+      "sourceRow": 184,
+      "level": 9,
+      "itemNumber": 183,
+      "sequenceInLevel": 3,
+      "skillId": "level-9",
+      "skillPattern": "Multisyllable words (syllable types)",
+      "target": "pencil",
+      "foils": [
+        {
+          "word": "pensil",
+          "code": "PH"
+        },
+        {
+          "word": "pencel",
+          "code": "V"
+        },
+        {
+          "word": "pencl",
+          "code": "OM"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-184",
+      "sourceRow": 185,
+      "level": 9,
+      "itemNumber": 184,
+      "sequenceInLevel": 4,
+      "skillId": "level-9",
+      "skillPattern": "Multisyllable words (syllable types)",
+      "target": "table",
+      "foils": [
+        {
+          "word": "tabel",
+          "code": "TR"
+        },
+        {
+          "word": "tabl",
+          "code": "OM"
+        },
+        {
+          "word": "taybul",
+          "code": "PH"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-185",
+      "sourceRow": 186,
+      "level": 9,
+      "itemNumber": 185,
+      "sequenceInLevel": 5,
+      "skillId": "level-9",
+      "skillPattern": "Multisyllable words (syllable types)",
+      "target": "window",
+      "foils": [
+        {
+          "word": "windo",
+          "code": "OM"
+        },
+        {
+          "word": "windoe",
+          "code": "PH"
+        },
+        {
+          "word": "wendow",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-186",
+      "sourceRow": 187,
+      "level": 9,
+      "itemNumber": 186,
+      "sequenceInLevel": 6,
+      "skillId": "level-9",
+      "skillPattern": "Multisyllable words (syllable types)",
+      "target": "garden",
+      "foils": [
+        {
+          "word": "gardin",
+          "code": "V"
+        },
+        {
+          "word": "gardn",
+          "code": "OM"
+        },
+        {
+          "word": "gardun",
+          "code": "PH"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-187",
+      "sourceRow": 188,
+      "level": 9,
+      "itemNumber": 187,
+      "sequenceInLevel": 7,
+      "skillId": "level-9",
+      "skillPattern": "Multisyllable words (syllable types)",
+      "target": "basket",
+      "foils": [
+        {
+          "word": "baskit",
+          "code": "PH"
+        },
+        {
+          "word": "bakset",
+          "code": "TR"
+        },
+        {
+          "word": "bassket",
+          "code": "DBL"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-188",
+      "sourceRow": 189,
+      "level": 9,
+      "itemNumber": 188,
+      "sequenceInLevel": 8,
+      "skillId": "level-9",
+      "skillPattern": "Multisyllable words (syllable types)",
+      "target": "monster",
+      "foils": [
+        {
+          "word": "monstar",
+          "code": "V"
+        },
+        {
+          "word": "monstr",
+          "code": "OM"
+        },
+        {
+          "word": "mosnter",
+          "code": "TR"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-189",
+      "sourceRow": 190,
+      "level": 9,
+      "itemNumber": 189,
+      "sequenceInLevel": 9,
+      "skillId": "level-9",
+      "skillPattern": "Multisyllable words (syllable types)",
+      "target": "animal",
+      "foils": [
+        {
+          "word": "animul",
+          "code": "V"
+        },
+        {
+          "word": "anmal",
+          "code": "OM"
+        },
+        {
+          "word": "animle",
+          "code": "PH"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-190",
+      "sourceRow": 191,
+      "level": 9,
+      "itemNumber": 190,
+      "sequenceInLevel": 10,
+      "skillId": "level-9",
+      "skillPattern": "Multisyllable words (syllable types)",
+      "target": "elephant",
+      "foils": [
+        {
+          "word": "elefant",
+          "code": "PH"
+        },
+        {
+          "word": "elephent",
+          "code": "V"
+        },
+        {
+          "word": "elephnt",
+          "code": "OM"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-191",
+      "sourceRow": 192,
+      "level": 10,
+      "itemNumber": 191,
+      "sequenceInLevel": 1,
+      "skillId": "level-10",
+      "skillPattern": "Advanced patterns (-tion, ough, ch=/k/, ph/gh, etc.)",
+      "target": "station",
+      "foils": [
+        {
+          "word": "stashun",
+          "code": "PH"
+        },
+        {
+          "word": "stasion",
+          "code": "PH"
+        },
+        {
+          "word": "statin",
+          "code": "V"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-192",
+      "sourceRow": 193,
+      "level": 10,
+      "itemNumber": 192,
+      "sequenceInLevel": 2,
+      "skillId": "level-10",
+      "skillPattern": "Advanced patterns (-tion, ough, ch=/k/, ph/gh, etc.)",
+      "target": "action",
+      "foils": [
+        {
+          "word": "akshun",
+          "code": "PH"
+        },
+        {
+          "word": "acsion",
+          "code": "OVR"
+        },
+        {
+          "word": "actoin",
+          "code": "TR"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-193",
+      "sourceRow": 194,
+      "level": 10,
+      "itemNumber": 193,
+      "sequenceInLevel": 3,
+      "skillId": "level-10",
+      "skillPattern": "Advanced patterns (-tion, ough, ch=/k/, ph/gh, etc.)",
+      "target": "picture",
+      "foils": [
+        {
+          "word": "pikture",
+          "code": "PH"
+        },
+        {
+          "word": "picsher",
+          "code": "PH"
+        },
+        {
+          "word": "pictur",
+          "code": "OM"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": "Common spoken form 'pitcher' avoided as a foil; item is scored on the conventional spelling."
+    },
+    {
+      "id": "item-194",
+      "sourceRow": 195,
+      "level": 10,
+      "itemNumber": 194,
+      "sequenceInLevel": 4,
+      "skillId": "level-10",
+      "skillPattern": "Advanced patterns (-tion, ough, ch=/k/, ph/gh, etc.)",
+      "target": "school",
+      "foils": [
+        {
+          "word": "skool",
+          "code": "PH"
+        },
+        {
+          "word": "schol",
+          "code": "OM"
+        },
+        {
+          "word": "shcool",
+          "code": "TR"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-195",
+      "sourceRow": 196,
+      "level": 10,
+      "itemNumber": 195,
+      "sequenceInLevel": 5,
+      "skillId": "level-10",
+      "skillPattern": "Advanced patterns (-tion, ough, ch=/k/, ph/gh, etc.)",
+      "target": "laugh",
+      "foils": [
+        {
+          "word": "laff",
+          "code": "PH"
+        },
+        {
+          "word": "lauf",
+          "code": "PH"
+        },
+        {
+          "word": "lagh",
+          "code": "OVR"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-196",
+      "sourceRow": 197,
+      "level": 10,
+      "itemNumber": 196,
+      "sequenceInLevel": 6,
+      "skillId": "level-10",
+      "skillPattern": "Advanced patterns (-tion, ough, ch=/k/, ph/gh, etc.)",
+      "target": "enough",
+      "foils": [
+        {
+          "word": "enuff",
+          "code": "PH"
+        },
+        {
+          "word": "enouf",
+          "code": "PH"
+        },
+        {
+          "word": "enoug",
+          "code": "OM"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-197",
+      "sourceRow": 198,
+      "level": 10,
+      "itemNumber": 197,
+      "sequenceInLevel": 7,
+      "skillId": "level-10",
+      "skillPattern": "Advanced patterns (-tion, ough, ch=/k/, ph/gh, etc.)",
+      "target": "thought",
+      "foils": [
+        {
+          "word": "thawt",
+          "code": "PH"
+        },
+        {
+          "word": "thougt",
+          "code": "OM"
+        },
+        {
+          "word": "thouht",
+          "code": "TR"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-198",
+      "sourceRow": 199,
+      "level": 10,
+      "itemNumber": 198,
+      "sequenceInLevel": 8,
+      "skillId": "level-10",
+      "skillPattern": "Advanced patterns (-tion, ough, ch=/k/, ph/gh, etc.)",
+      "target": "weather",
+      "foils": [
+        {
+          "word": "wethur",
+          "code": "PH"
+        },
+        {
+          "word": "weater",
+          "code": "OM"
+        },
+        {
+          "word": "wheather",
+          "code": "INS"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": "'wether' (rare real word) avoided as a foil."
+    },
+    {
+      "id": "item-199",
+      "sourceRow": 200,
+      "level": 10,
+      "itemNumber": 199,
+      "sequenceInLevel": 9,
+      "skillId": "level-10",
+      "skillPattern": "Advanced patterns (-tion, ough, ch=/k/, ph/gh, etc.)",
+      "target": "beautiful",
+      "foils": [
+        {
+          "word": "butiful",
+          "code": "PH"
+        },
+        {
+          "word": "beutiful",
+          "code": "OM"
+        },
+        {
+          "word": "beautifull",
+          "code": "OVR"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    },
+    {
+      "id": "item-200",
+      "sourceRow": 201,
+      "level": 10,
+      "itemNumber": 200,
+      "sequenceInLevel": 10,
+      "skillId": "level-10",
+      "skillPattern": "Advanced patterns (-tion, ough, ch=/k/, ph/gh, etc.)",
+      "target": "science",
+      "foils": [
+        {
+          "word": "siense",
+          "code": "PH"
+        },
+        {
+          "word": "sience",
+          "code": "OM"
+        },
+        {
+          "word": "scince",
+          "code": "TR"
+        }
+      ],
+      "realWordFoilCount": 0,
+      "l1TransferFoilCount": 0,
+      "designNote": null
+    }
+  ],
+  "researchNotes": [
+    "How the foils were designed",
+    "1. Every foil is an error a learner could plausibly make. Multiple-choice distractors work best when they are built from common errors and are plausible to learners who lack the target knowledge (Haladyna, Downing & Rodriguez, 2002). Foils here are drawn from documented invented-spelling and phonics-error patterns, not random letter changes.",
+    "2. Foil difficulty rises with the learner's developmental phase (Ehri, 2005). Levels 1-3 foils are phonologically DIFFERENT from the audio (a decoder can reject them). From Level 4 on, one or more foils are pseudohomophones that sound like the target, so only orthographic knowledge can reject them (the orthographic choice logic of Olson et al., 1994).",
+    "3. Position balance. In Levels 1-3 the contrast is spread across onset, vowel, and coda so the child cannot succeed by attending to only the first letter.",
+    "4. No foil is a homophone of its target (checked against the CMU Pronouncing Dictionary). Where a natural foil was a real homophone (tale, sea, not, sum, won, wood), it was excluded or the target was swapped.",
+    "5. Real-word foils are limited and flagged (WordList column L), because a real word can pull a child toward meaning. Pseudohomophones are treated as non-words even where a rare or web-slang form exists (e.g., 'yu').",
+    "6. L1-transfer foils are tagged (codes beginning 'L1-'). They replace a general foil on selected items, so the game can serve either the general foil or the L1 foil by learner profile. They are keyed to documented interference patterns (Swan & Smith, 2001); confirm against your target languages (e.g., Hausa, Swahili, Hindi/Urdu) before use.",
+    "7. Word selection: words are high-frequency or decodable, use age-appropriate vocabulary for 5-8 year olds, and cover the spelling patterns in the level order of the Words Their Way and structured-literacy scope-and-sequences. Irregular words come from Dolch (1936) and Fry (1980).",
+    "8. Progression: consistent CVC > blends > digraphs > silent e > vowel teams > r-controlled/diphthongs > irregular/silent-letter > inflections > multisyllable > opaque patterns.",
+    "Suggested game use",
+    "- Randomize position of the correct answer on every trial. Do not reuse one foil slot for one type.",
+    "- Adaptive option: use Tier 1-2 foils (IC, FC, V, VIS, DIG) when the child is unsure; unlock Tier 3-4 foils (PH, REG, OVR, DBL) after accuracy passes a threshold at the same level.",
+    "- Distractor analysis after pilot: retire any foil chosen by <5% of respondents in a level and replace it; revisit any foil chosen more often than the correct answer.",
+    "- Record audio in the dialect the children hear. Check items that depend on vowel mergers (pin/pen, cot/caught, r-dropping, wh/w) for your target audience.",
+    "Cautions",
+    "- This list is a research-informed DRAFT; it has not been piloted. Foil selection rates and difficulty ordering should be checked empirically.",
+    "- Pronunciation assumptions are General American. Some foils may be ambiguous in other varieties (e.g., 'hows' for house, r-omission foils in non-rhotic accents).",
+    "- References were cited from memory of the literature; please verify volume and page details before formal publication.",
+    "References",
+    "Bear, D. R., Invernizzi, M., Templeton, S., & Johnston, F. Words Their Way: Word Study for Phonics, Vocabulary, and Spelling Instruction. Pearson.",
+    "Bruck, M., & Treiman, R. (1990). Phonological awareness and spelling in normal children and dyslexics: The case of initial consonant clusters. Journal of Experimental Child Psychology, 50, 156-178.",
+    "Cassar, M., & Treiman, R. (1997). The beginnings of orthographic knowledge: Children's knowledge of double letters in words. Journal of Educational Psychology, 89, 631-644.",
+    "Dolch, E. W. (1936). A basic sight vocabulary. Elementary School Journal, 36, 456-460.",
+    "Ehri, L. C. (2005). Learning to read words: Theory, findings, and issues. Scientific Studies of Reading, 9(2), 167-188.",
+    "Fry, E. (1980). The new instant word list. The Reading Teacher, 34, 284-289.",
+    "Haladyna, T. M., Downing, S. M., & Rodriguez, M. C. (2002). A review of multiple-choice item-writing guidelines for classroom assessment. Applied Measurement in Education, 15(3), 309-334.",
+    "Kessler, B., & Treiman, R. (2001). Relationships between sounds and letters in English monosyllables. Journal of Memory and Language, 44, 592-617.",
+    "Nunes, T., Bryant, P., & Bindman, M. (1997). Morphological spelling strategies: Developmental stages and processes. Developmental Psychology, 33, 637-649.",
+    "Olson, R., Forsberg, H., Wise, B., & Rack, J. (1994). Measurement of word recognition, orthographic, and phonological skills. In G. R. Lyon (Ed.), Frames of reference for the assessment of learning disabilities. Brookes.",
+    "Read, C. (1971). Pre-school children's knowledge of English phonology. Harvard Educational Review, 41, 1-34.",
+    "Share, D. L. (1995). Phonological recoding and self-teaching: Sine qua non of reading acquisition. Cognition, 55, 151-218.",
+    "Swan, M., & Smith, B. (Eds.). (2001). Learner English: A teacher's guide to interference and other problems (2nd ed.). Cambridge University Press.",
+    "Treiman, R. (1993). Beginning to Spell: A Study of First-Grade Children. Oxford University Press.",
+    "Treiman, R., & Bourassa, D. C. (2000). The development of spelling skill. Topics in Language Disorders, 20(3), 1-18.",
+    "Treiman, R., & Cassar, M. (1996). Effects of morphology on children's spelling of final consonant clusters. Journal of Experimental Child Psychology, 63, 141-170."
+  ]
+}
