@@ -6,6 +6,7 @@ import type { AudioProvider, PlayOutcome } from './audio/AudioProvider.ts'
 import type { UiSound, UiSoundPlayer } from './audio/uiSounds.ts'
 import { memoryLearningEventStore } from './persistence/learningEventStore.ts'
 import { localPreferencesRepository } from './persistence/preferences.ts'
+import { createPwaStatus } from './pwa/status.ts'
 import { localProgressRepository } from './persistence/progressRepository.ts'
 import { PRESS_ACTION_DELAY_MS } from './ui/press.ts'
 
@@ -313,5 +314,31 @@ describe('App learning events', () => {
     await openFirstPuzzle(user)
     await user.click(screen.getByRole('button', { name: word.lastWord() }))
     expect(screen.getByRole('status')).toHaveTextContent(/yes!/i)
+  })
+})
+
+describe('App updates', () => {
+  it('waits until the child is off a puzzle before switching to a new version', async () => {
+    const user = userEvent.setup()
+    const pwa = createPwaStatus()
+    const apply = vi.fn<() => void>()
+    render(<App audio={fakeAudio().audio} repository={memoryRepository()} pwa={pwa} seed={1} />)
+    await openFirstPuzzle(user)
+
+    act(() => pwa.setUpdateReady(apply))
+    expect(apply).not.toHaveBeenCalled() // mid-puzzle: never interrupt
+
+    await tap(user, screen.getByRole('button', { name: 'Back to the puzzle map' }))
+    expect(apply).not.toHaveBeenCalled() // the puzzle map is still part of play
+    await tap(user, screen.getByRole('button', { name: 'Back to levels' }))
+    expect(apply).toHaveBeenCalledTimes(1)
+  })
+
+  it('applies a waiting update straight away on the Welcome screen', () => {
+    const pwa = createPwaStatus()
+    const apply = vi.fn<() => void>()
+    pwa.setUpdateReady(apply)
+    render(<App audio={fakeAudio().audio} repository={memoryRepository()} pwa={pwa} seed={1} />)
+    expect(apply).toHaveBeenCalledTimes(1)
   })
 })

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
 import { createDefaultAudioProvider, type AudioProvider } from './audio/AudioProvider.ts'
 import { isUiSound, webAudioUiSounds, type UiSound, type UiSoundPlayer } from './audio/uiSounds.ts'
 import { loadContent } from './content/loadContent.ts'
@@ -18,6 +18,7 @@ import {
 import { openLearningEventStore, type LearningEventStore } from './persistence/learningEventStore.ts'
 import { localPreferencesRepository, type PreferencesRepository } from './persistence/preferences.ts'
 import { detectExitBridge, type ExitBridge } from './platform/containerBridge.ts'
+import { inertPwaStatus, type PwaStatus } from './pwa/status.ts'
 import { ExitDialog } from './ui/components/ExitDialog.tsx'
 import { localProgressRepository, type ProgressRepository } from './persistence/progressRepository.ts'
 import type { TileState } from './ui/components/Play.tsx'
@@ -37,6 +38,8 @@ export interface AppProps {
   eventStore?: LearningEventStore
   /** Policy and learner-model settings; the provisional defaults otherwise. */
   modelOptions?: ModelOptions
+  /** Service worker status (offline readiness, waiting updates). */
+  pwa?: PwaStatus
   /** Seed for shuffles; fixed in tests, random in play. */
   seed?: number
   now?: () => number
@@ -63,6 +66,7 @@ export function App({
   exitBridge: exitBridgeProp,
   eventStore: eventStoreProp,
   modelOptions,
+  pwa = inertPwaStatus,
   seed,
   now = Date.now,
 }: AppProps) {
@@ -163,6 +167,14 @@ export function App({
 
   const env = (): StepEnv => ({ random, now: now(), newId })
   const { screen } = state
+
+  // A waiting update is applied only on the Welcome or level screens, never mid-puzzle.
+  // Progress is saved on every change, so the reload loses nothing.
+  const { updateReady } = useSyncExternalStore(pwa.subscribe, pwa.getSnapshot)
+  const safeToReload = screen.name === 'welcome' || screen.name === 'home'
+  useEffect(() => {
+    if (updateReady && safeToReload) pwa.applyUpdate()
+  }, [pwa, updateReady, safeToReload])
   const soundSetting = { on: soundEffects, onToggle: () => setSoundEffects((on) => !on) }
   const level = (n: number) => model.content.levels.find((l) => l.level === n)
 

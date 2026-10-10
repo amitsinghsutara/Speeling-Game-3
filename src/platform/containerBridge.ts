@@ -23,6 +23,22 @@ export interface ExitBridge {
   exit(): void
 }
 
+/**
+ * Tells the container the game is fully cached for offline play. This is the
+ * one container method confirmed in use: Speeling Game 2 calls
+ * window.Android.cachedStatus(true) the same way.
+ */
+export function notifyContainerCached(win: Pick<Window, 'Android'> | undefined = typeof window === 'undefined' ? undefined : window): void {
+  const bridge = win?.Android
+  const method = bridge?.['cachedStatus']
+  if (typeof method !== 'function') return
+  try {
+    ;(method as (cached: boolean) => void).call(bridge, true)
+  } catch {
+    // The game works the same whether or not the container hears this.
+  }
+}
+
 export const noExitBridge: ExitBridge = { canExit: false, exit: () => {} }
 
 export function detectExitBridge(win: Pick<Window, 'Android'> | undefined = typeof window === 'undefined' ? undefined : window): ExitBridge {
