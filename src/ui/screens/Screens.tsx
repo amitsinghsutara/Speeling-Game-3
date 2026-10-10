@@ -5,7 +5,7 @@
 import type { CSSProperties } from 'react'
 import type { Level } from '../../content/schema.ts'
 import type { Puzzle, Status } from '../../game/progression.ts'
-import { BackButton, Button } from '../components/Button.tsx'
+import { BackButton, Button, SoundToggle } from '../components/Button.tsx'
 import { LockIcon, ProgressDots, SignBoard, SpeechBubble, TickIcon } from '../components/Cartoon.tsx'
 import { Mascot, type MascotMood } from '../components/Mascot.tsx'
 import { AnswerGrid, AudioButton, type TileState } from '../components/Play.tsx'
@@ -21,9 +21,23 @@ const levelColour = (level: number): CSSProperties => ({
   background: `var(${LEVEL_COLOURS[(level - 1) % LEVEL_COLOURS.length] ?? '--lemon'})`,
 })
 
-export function WelcomeScreen({ onPlay }: { onPlay: () => void }) {
+export interface SoundSetting {
+  on: boolean
+  onToggle: () => void
+}
+
+function CornerSoundToggle({ sound }: { sound: SoundSetting }) {
+  return (
+    <div className={styles.corner}>
+      <SoundToggle on={sound.on} onToggle={sound.onToggle} />
+    </div>
+  )
+}
+
+export function WelcomeScreen({ onPlay, sound }: { onPlay: () => void; sound: SoundSetting }) {
   return (
     <main className={`${styles.screen} ${styles.centered}`}>
+      <CornerSoundToggle sound={sound} />
       <SignBoard>
         <h1 className={styles.title}>Spelling Adventure</h1>
       </SignBoard>
@@ -43,12 +57,14 @@ interface HomeScreenProps {
   statusOf: (level: number) => Status
   starsOf: (level: number) => { earned: number; max: number }
   onOpenLevel: (level: number) => void
+  sound: SoundSetting
 }
 
-export function HomeScreen({ levels, statusOf, starsOf, onOpenLevel }: HomeScreenProps) {
+export function HomeScreen({ levels, statusOf, starsOf, onOpenLevel, sound }: HomeScreenProps) {
   const afterPress = useAfterPress()
   return (
     <main className={styles.screen}>
+      <CornerSoundToggle sound={sound} />
       <SignBoard small>
         <h1>Pick a level</h1>
       </SignBoard>
@@ -66,6 +82,7 @@ export function HomeScreen({ levels, statusOf, starsOf, onOpenLevel }: HomeScree
               key={level.level}
               type="button"
               data-press
+              data-sound="select"
               className={styles.card}
               disabled={locked}
               onClick={afterPress(() => onOpenLevel(level.level))}
@@ -129,6 +146,7 @@ export function PuzzleMapScreen({ level, puzzles, statusOf, starsOf, onStart, on
                 <button
                   type="button"
                   data-press
+                  data-sound="select"
                   className={`${styles.stone} ${styles[status]}`}
                   disabled={status === 'locked'}
                   onClick={afterPress(() => onStart(puzzle.id))}

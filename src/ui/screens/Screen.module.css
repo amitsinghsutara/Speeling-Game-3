@@ -269,3 +269,11 @@
   justify-content: center;
   gap: 14px;
 }
+
+/* Sound toggle sits top-left, away from the sun decoration and the main actions. */
+.corner {
+  position: absolute;
+  top: max(16px, env(safe-area-inset-top));
+  left: 16px;
+  z-index: 2;
+}

@@ -5,6 +5,7 @@
  * whether a touch is a scroll, so a quick tap often never shows it. Instead,
  * any element with `data-press` gets `data-pressed="true"` from pointer-down
  * (or Enter/Space) for at least MIN_PRESS_MS, and CSS styles that attribute.
+ * `onPress` fires at the same instant, so a sound effect lands with the squish.
  */
 import { useCallback, useRef } from 'react'
 
@@ -20,11 +21,16 @@ function pressedTarget(target: EventTarget | null): HTMLElement | null {
   return element && !element.matches(INERT) ? element : null
 }
 
-export function installPressFeedback(doc: Document = document): () => void {
+export interface PressOptions {
+  onPress?: (element: HTMLElement) => void
+}
+
+export function installPressFeedback(doc: Document = document, { onPress }: PressOptions = {}): () => void {
   const view = doc.defaultView ?? window
   const press = (element: HTMLElement) => {
     const startedAt = view.performance.now()
     element.dataset['pressed'] = 'true'
+    onPress?.(element)
     return () => {
       const remaining = Math.max(0, MIN_PRESS_MS - (view.performance.now() - startedAt))
       view.setTimeout(() => delete element.dataset['pressed'], remaining)

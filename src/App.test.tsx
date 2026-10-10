@@ -3,6 +3,8 @@ import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { App } from './App.tsx'
 import type { AudioProvider, PlayOutcome } from './audio/AudioProvider.ts'
+import type { UiSound, UiSoundPlayer } from './audio/uiSounds.ts'
+import { localPreferencesRepository } from './persistence/preferences.ts'
 import { localProgressRepository } from './persistence/progressRepository.ts'
 import { PRESS_ACTION_DELAY_MS } from './ui/press.ts'
 
@@ -109,5 +111,97 @@ describe('App', () => {
     await openFirstPuzzle(user)
     expect(await screen.findByRole('status')).toHaveTextContent(/can't play the sound/i)
     expect(tiles().every((t) => t.getAttribute('aria-disabled') === 'false')).toBe(true)
+  })
+})
+
+describe('App sound effects', () => {
+  function fakeUiSounds() {
+    const played: UiSound[] = []
+    let muted = false
+    const player: UiSoundPlayer = {
+      get muted() {
+        return muted
+      },
+      setMuted: (value) => {
+        muted = value
+      },
+      play: (sound) => {
+        if (!muted) played.push(sound)
+      },
+    }
+    return { player, played }
+  }
+
+  function memoryPreferences() {
+    const data = new Map<string, string>()
+    return localPreferencesRepository({ getItem: (k) => data.get(k) ?? null, setItem: (k, v) => void data.set(k, v) })
+  }
+
+  const renderWithSounds = () => {
+    const sounds = fakeUiSounds()
+    const word = fakeAudio()
+    const preferences = memoryPreferences()
+    const utils = render(
+      <App audio={word.audio} repository={memoryRepository()} uiSounds={sounds.player} preferences={preferences} seed={1} />,
+    )
+    return { ...utils, sounds, word, preferences }
+  }
+
+  it('blips on menu buttons the moment they are pressed', async () => {
+    const user = userEvent.setup()
+    const { sounds } = renderWithSounds()
+    await user.click(screen.getByRole('button', { name: 'Play!' }))
+    expect(sounds.played).toEqual(['select'])
+    await settle()
+    await user.click(screen.getByRole('button', { name: /^Level 1,/ }))
+    expect(sounds.played).toEqual(['select', 'select'])
+  })
+
+  it('answers with a gentle boop for a wrong pick and a chime for the right one, with no click over the word', async () => {
+    const user = userEvent.setup()
+    const { sounds, word } = renderWithSounds()
+    await openFirstPuzzle(user)
+    sounds.played.length = 0
+
+    await user.click(screen.getByRole('button', { name: 'Hear the word again' }))
+    const wrong = tiles().find((t) => t.textContent !== word.lastWord())
+    if (!wrong) throw new Error('no foil tile')
+    await user.click(wrong)
+    await user.click(screen.getByRole('button', { name: word.lastWord() }))
+    expect(sounds.played).toEqual(['tryAgain', 'correct'])
+  })
+
+  it('plays a fanfare when a puzzle is finished', async () => {
+    const user = userEvent.setup()
+    const { sounds, word } = renderWithSounds()
+    await openFirstPuzzle(user)
+    for (let i = 0; i < 5; i++) {
+      await user.click(screen.getByRole('button', { name: word.lastWord() }))
+      await tap(user, screen.getByRole('button', { name: /next/i }))
+    }
+    expect(sounds.played.at(-1)).toBe('celebrate')
+  })
+
+  it('can turn sound effects off, remembers it, and still speaks the word', async () => {
+    const user = userEvent.setup()
+    const sounds = fakeUiSounds()
+    const word = fakeAudio()
+    const preferences = memoryPreferences()
+    const { unmount } = render(
+      <App audio={word.audio} repository={memoryRepository()} uiSounds={sounds.player} preferences={preferences} seed={1} />,
+    )
+    const toggle = screen.getByRole('button', { name: 'Sound effects' })
+    expect(toggle).toHaveAttribute('aria-pressed', 'true')
+    await user.click(toggle)
+    expect(toggle).toHaveAttribute('aria-pressed', 'false')
+    expect(preferences.load().soundEffects).toBe(false)
+
+    unmount()
+    sounds.played.length = 0
+    render(<App audio={word.audio} repository={memoryRepository()} uiSounds={sounds.player} preferences={preferences} seed={1} />)
+    expect(screen.getByRole('button', { name: 'Sound effects' })).toHaveAttribute('aria-pressed', 'false')
+    await openFirstPuzzle(user)
+    expect(sounds.played).toEqual([])
+    expect(word.played).toEqual(['sat'])
   })
 })
