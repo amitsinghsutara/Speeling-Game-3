@@ -260,7 +260,8 @@ describe('fallback model', () => {
 
   it('makes one attempt when there is no fallback, or it is the same model', async () => {
     const f = vi.fn<typeof fetch>(async () => new Response('x', { status: 500 }))
-    await run(f, { ...env, GEMINI_FALLBACK_MODEL: undefined })
+    const { GEMINI_FALLBACK_MODEL: _unused, ...withoutFallback } = env
+    await run(f, withoutFallback)
     await run(f, { ...env, GEMINI_FALLBACK_MODEL: 'main-model' })
     expect(f).toHaveBeenCalledTimes(2)
   })
