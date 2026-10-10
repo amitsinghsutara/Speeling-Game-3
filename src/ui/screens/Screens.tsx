@@ -2,7 +2,7 @@
  * The game's screens. Each is a plain view of the pure game state: it renders
  * what it is given and reports taps; all rules live in src/game.
  */
-import type { CSSProperties } from 'react'
+import { useEffect, useRef, type CSSProperties, type ReactNode } from 'react'
 import type { Level } from '../../content/schema.ts'
 import type { Puzzle, Status } from '../../game/progression.ts'
 import { BackButton, Button, SoundToggle } from '../components/Button.tsx'
@@ -26,10 +26,16 @@ export interface SoundSetting {
   onToggle: () => void
 }
 
-function CornerSoundToggle({ sound }: { sound: SoundSetting }) {
+/**
+ * Three-column bar: a control on the left, the title centred, and an equal
+ * empty column on the right, so the title can never slide under the control.
+ */
+function TopBar({ start, children }: { start: ReactNode; children?: ReactNode }) {
   return (
-    <div className={styles.corner}>
-      <SoundToggle on={sound.on} onToggle={sound.onToggle} />
+    <div className={styles.topBar}>
+      <div className={styles.topStart}>{start}</div>
+      <div className={styles.topTitle}>{children}</div>
+      <div aria-hidden="true" />
     </div>
   )
 }
@@ -37,7 +43,7 @@ function CornerSoundToggle({ sound }: { sound: SoundSetting }) {
 export function WelcomeScreen({ onPlay, sound }: { onPlay: () => void; sound: SoundSetting }) {
   return (
     <main className={`${styles.screen} ${styles.centered}`}>
-      <CornerSoundToggle sound={sound} />
+      <TopBar start={<SoundToggle on={sound.on} onToggle={sound.onToggle} />} />
       <SignBoard>
         <h1 className={styles.title}>Spelling Adventure</h1>
       </SignBoard>
@@ -64,10 +70,11 @@ export function HomeScreen({ levels, statusOf, starsOf, onOpenLevel, sound }: Ho
   const afterPress = useAfterPress()
   return (
     <main className={styles.screen}>
-      <CornerSoundToggle sound={sound} />
-      <SignBoard small>
-        <h1>Pick a level</h1>
-      </SignBoard>
+      <TopBar start={<SoundToggle on={sound.on} onToggle={sound.onToggle} />}>
+        <SignBoard small>
+          <h1>Pick a level</h1>
+        </SignBoard>
+      </TopBar>
       <div className={styles.fernRow}>
         <Mascot mood="happy" size="sm" />
         <SpeechBubble>Where shall we go today?</SpeechBubble>
@@ -121,14 +128,11 @@ export function PuzzleMapScreen({ level, puzzles, statusOf, starsOf, onStart, on
   const afterPress = useAfterPress()
   return (
     <main className={styles.screen}>
-      <div className={styles.topBar}>
-        <BackButton label="Back to levels" onClick={onBack} />
-        <div className={styles.topTitle}>
-          <SignBoard small>
-            <h1>Level {level.level}</h1>
-          </SignBoard>
-        </div>
-      </div>
+      <TopBar start={<BackButton label="Back to levels" onClick={onBack} />}>
+        <SignBoard small>
+          <h1>Level {level.level}</h1>
+        </SignBoard>
+      </TopBar>
       <div className={styles.fernRow}>
         <Mascot mood="happy" size="sm" />
         <SpeechBubble>
@@ -195,6 +199,11 @@ const moodFor = (status: QuestionScreenProps['status']): MascotMood =>
 
 export function QuestionScreen(props: QuestionScreenProps) {
   const { status } = props
+  const nextRef = useRef<HTMLDivElement>(null)
+  // On short phones the Next button can land below the fold; bring it into view.
+  useEffect(() => {
+    if (status === 'correct') nextRef.current?.scrollIntoView?.({ block: 'nearest', behavior: 'smooth' })
+  }, [status])
   const message =
     status === 'correct' ? (
       <>
@@ -210,16 +219,13 @@ export function QuestionScreen(props: QuestionScreenProps) {
 
   return (
     <main className={`${styles.screen} ${styles.celebrate}`}>
-      <div className={styles.topBar}>
-        <BackButton label="Back to the puzzle map" onClick={props.onBack} />
-        <div className={styles.topTitle}>
-          <SignBoard small>
-            <span>
-              Level {props.level} · Puzzle {props.puzzleNumber}
-            </span>
-          </SignBoard>
-        </div>
-      </div>
+      <TopBar start={<BackButton label="Back to the puzzle map" onClick={props.onBack} />}>
+        <SignBoard small>
+          <span>
+            Level {props.level} · Puzzle {props.puzzleNumber}
+          </span>
+        </SignBoard>
+      </TopBar>
       <ProgressDots done={props.index} total={props.total} />
       <div className={styles.questionArea}>
         <div className={styles.fernRow}>
@@ -230,7 +236,7 @@ export function QuestionScreen(props: QuestionScreenProps) {
         </div>
         <AudioButton onPlay={props.onReplay} size={status === 'correct' ? 'sm' : 'lg'} label="Hear the word again" />
         <AnswerGrid choices={props.choices} stateOf={props.stateOf} onChoose={props.onChoose} />
-        <div className={styles.nextWrap}>
+        <div className={styles.nextWrap} ref={nextRef}>
           {status === 'correct' && (
             <Button colour="lime" size="lg" onClick={props.onNext} autoFocus>
               Next →

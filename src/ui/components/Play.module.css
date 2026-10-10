@@ -51,8 +51,22 @@
   width: min(100%, 560px);
 }
 
+/* Long words on narrow phones: one column, so the text stays large enough for a young reader. */
+@media (max-width: 420px) {
+  .grid.long {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .grid.long .tile {
+    min-height: 64px;
+  }
+}
+
 .tile {
   position: relative;
+  container-type: inline-size;
+  min-width: 0;
   min-height: clamp(88px, 22vw, 120px);
   padding: 0.3em 0.4em;
   border: var(--outline);
@@ -81,10 +95,18 @@
   box-shadow: var(--ledge), var(--focus-ring);
 }
 
+/*
+ * Big by default, but long words shrink to fit the tile. Andika bold measures about
+ * 0.52em per letter with this spacing; 0.58 leaves room for wide letters (m, w).
+ * --letters is the question's longest word, so all four tiles share one size.
+ * Words never wrap: a split word confuses a beginning reader.
+ */
 .word {
+  display: block;
+  white-space: nowrap;
   font-family: var(--font-reading);
   font-weight: 700;
-  font-size: clamp(2rem, 9vw, 3rem);
+  font-size: min(clamp(2rem, 9vw, 3rem), calc(88cqi / (var(--letters, 4) * 0.58)));
   letter-spacing: 0.03em;
   color: var(--ink);
 }
@@ -112,9 +134,15 @@
   animation: jelly 0.7s ease-in-out;
 }
 
+/* Solid, muted colour (not transparency) so the scenery never shows through. */
 .done {
   cursor: default;
-  opacity: 0.45;
+  background-color: #ebe6dd;
+  box-shadow: var(--ledge-sm);
+}
+
+.done .word {
+  color: #9b8f80;
 }
 
 .badge {
@@ -141,4 +169,11 @@
 
 .badgeTry {
   background: var(--try);
+}
+
+@media (max-height: 760px) {
+  .lg {
+    width: 76px;
+    height: 76px;
+  }
 }

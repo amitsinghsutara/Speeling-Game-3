@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, type CSSProperties } from 'react'
 import type { Choice } from '../../game/question.ts'
 import styles from './Play.module.css'
 
@@ -36,6 +36,9 @@ export type TileState = 'idle' | 'tried' | 'correct' | 'done'
 
 const TILE_COLOURS = ['tangerine', 'bubble', 'berry', 'grape'] as const
 
+/** From this length, narrow phones stack tiles in one column so the word stays big. */
+export const LONG_WORD_LETTERS = 8
+
 interface AnswerGridProps {
   choices: readonly Choice[]
   stateOf: (word: string) => TileState
@@ -43,8 +46,16 @@ interface AnswerGridProps {
 }
 
 export function AnswerGrid({ choices, stateOf, onChoose }: AnswerGridProps) {
+  // One text size for every tile, set by the longest word: if sizes differed per tile,
+  // a smaller word would hint that it has extra letters, a cue unrelated to spelling.
+  const longest = Math.max(...choices.map((c) => c.word.length))
   return (
-    <div className={styles.grid} role="group" aria-label="Choose the spelling you heard">
+    <div
+      className={`${styles.grid} ${longest >= LONG_WORD_LETTERS ? styles.long : ''}`}
+      role="group"
+      aria-label="Choose the spelling you heard"
+      style={{ '--letters': longest } as CSSProperties}
+    >
       {choices.map((choice, index) => {
         const state = stateOf(choice.word)
         const colour = TILE_COLOURS[index % TILE_COLOURS.length] ?? 'tangerine'

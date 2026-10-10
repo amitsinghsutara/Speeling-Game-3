@@ -11,11 +11,19 @@
   fill: var(--ink);
 }
 
+/* Tucked into the corner so it never sits under a title, even on narrow phones. */
 .sun {
   position: absolute;
-  top: 3%;
-  right: 4%;
-  width: clamp(80px, 16vw, 150px);
+  top: -12px;
+  right: -12px;
+  width: clamp(76px, 15vw, 150px);
+}
+
+@media (min-width: 760px) {
+  .sun {
+    top: 3%;
+    right: 4%;
+  }
 }
 
 .rays rect {
@@ -76,7 +84,7 @@
 
 .hillBack {
   bottom: 0;
-  height: 34%;
+  height: clamp(110px, 26%, 300px);
 }
 
 .hillBack path {
@@ -87,7 +95,7 @@
 
 .hillFront {
   bottom: 0;
-  height: 18%;
+  height: clamp(60px, 13%, 160px);
 }
 
 .hillFront path {
@@ -98,7 +106,7 @@
 
 .tree {
   position: absolute;
-  bottom: 12%;
+  bottom: clamp(40px, 9%, 120px);
   width: clamp(70px, 13vw, 140px);
 }
 
@@ -108,7 +116,7 @@
 
 .treeRight {
   right: 2%;
-  bottom: 14%;
+  bottom: clamp(48px, 10%, 130px);
   width: clamp(60px, 10vw, 110px);
 }
 

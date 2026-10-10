@@ -35,7 +35,8 @@
 - [x] T018 Build screens: Welcome, Home (levels), Puzzle map, Question with feedback, Puzzle/Level complete, in the cartoon style (thick outlines, press-down buttons, bundled Fredoka and Andika fonts)
 - [x] T019 Add component tests for the main journey
 - [x] T019a Save stars and completed puzzles locally (versioned, validated, safe fallback), with tests
-- [ ] T019b Check the layout visually at phone width (360–414px) on a real device or emulator
+- [x] T019b Check the layout at phone widths (320, 360, 390 x 640) in a browser; fix overlaps, tile overflow, hidden choices
+- [ ] T019c Check on a real phone and inside the container app
 
 ## Phase 5: Learner model [US2]
 

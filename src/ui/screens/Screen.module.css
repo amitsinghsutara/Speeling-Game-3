@@ -15,33 +15,49 @@
   justify-content: center;
 }
 
+/* Control | centred title | equal spacer: the title can never slide under the control. */
 .topBar {
-  display: flex;
+  display: grid;
+  grid-template-columns: var(--tap-min) minmax(0, 1fr) var(--tap-min);
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   width: 100%;
 }
 
 .topTitle {
-  flex: 1;
   display: flex;
   justify-content: center;
+  min-width: 0;
 }
 
+/* On narrow phones the right-hand spacer costs too much width; let the title use it. */
+@media (max-width: 420px) {
+  .topBar {
+    grid-template-columns: var(--tap-min) minmax(0, 1fr);
+  }
+
+  .topBar > :last-child {
+    display: none;
+  }
+}
+
+/* Fern keeps a fixed size; the speech bubble takes whatever width is left. */
 .fernRow {
   display: flex;
-  align-items: flex-start;
-  gap: 4px;
-  width: 100%;
-  justify-content: center;
-}
-
-.fernRow {
   align-items: center;
+  gap: 20px;
+  width: 100%;
+  max-width: 560px;
+  justify-content: center;
+}
+
+.fernRow > :first-child {
+  flex-shrink: 0;
 }
 
 .fernRow > :last-child {
-  margin-left: 18px;
+  flex: 0 1 auto;
+  min-width: 0;
 }
 
 .tagline {
@@ -152,19 +168,21 @@
   padding: 8px 0;
 }
 
+/* Label under the stone, so each step is centred on its stone. */
 .step {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 6px;
 }
 
-/* Zigzag the stepping stones along the trail. */
+/* Zigzag the stepping stones; narrower on small screens so stones stay on screen. */
 .trail > li:nth-child(odd) .step {
-  transform: translateX(-46px);
+  transform: translateX(calc(-1 * clamp(18px, 10vw, 56px)));
 }
 
 .trail > li:nth-child(even) .step {
-  transform: translateX(46px);
+  transform: translateX(clamp(18px, 10vw, 56px));
 }
 
 .stone {
@@ -208,18 +226,20 @@
 
 .stoneStars {
   position: absolute;
-  bottom: -14px;
+  top: -14px;
 }
 
 .stepLabel {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 700;
-  min-width: 7ch;
+  padding: 0 10px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 250, 240, 0.85);
 }
 
 .path {
   width: 10px;
-  height: 34px;
+  height: 22px;
   border-left: 6px dashed var(--ink);
   opacity: 0.35;
 }
@@ -270,10 +290,18 @@
   gap: 14px;
 }
 
-/* Sound toggle sits top-left, away from the sun decoration and the main actions. */
-.corner {
-  position: absolute;
-  top: max(16px, env(safe-area-inset-top));
-  left: 16px;
-  z-index: 2;
+.topStart {
+  display: flex;
+}
+
+/* Short screens: tighter spacing so all four answers fit without scrolling. */
+@media (max-height: 760px) {
+  .screen {
+    gap: 10px;
+    padding-top: max(10px, env(safe-area-inset-top));
+  }
+
+  .questionArea {
+    gap: 10px;
+  }
 }
