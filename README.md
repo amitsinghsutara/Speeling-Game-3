@@ -139,11 +139,13 @@ The fake deliberately suggests an invented word and an invented foil, so you can
 
 To deploy with the adviser switched on in the browser, use `npm run deploy:adviser`. The server stays off until `ADVISER_ENABLED`, `GEMINI_MODEL` and the `GEMINI_API_KEY` secret are set on the Cloudflare project.
 
-## AI suggestions for grown-ups: off by default
+## AI suggestions for grown-ups
+
+**Production status (2026-10-10): on.** Privacy addendum §11 approved, with open items deferred, including a parent notice.
 
 On the grown-ups' screen, **"Get AI suggestions"** asks Gemini, on demand only, for a short summary, focus tips and home practice ideas. It uses the same aggregate data as the adviser, plus the device's own level labels.
 
 - **Safety checks:** unsafe or labelling language (diagnoses, "behind", "mastered"…) discards the whole result. Strengths must match the device's own "doing well" levels. Practice words must be approved target words. Checks run on the server and again in the browser (`src/insights/validate.ts`).
-- **Separate switches:** `INSIGHTS_ENABLED=true` on the server, plus `VITE_INSIGHTS_ENABLED=true` in the build. Neither is set for production until the privacy review addendum (§11 of `docs/privacy/adviser-review.md`) is approved.
+- **Separate switches:** `INSIGHTS_ENABLED=true` on the server (an encrypted secret), plus `VITE_INSIGHTS_ENABLED=true` in `.env.adviser`. Both are on in production. Kill switch: set `INSIGHTS_ENABLED` to `false` and redeploy.
 - **Local test:** add `INSIGHTS_ENABLED=true` to `.dev.vars` and run `npm run dev:full` (the button is already on in `.env.adviser`).
 - **Logs:** browser console messages appear under `[insights]`. The server writes metadata lines with `"event":"insights"`.
