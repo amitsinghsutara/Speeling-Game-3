@@ -30,10 +30,12 @@
 
 ## Phase 4: UI and audio [US1]
 
-- [ ] T016 Define the AudioProvider interface; implement the bundled-MP3 provider and the speech fallback; add tests
-- [ ] T017 Port 200 MP3s from Speeling Game 2 to `public/audio/words/`, and add a test that every target has audio
-- [ ] T018 Build screens: Home, Level select, Question, Feedback, Puzzle/Level complete
-- [ ] T019 Add component tests for the main journey
+- [x] T016 Define the AudioProvider interface; implement the bundled-MP3 provider and the speech fallback; add tests
+- [x] T017 Port 200 MP3s from Speeling Game 2 to `public/audio/words/`, and add a test that every target has audio
+- [x] T018 Build screens: Welcome, Home (levels), Puzzle map, Question with feedback, Puzzle/Level complete, in the cartoon style (thick outlines, press-down buttons, bundled Fredoka and Andika fonts)
+- [x] T019 Add component tests for the main journey
+- [x] T019a Save stars and completed puzzles locally (versioned, validated, safe fallback), with tests
+- [ ] T019b Check the layout visually at phone width (360–414px) on a real device or emulator
 
 ## Phase 5: Learner model [US2]
 

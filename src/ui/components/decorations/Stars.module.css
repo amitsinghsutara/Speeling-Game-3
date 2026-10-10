@@ -1,0 +1,30 @@
+.row {
+  display: flex;
+  gap: clamp(6px, 2vw, 16px);
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.star {
+  width: clamp(44px, 12vw, 72px);
+  height: clamp(44px, 12vw, 72px);
+  stroke: var(--ink);
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 4px 0 var(--ink));
+}
+
+/* The middle star sits a little higher, like a podium. */
+.star:nth-child(2) {
+  transform: translateY(-10px);
+}
+
+.filled {
+  fill: var(--star);
+  animation: boing 0.6s ease-out both;
+}
+
+.empty {
+  fill: #ffffff;
+  opacity: 0.85;
+}

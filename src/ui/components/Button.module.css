@@ -1,0 +1,75 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4em;
+  min-height: var(--tap-min);
+  min-width: var(--tap-min);
+  padding: 0.35em 1.3em;
+  border: var(--outline);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--ledge), inset 0 -6px 0 rgba(0, 0, 0, 0.12), inset 0 4px 0 rgba(255, 255, 255, 0.55);
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--ink);
+  cursor: pointer;
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+}
+
+.md {
+  font-size: 1.35rem;
+}
+
+.lg {
+  font-size: clamp(1.6rem, 6vw, 2.1rem);
+  padding: 0.35em 1.6em;
+}
+
+.button:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.button:active:not(:disabled) {
+  transform: translateY(5px);
+  box-shadow: var(--ledge-pressed), inset 0 -3px 0 rgba(0, 0, 0, 0.12);
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  filter: grayscale(0.7);
+  opacity: 0.6;
+}
+
+.button:focus-visible {
+  box-shadow: var(--ledge), var(--focus-ring);
+}
+
+.lime {
+  background: var(--lime);
+}
+
+.lemon {
+  background: var(--lemon);
+}
+
+.bubble {
+  background: var(--bubble);
+}
+
+.berry {
+  background: var(--berry);
+}
+
+.paper {
+  background: var(--paper);
+}
+
+.round {
+  padding: 0;
+  border-radius: 50%;
+}
+
+.icon {
+  width: 30px;
+  height: 30px;
+}

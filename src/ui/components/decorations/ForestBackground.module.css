@@ -1,0 +1,175 @@
+.scene {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-bottom) 70%);
+}
+
+.ink {
+  fill: var(--ink);
+}
+
+.sun {
+  position: absolute;
+  top: 3%;
+  right: 4%;
+  width: clamp(80px, 16vw, 150px);
+}
+
+.rays rect {
+  fill: var(--sun);
+  stroke: var(--ink);
+  stroke-width: 3;
+}
+
+.rays {
+  transform-origin: 60px 60px;
+  animation: twinkle 6s ease-in-out infinite;
+}
+
+.sunFace {
+  fill: var(--sun);
+  stroke: var(--ink);
+  stroke-width: 5;
+}
+
+.smile {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.cloud {
+  position: absolute;
+  width: clamp(110px, 20vw, 200px);
+  animation: float 9s ease-in-out infinite alternate;
+}
+
+.cloud path {
+  fill: var(--cloud);
+  stroke: var(--ink);
+  stroke-width: 4;
+  stroke-linejoin: round;
+}
+
+.cloud1 {
+  top: 8%;
+  left: 4%;
+}
+
+.cloud2 {
+  top: 20%;
+  left: 52%;
+  width: clamp(80px, 14vw, 140px);
+  animation-duration: 12s;
+}
+
+.hillBack,
+.hillFront {
+  position: absolute;
+  left: 0;
+  width: 100%;
+}
+
+.hillBack {
+  bottom: 0;
+  height: 34%;
+}
+
+.hillBack path {
+  fill: var(--hill-back);
+  stroke: var(--ink);
+  stroke-width: 5;
+}
+
+.hillFront {
+  bottom: 0;
+  height: 18%;
+}
+
+.hillFront path {
+  fill: var(--hill-front);
+  stroke: var(--ink);
+  stroke-width: 5;
+}
+
+.tree {
+  position: absolute;
+  bottom: 12%;
+  width: clamp(70px, 13vw, 140px);
+}
+
+.treeLeft {
+  left: 1%;
+}
+
+.treeRight {
+  right: 2%;
+  bottom: 14%;
+  width: clamp(60px, 10vw, 110px);
+}
+
+.trunk {
+  fill: var(--bark);
+  stroke: var(--ink);
+  stroke-width: 4;
+}
+
+.crown {
+  fill: var(--leaf);
+  stroke: var(--ink);
+  stroke-width: 4;
+}
+
+.apple {
+  fill: #ff5a5a;
+  stroke: var(--ink);
+  stroke-width: 2.5;
+}
+
+.flower {
+  position: absolute;
+  bottom: 3%;
+  width: clamp(22px, 3.5vw, 36px);
+}
+
+.flower ellipse {
+  fill: var(--berry);
+  stroke: var(--ink);
+  stroke-width: 2.5;
+}
+
+.flower2 ellipse {
+  fill: var(--lemon);
+}
+
+.flower3 ellipse {
+  fill: var(--grape);
+}
+
+.stem {
+  stroke: var(--ink);
+  stroke-width: 3;
+}
+
+.flowerMiddle {
+  fill: var(--lemon);
+  stroke: var(--ink);
+  stroke-width: 2.5;
+}
+
+.flower1 {
+  left: 18%;
+}
+
+.flower2 {
+  left: 70%;
+}
+
+.flower3 {
+  left: 86%;
+  bottom: 5%;
+}

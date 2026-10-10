@@ -1,0 +1,265 @@
+.screen {
+  position: relative;
+  z-index: 1;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(14px, 3vh, 24px);
+  padding: max(16px, env(safe-area-inset-top)) 16px max(28px, env(safe-area-inset-bottom));
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.centered {
+  justify-content: center;
+}
+
+.topBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.topTitle {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.fernRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  width: 100%;
+  justify-content: center;
+}
+
+.fernRow {
+  align-items: center;
+}
+
+.fernRow > :last-child {
+  margin-left: 18px;
+}
+
+.tagline {
+  font-size: clamp(1.2rem, 4.5vw, 1.5rem);
+  text-align: center;
+  font-weight: 600;
+  max-width: 30ch;
+}
+
+.title {
+  font-size: clamp(2.1rem, 9vw, 3.4rem);
+}
+
+/* Level cards */
+.levelGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: 18px;
+  width: 100%;
+}
+
+.card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 4px 14px;
+  padding: 14px;
+  background: var(--paper);
+  border: var(--outline);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--ledge);
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+}
+
+.card:hover:not(:disabled) {
+  transform: translateY(-3px) rotate(-0.6deg);
+}
+
+.card:active:not(:disabled) {
+  transform: translateY(5px);
+  box-shadow: var(--ledge-pressed);
+}
+
+.card:focus-visible {
+  box-shadow: var(--ledge), var(--focus-ring);
+}
+
+.card:disabled {
+  cursor: not-allowed;
+  background: #efe9df;
+}
+
+.cardBadge {
+  grid-row: span 3;
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  border: var(--outline);
+  border-radius: 50%;
+  box-shadow: var(--ledge-sm);
+  font-size: 2.2rem;
+  font-weight: 700;
+}
+
+.card:disabled .cardBadge {
+  background: #d9d2c6;
+}
+
+.cardTitle {
+  font-size: 1.4rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cardSkill {
+  font-family: var(--font-reading);
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  line-height: 1.25;
+}
+
+.cardMeta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1rem;
+  color: var(--text-muted);
+}
+
+/* Puzzle trail */
+.trail {
+  margin: 0;
+  padding-left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 8px 0;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Zigzag the stepping stones along the trail. */
+.trail > li:nth-child(odd) .step {
+  transform: translateX(-46px);
+}
+
+.trail > li:nth-child(even) .step {
+  transform: translateX(46px);
+}
+
+.stone {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 92px;
+  height: 92px;
+  border: var(--outline);
+  border-radius: 50%;
+  box-shadow: var(--ledge);
+  font-size: 2.4rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+}
+
+.stone:active:not(:disabled) {
+  transform: translateY(5px);
+  box-shadow: var(--ledge-pressed);
+}
+
+.stone:focus-visible {
+  box-shadow: var(--ledge), var(--focus-ring);
+}
+
+.stone.available {
+  background: var(--lemon);
+  animation: bob 2s ease-in-out infinite;
+}
+
+.stone.completed {
+  background: var(--lime);
+}
+
+.stone.locked {
+  background: #d9d2c6;
+  cursor: not-allowed;
+}
+
+.stoneStars {
+  position: absolute;
+  bottom: -14px;
+}
+
+.stepLabel {
+  font-size: 1.2rem;
+  font-weight: 700;
+  min-width: 7ch;
+}
+
+.path {
+  width: 10px;
+  height: 34px;
+  border-left: 6px dashed var(--ink);
+  opacity: 0.35;
+}
+
+/* Question */
+.questionArea {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(14px, 3vh, 22px);
+  width: 100%;
+}
+
+.nextWrap {
+  min-height: var(--tap-min);
+}
+
+/* Celebration */
+.celebrate {
+  position: relative;
+  overflow: hidden;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 22px 20px;
+  width: min(100%, 520px);
+  background: var(--paper);
+  border: var(--outline);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--ledge);
+  text-align: center;
+  animation: boing 0.5s ease-out both;
+}
+
+.panelTitle {
+  font-size: clamp(1.8rem, 7vw, 2.5rem);
+  font-weight: 700;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+}
