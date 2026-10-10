@@ -5,6 +5,21 @@ An offline-first spelling and phonics game for early readers, featuring Fern the
 - Constitution: [`.specify/memory/constitution.md`](.specify/memory/constitution.md)
 - Spec, plan and tasks: [`specs/001-spelling-adventure/`](specs/001-spelling-adventure/)
 
+## Documentation
+
+Full documentation is in [`docs/`](docs/README.md):
+
+- [Architecture](docs/architecture.md)
+- [Content pipeline](docs/content.md)
+- [Adaptive learning](docs/adaptive-learning.md)
+- [AI features](docs/ai.md)
+- [Operations](docs/operations.md): deploy, secrets, kill switches, logs, troubleshooting
+- [Testing](docs/testing.md)
+- [Container integration](docs/container.md)
+- [Privacy review](docs/privacy/adviser-review.md)
+
+Terms are defined in the [glossary](CONTEXT.md).
+
 ## Setup
 
 Requires Node 24 or later, which runs the TypeScript import script directly.
