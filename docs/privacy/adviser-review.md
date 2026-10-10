@@ -1,6 +1,6 @@
 # Privacy review: optional Gemini adviser
 
-**Status:** DRAFT, awaiting approval. The adviser must stay disabled in production until the approval section below is filled in (constitution Principle VI).
+**Status:** APPROVED 2026-10-10, with open items deferred (see §10). The approver chose to settle the §9 items later.
 
 **Prepared:** 2026-10-10, from the code at commit `521e51d` (`src/adviser/*`, `functions/api/advice.ts`).
 
@@ -86,8 +86,11 @@ Set `ADVISER_ENABLED` to anything other than `true` in the Cloudflare project. T
 
 | | |
 |---|---|
-| Approved by | _(name, role)_ |
-| Date | _(YYYY-MM-DD)_ |
-| Conditions | _(e.g. paid-tier key only; parent notice updated)_ |
+| | |
+|---|---|
+| Approved by | Project owner (amit@sutara.org) |
+| Date | 2026-10-10 |
+| Conditions | None set. The §9 open items (API tier and terms, parent or school notice, Cloudflare logging) were **deferred by the approver** to be decided later. |
+| Model tier | The approver intends to use a **free-tier** Gemini model. Under §5, Google's terms for unpaid tiers may allow it to use the aggregate prompts to improve its products. This was accepted for now, with the §9 decision still to be made. |
 
-The adviser may be enabled in production only once this section is complete.
+Revisit this section before rolling the adviser out to schools or other organisations.

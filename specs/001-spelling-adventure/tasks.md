@@ -65,7 +65,7 @@
 - [x] T031 Build the client adviser (timeout, curriculum check, eligible-only application, fallback reason codes)
 - [x] T032 Add adversarial tests (unknown words, invalid JSON, slow or failing responses)
 
-- [ ] T032a Privacy review recorded (draft: docs/privacy/adviser-review.md, awaiting approval), then the adviser enabled in production (constitution VI): set ADVISER_ENABLED, GEMINI_MODEL and the GEMINI_API_KEY secret, and build with VITE_ADVISER_ENABLED=true
+- [x] T032a Privacy review recorded (docs/privacy/adviser-review.md: approved 2026-10-10, open items deferred), then the adviser enabled in production (constitution VI): set ADVISER_ENABLED, GEMINI_MODEL and the GEMINI_API_KEY secret, and build with VITE_ADVISER_ENABLED=true
 - [ ] T032b Choose the Gemini model and run a live check of real model output quality against the curriculum
 
 ## Phase 9: Offline, accessibility, and release [US5]
