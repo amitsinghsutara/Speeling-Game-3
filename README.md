@@ -145,5 +145,5 @@ On the grown-ups' screen, **"Get AI suggestions"** asks Gemini, on demand only, 
 
 - **Safety checks:** unsafe or labelling language (diagnoses, "behind", "mastered"…) discards the whole result. Strengths must match the device's own "doing well" levels. Practice words must be approved target words. Checks run on the server and again in the browser (`src/insights/validate.ts`).
 - **Separate switches:** `INSIGHTS_ENABLED=true` on the server, plus `VITE_INSIGHTS_ENABLED=true` in the build. Neither is set for production until the privacy review addendum (§11 of `docs/privacy/adviser-review.md`) is approved.
-- **Local test:** add `INSIGHTS_ENABLED=true` to `.dev.vars`, and `VITE_INSIGHTS_ENABLED=true` to `.env.adviser.local` (git-ignored). Then run `npm run dev:full`.
+- **Local test:** add `INSIGHTS_ENABLED=true` to `.dev.vars` and run `npm run dev:full` (the button is already on in `.env.adviser`).
 - **Logs:** browser console messages appear under `[insights]`. The server writes metadata lines with `"event":"insights"`.

@@ -97,7 +97,7 @@ Revisit this section before rolling the adviser out to schools or other organisa
 
 ## 11. Addendum: AI suggestions for grown-ups
 
-**Status:** DRAFT, awaiting approval. Production stays off: `INSIGHTS_ENABLED` is not set on the Cloudflare project, and the browser button is only built with `VITE_INSIGHTS_ENABLED=true`.
+**Status:** APPROVED 2026-10-10, with open items deferred (see the approval table below). Enabled in production on the same date.
 
 **Prepared:** 2026-10-10, from `src/insights/*` and `functions/api/insights.ts`.
 
@@ -141,8 +141,8 @@ Set `INSIGHTS_ENABLED` to anything other than `true`. It is independent of the p
 
 | | |
 |---|---|
-| Approved by | _(name, role)_ |
-| Date | _(YYYY-MM-DD)_ |
-| Conditions | _(for example: parent notice updated first)_ |
+| Approved by | Project owner (amit@sutara.org) |
+| Date | 2026-10-10 |
+| Conditions | None set. The §9 open items, **including a parent or school notice**, were deferred by the approver. |
 
 The §9 open items (API tier, parent or school notice, logging) apply here too. A parent notice matters more for this feature, because it describes the child's practice to an adult.

@@ -74,7 +74,7 @@
 - [x] T038 Reset progress (confirm dialog): clears stars, unlocks, learning events and decisions
 - [x] T039 Adviser console messages and server metadata logs (no body, IP or key)
 - [x] T040 Grown-ups AI suggestions (on demand): shared Gemini caller, /api/insights, safety and curriculum validation on both sides, panel with an "AI-generated" label; verified locally with real Gemini
-- [ ] T041 Approve privacy addendum §11, then enable in production (`INSIGHTS_ENABLED` secret, plus `VITE_INSIGHTS_ENABLED=true` in .env.adviser)
+- [x] T041 Approve privacy addendum §11, then enable in production (done 2026-10-10) (`INSIGHTS_ENABLED` secret, plus `VITE_INSIGHTS_ENABLED=true` in .env.adviser)
 
 ## Phase 9: Offline, accessibility, and release [US5]
 
