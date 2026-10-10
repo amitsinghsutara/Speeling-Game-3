@@ -1,0 +1,20 @@
+# Cloudflare Pages headers.
+# Built JS/CSS/fonts have content hashes in their names, so they can be cached forever.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Word audio changes rarely; cache for a week, revalidate after.
+/audio/*
+  Cache-Control: public, max-age=604800
+
+# Always re-check the page itself so players get updates.
+/index.html
+  Cache-Control: no-cache
+/
+  Cache-Control: no-cache
+
+# Basic hardening for a children's app: no MIME sniffing, no referrer leaks, no device sensors.
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: no-referrer
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
