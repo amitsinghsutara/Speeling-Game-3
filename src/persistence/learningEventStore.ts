@@ -1,15 +1,18 @@
 /**
- * Learning events in IndexedDB (they grow over time, so not localStorage).
+ * Learning events and adaptive decisions in IndexedDB (they grow over time,
+ * so not localStorage).
  * Reads are validated: a corrupt or unknown-version record is skipped, never
  * fatal. If IndexedDB is unavailable (some private modes and WebViews), an
  * in-memory store keeps the session working and reports `persistent: false`.
  */
+import { adaptiveDecisionSchema, type AdaptiveDecision } from '../adaptive/decision.ts'
 import { learningEventSchema, type LearningEvent } from '../learner/events.ts'
 
 export const DB_NAME = 'spelling-adventure'
 /** Bump with a migration step in `upgrade` whenever stores or indexes change. */
-export const DB_VERSION = 1
+export const DB_VERSION = 2
 export const EVENTS_STORE = 'learningEvents'
+export const DECISIONS_STORE = 'adaptiveDecisions'
 
 export interface LoadResult {
   events: LearningEvent[]
@@ -22,6 +25,10 @@ export interface LearningEventStore {
   append(event: LearningEvent): Promise<void>
   /** All valid events, oldest first. */
   load(): Promise<LoadResult>
+  appendDecision(decision: AdaptiveDecision): Promise<void>
+  /** All valid decisions, oldest first. */
+  loadDecisions(): Promise<AdaptiveDecision[]>
+  /** Reset: removes events and decisions. */
   clear(): Promise<void>
 }
 
@@ -37,8 +44,18 @@ function parseAll(records: readonly unknown[]): LoadResult {
   return { events, skipped }
 }
 
+function parseDecisions(records: readonly unknown[]): AdaptiveDecision[] {
+  return records
+    .flatMap((r) => {
+      const parsed = adaptiveDecisionSchema.safeParse(r)
+      return parsed.success ? [parsed.data] : []
+    })
+    .sort((a, b) => a.at - b.at)
+}
+
 export function memoryLearningEventStore(): LearningEventStore {
   const records: unknown[] = []
+  const decisions: unknown[] = []
   return {
     persistent: false,
     async append(event) {
@@ -47,8 +64,15 @@ export function memoryLearningEventStore(): LearningEventStore {
     async load() {
       return parseAll(records)
     },
+    async appendDecision(decision) {
+      decisions.push(structuredClone(decision))
+    },
+    async loadDecisions() {
+      return parseDecisions(decisions)
+    },
     async clear() {
       records.length = 0
+      decisions.length = 0
     },
   }
 }
@@ -66,6 +90,11 @@ function upgrade(db: IDBDatabase, oldVersion: number): void {
     store.createIndex('by-at', 'at')
     store.createIndex('by-item', 'itemId')
   }
+  // Version 1 → 2: adaptive decisions, keyed by decision id. Existing events are untouched.
+  if (oldVersion < 2) {
+    const store = db.createObjectStore(DECISIONS_STORE, { keyPath: 'id' })
+    store.createIndex('by-at', 'at')
+  }
 }
 
 export function openDatabase(factory: IDBFactory): Promise<IDBDatabase> {
@@ -79,17 +108,24 @@ export function openDatabase(factory: IDBFactory): Promise<IDBDatabase> {
 }
 
 export function indexedDbLearningEventStore(db: IDBDatabase): LearningEventStore {
-  const store = (mode: IDBTransactionMode) => db.transaction(EVENTS_STORE, mode).objectStore(EVENTS_STORE)
+  const store = (name: string, mode: IDBTransactionMode) => db.transaction(name, mode).objectStore(name)
   return {
     persistent: true,
     async append(event) {
-      await promisify(store('readwrite').put(event))
+      await promisify(store(EVENTS_STORE, 'readwrite').put(event))
     },
     async load() {
-      return parseAll(await promisify(store('readonly').getAll()))
+      return parseAll(await promisify(store(EVENTS_STORE, 'readonly').getAll()))
+    },
+    async appendDecision(decision) {
+      await promisify(store(DECISIONS_STORE, 'readwrite').put(decision))
+    },
+    async loadDecisions() {
+      return parseDecisions(await promisify(store(DECISIONS_STORE, 'readonly').getAll()))
     },
     async clear() {
-      await promisify(store('readwrite').clear())
+      await promisify(store(EVENTS_STORE, 'readwrite').clear())
+      await promisify(store(DECISIONS_STORE, 'readwrite').clear())
     },
   }
 }

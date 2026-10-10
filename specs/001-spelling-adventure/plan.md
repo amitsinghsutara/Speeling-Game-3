@@ -69,6 +69,8 @@ public/audio/words/*.mp3     # ported from Speeling Game 2
 5. **The adviser can only choose among eligible options**: the policy first computes eligible `(item, foilSet, strategy)` candidates. Advice may only pick among those candidates, so invalid advice cannot widen the set.
 6. **Adviser host**: Cloudflare Pages Functions, matching Game 2's deployment. This can be revisited in Phase 8.
 7. **Game 2 port**: the importer is rewritten in TypeScript with full validation, the MP3s are copied, and the star rules are reimplemented with tests. Game 2's sync and analytics code is not ported.
+8. **Adaptive puzzles**: each puzzle keeps its 5 new words in curriculum order, so stars and unlocks are unchanged. The policy may add up to 3 extra questions (focus, review, transfer, consolidation, mixed practice) from approved words; extras never cost stars. Every question comes from a recorded decision, and the decision id is also the question id in learning events.
+9. **Decision storage**: decisions go in the IndexedDB `adaptiveDecisions` store (database version 2 migration). Events are untouched by the upgrade.
 
 ## Phases
 

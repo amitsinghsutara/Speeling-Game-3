@@ -165,6 +165,15 @@ The game installs as a PWA, reloads offline, and resumes progress.
     - **First choices only:** only the first choice in each question counts as evidence, because retries come after a wrong tile is disabled.
     - **Evidence floor:** a skill with fewer than **8** questions is reported as "insufficient evidence".
     - **Hard limits:** the settings check refuses `minErrors < 2` and `minDistinctItems < 2`, so a single mistake, or a single tricky word, can never be a pattern.
+  - Provisional adaptive-policy values in use (`src/adaptive/config.ts`, version `adaptive-policy/1-provisional`), awaiting confirmation:
+    - **Extras:** at most **3** extra questions per puzzle; they never cost stars.
+    - **Minimum choices:** a question always shows at least **2** foils.
+    - **Focused practice:** at most **2** per puzzle.
+    - **Scaffolding:** if at most **1** of the last **3** questions in the skill was right first time, show only the **2** easiest foils by codebook tier.
+    - **Tier gate:** foils of tier **3 or more** are held back until the skill has **4** questions with recent first-try accuracy of **75%** or more. The rule's shape comes from the spreadsheet's ResearchBasis; the numbers are ours.
+    - **Transfer:** at most **1** per puzzle, once the skill has enough evidence and recent accuracy of **80%** or more.
+    - **Spaced review:** at most **1** per puzzle, when an earlier skill has not been practised for **24 hours**.
+    - **Consolidation and mixed practice:** at most **1** of each per puzzle.
 
 ### Key Entities
 

@@ -3,9 +3,18 @@ import { createDefaultAudioProvider, type AudioProvider } from './audio/AudioPro
 import { isUiSound, webAudioUiSounds, type UiSound, type UiSoundPlayer } from './audio/uiSounds.ts'
 import { loadContent } from './content/loadContent.ts'
 import { hintFor } from './game/hints.ts'
-import { createLearningEvent, newId } from './learner/events.ts'
+import { newId } from './learner/events.ts'
 import { seededRandom } from './game/random.ts'
-import { createGameModel, gameReducer, initialGameState, type GameAction, type Screen } from './game/session.ts'
+import {
+  createGameModel,
+  gameReducer,
+  initialGameState,
+  roundProgress,
+  type GameAction,
+  type ModelOptions,
+  type Screen,
+  type StepEnv,
+} from './game/session.ts'
 import { openLearningEventStore, type LearningEventStore } from './persistence/learningEventStore.ts'
 import { localPreferencesRepository, type PreferencesRepository } from './persistence/preferences.ts'
 import { detectExitBridge, type ExitBridge } from './platform/containerBridge.ts'
@@ -24,8 +33,10 @@ export interface AppProps {
   preferences?: PreferencesRepository
   /** The container app's exit hook; detected from window.Android by default. */
   exitBridge?: ExitBridge
-  /** Where learning events go; IndexedDB by default. */
+  /** Where learning events and decisions go; IndexedDB by default. */
   eventStore?: LearningEventStore
+  /** Policy and learner-model settings; the provisional defaults otherwise. */
+  modelOptions?: ModelOptions
   /** Seed for shuffles; fixed in tests, random in play. */
   seed?: number
   now?: () => number
@@ -41,42 +52,8 @@ function outcomeSound(action: GameAction, previous: Screen, next: Screen): UiSou
   return finished(next) && !finished(previous) ? 'celebrate' : null
 }
 
-/** Records one attempt as a learning event, if the action produced one. Never blocks play. */
-function recordAttempt(
-  model: ReturnType<typeof createGameModel>,
-  store: Promise<LearningEventStore>,
-  sessionId: string,
-  action: GameAction,
-  next: Screen,
-): void {
-  if (action.type !== 'answer' || next.name !== 'question' || next.lastOutcome?.kind === 'ignored' || !next.lastOutcome) return
-  const { attempt } = next.lastOutcome
-  const { question, shownAt } = next.question
-  const item = model.itemsById.get(question.itemId)
-  if (!item) return
-  const event = createLearningEvent({
-    sessionId,
-    questionId: `${sessionId}:${next.puzzleId}:${next.index}:${shownAt}`,
-    at: shownAt + attempt.elapsedMs,
-    contentVersion: model.content.contentVersion,
-    itemId: item.id,
-    skillId: item.skillId,
-    level: item.level,
-    puzzleId: next.puzzleId,
-    presentedFoilCodes: question.choices.flatMap((c) => (c.foilCode === undefined ? [] : [c.foilCode])),
-    chosenWord: attempt.word,
-    correct: attempt.correct,
-    chosenFoilCode: attempt.foilCode,
-    attemptNumber: attempt.attemptNumber,
-    elapsedMs: attempt.elapsedMs,
-  })
-  // Storage problems must never interrupt a child's game.
-  void store.then((s) => s.append(event)).catch(() => {})
-}
-
 /** Identifies one shown question, so a new question (even of the same word) replays its sound. */
-const questionKeyOf = (screen: Screen): string | null =>
-  screen.name === 'question' ? `${screen.puzzleId}#${screen.index}` : null
+const questionKeyOf = (screen: Screen): string | null => (screen.name === 'question' ? screen.decision.id : null)
 
 export function App({
   audio: audioProp,
@@ -85,10 +62,12 @@ export function App({
   preferences: preferencesProp,
   exitBridge: exitBridgeProp,
   eventStore: eventStoreProp,
+  modelOptions,
   seed,
   now = Date.now,
 }: AppProps) {
-  const model = useMemo(() => createGameModel(loadContent()), [])
+  // Model options are read once; changing them later would change rules mid-game.
+  const [model] = useState(() => createGameModel(loadContent(), modelOptions))
   const audio = useMemo(() => audioProp ?? createDefaultAudioProvider(), [audioProp])
   const repository = useMemo(() => repositoryProp ?? localProgressRepository(), [repositoryProp])
   const preferences = useMemo(() => preferencesProp ?? localPreferencesRepository(), [preferencesProp])
@@ -96,11 +75,10 @@ export function App({
   const uiSounds = useMemo(() => uiSoundsProp ?? webAudioUiSounds(), [uiSoundsProp])
   const [random] = useState(() => seededRandom(seed ?? Math.floor(Math.random() * 2 ** 32)))
 
-  const [state, setState] = useState(() => initialGameState(repository.load()))
+  const [state, setState] = useState(() => initialGameState(repository.load(), newId()))
   // Latest state, so taps landing before a re-render still apply in order.
   const latest = useRef(state)
   const [sound, setSound] = useState<SoundNotice>('none')
-  const [sessionId] = useState(newId)
   const eventStore = useMemo(() => (eventStoreProp ? Promise.resolve(eventStoreProp) : openLearningEventStore()), [eventStoreProp])
   const exitBridge = useMemo(() => exitBridgeProp ?? detectExitBridge(), [exitBridgeProp])
   const [confirmingExit, setConfirmingExit] = useState(false)
@@ -123,6 +101,23 @@ export function App({
     [uiSounds],
   )
 
+  // Save new events and decisions as they appear; ids already stored (or loaded) are skipped.
+  const saved = useRef(new Set<string>())
+  useEffect(() => {
+    const fresh = <T extends { id: string }>(records: readonly T[]) => records.filter((r) => !saved.current.has(r.id))
+    const events = fresh(state.events)
+    const decisions = fresh(state.decisions)
+    for (const r of [...events, ...decisions]) saved.current.add(r.id)
+    if (events.length === 0 && decisions.length === 0) return
+    // Storage problems must never interrupt a child's game.
+    void eventStore
+      .then(async (store) => {
+        for (const d of decisions) await store.appendDecision(d)
+        for (const e of events) await store.append(e)
+      })
+      .catch(() => {})
+  }, [eventStore, state.events, state.decisions])
+
   const speak = useCallback(
     async (screen: Screen) => {
       if (screen.name !== 'question') return
@@ -140,7 +135,6 @@ export function App({
     if (next === previous) return
     latest.current = next
     setState(next)
-    recordAttempt(model, eventStore, sessionId, action, next.screen)
     const effect = outcomeSound(action, previous.screen, next.screen)
     if (effect) uiSounds.play(effect)
     const key = questionKeyOf(next.screen)
@@ -149,6 +143,25 @@ export function App({
     else void speak(next.screen)
   }
 
+  // Earlier sessions' events feed the learner model once they have loaded.
+  useEffect(() => {
+    let cancelled = false
+    void eventStore
+      .then((store) => store.load())
+      .then(({ events }) => {
+        if (cancelled) return
+        for (const e of events) saved.current.add(e.id)
+        dispatch({ type: 'eventsLoaded', events })
+      })
+      .catch(() => {})
+    return () => {
+      cancelled = true
+    }
+    // dispatch reads the latest state through a ref, so it is safe to omit.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [eventStore])
+
+  const env = (): StepEnv => ({ random, now: now(), newId })
   const { screen } = state
   const soundSetting = { on: soundEffects, onToggle: () => setSoundEffects((on) => !on) }
   const level = (n: number) => model.content.levels.find((l) => l.level === n)
@@ -179,7 +192,7 @@ export function App({
             puzzles={model.puzzlesByLevel.get(screen.level) ?? []}
             statusOf={(p) => model.puzzleStatus(state.progress, p)}
             starsOf={(p) => state.progress.starsByPuzzleId[p.id]}
-            onStart={(puzzleId) => dispatch({ type: 'startPuzzle', puzzleId, random, now: now() })}
+            onStart={(puzzleId) => dispatch({ type: 'startPuzzle', puzzleId, env: env() })}
             onBack={() => dispatch({ type: 'home' })}
           />
         )
@@ -187,6 +200,7 @@ export function App({
 
       case 'question': {
         const puzzle = model.findPuzzle(screen.puzzleId)
+        const { done, total } = roundProgress(screen, puzzle)
         const q = screen.question
         const lastWrong = screen.lastOutcome?.kind === 'incorrect' ? screen.lastOutcome.attempt : undefined
         const stateOf = (word: string): TileState =>
@@ -203,8 +217,8 @@ export function App({
           <QuestionScreen
             level={screen.level}
             puzzleNumber={puzzle?.number ?? 1}
-            index={screen.index}
-            total={puzzle?.itemIds.length ?? 1}
+            index={done}
+            total={total}
             choices={q.question.choices}
             stateOf={stateOf}
             status={q.status}
@@ -212,8 +226,8 @@ export function App({
             hint={hintFor(lastWrong?.foilCode)}
             sound={sound}
             onReplay={() => void speak(screen)}
-            onChoose={(word) => dispatch({ type: 'answer', word, now: now() })}
-            onNext={() => dispatch({ type: 'next', random, now: now() })}
+            onChoose={(word) => dispatch({ type: 'answer', word, env: env() })}
+            onNext={() => dispatch({ type: 'next', env: env() })}
             onBack={() => dispatch({ type: 'backToPuzzles' })}
           />
         )
@@ -230,7 +244,7 @@ export function App({
             stars={screen.stars}
             hasNext={model.puzzlesByLevel.has(screen.level + 1)}
             onNext={() =>
-              dispatch(screen.name === 'levelComplete' ? { type: 'nextLevel' } : { type: 'nextPuzzle', random, now: now() })
+              dispatch(screen.name === 'levelComplete' ? { type: 'nextLevel' } : { type: 'nextPuzzle', env: env() })
             }
             onMap={() => dispatch({ type: 'backToPuzzles' })}
             onHome={() => dispatch({ type: 'home' })}

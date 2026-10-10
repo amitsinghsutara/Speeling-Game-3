@@ -48,15 +48,15 @@
 
 ## Phase 6: Adaptive policy [US3]
 
-- [ ] T023 Add the ReasonCode enum and a PolicyConfig with provisional flags
-- [ ] T024 Generate eligible candidates: focused practice, scaffolding, consolidation, mixed practice, spaced review, transfer, introduction
-- [ ] T025 Implement a deterministic selector that persists AdaptiveDecision records
-- [ ] T026 Wire the policy into the game flow
+- [x] T023 Add the ReasonCode enum and a PolicyConfig with provisional flags
+- [x] T024 Generate eligible candidates: focused practice, scaffolding, consolidation, mixed practice, spaced review, transfer, introduction
+- [x] T025 Implement a deterministic selector that persists AdaptiveDecision records
+- [x] T026 Wire the policy into the game flow
 
 ## Phase 7: Adaptive tests [US3]
 
-- [ ] T027 Add scenario tests for each strategy and reason code
-- [ ] T028 Add property tests: approved-only content, determinism under a seed, and no single-mistake patterns
+- [x] T027 Add scenario tests for each strategy and reason code
+- [x] T028 Add property tests: approved-only content, determinism under a seed, and no single-mistake patterns
 
 ## Phase 8: Gemini adviser [US4]
 

@@ -1,11 +1,20 @@
 /**
- * Screen-to-screen game flow as a pure reducer. Randomness and time arrive in
- * actions, so every transition is reproducible in tests. Locked levels and
- * puzzles cannot be entered, whatever the UI sends.
+ * Screen-to-screen game flow as a pure reducer. Randomness, time and ids arrive
+ * in actions, so a whole play-through is reproducible in tests. Locked levels
+ * and puzzles cannot be entered, whatever the UI sends.
+ *
+ * Every question comes from the adaptive policy: the puzzle's own new words in
+ * curriculum order, plus a few policy-chosen extras that never cost stars.
  */
+import { DEFAULT_POLICY_CONFIG, type PolicyConfig } from '../adaptive/config.ts'
+import type { AdaptiveDecision } from '../adaptive/decision.ts'
+import { advanceRound, decideNext, startRound, type RoundState } from '../adaptive/policy.ts'
 import type { ContentDataset, Item } from '../content/schema.ts'
+import { DEFAULT_LEARNER_MODEL_CONFIG, type LearnerModelConfig } from '../learner/config.ts'
+import { createLearningEvent, type LearningEvent } from '../learner/events.ts'
+import { buildLearnerModel } from '../learner/model.ts'
 import type { SavedProgress } from '../persistence/progressRepository.ts'
-import { answer, mistakesIn, startQuestion, type AnswerOutcome, type QuestionState } from './answer.ts'
+import { answer, startQuestion, type AnswerOutcome, type QuestionState } from './answer.ts'
 import { buildPuzzles, levelStatuses, puzzleStatuses, type Puzzle, type Status } from './progression.ts'
 import { buildQuestion } from './question.ts'
 import type { RandomSource } from './random.ts'
@@ -19,9 +28,10 @@ export type Screen =
       name: 'question'
       level: number
       puzzleId: string
-      index: number
+      round: RoundState
+      decision: AdaptiveDecision
       question: QuestionState
-      /** Wrong answers across the whole puzzle so far. */
+      /** Wrong answers on the puzzle's own words (extras never cost stars). */
       mistakes: number
       lastOutcome: AnswerOutcome | null
     }
@@ -31,21 +41,37 @@ export type Screen =
 export interface GameState {
   screen: Screen
   progress: SavedProgress
+  sessionId: string
+  /** Every learning event known on this device, oldest first. */
+  events: LearningEvent[]
+  /** Decisions made in this session (persisted by the app). */
+  decisions: AdaptiveDecision[]
+}
+
+/** What a step needs from the outside world, injected so steps stay pure. */
+export interface StepEnv {
+  random: RandomSource
+  now: number
+  newId: () => string
 }
 
 export type GameAction =
   | { type: 'play' }
   | { type: 'home' }
   | { type: 'openLevel'; level: number }
-  | { type: 'startPuzzle'; puzzleId: string; random: RandomSource; now: number }
-  | { type: 'answer'; word: string; now: number }
-  | { type: 'next'; random: RandomSource; now: number }
+  | { type: 'startPuzzle'; puzzleId: string; env: StepEnv }
+  | { type: 'answer'; word: string; env: StepEnv }
+  | { type: 'next'; env: StepEnv }
   | { type: 'backToPuzzles' }
-  | { type: 'nextPuzzle'; random: RandomSource; now: number }
+  | { type: 'nextPuzzle'; env: StepEnv }
   | { type: 'nextLevel' }
+  /** Stored events finished loading; merge them under anything recorded meanwhile. */
+  | { type: 'eventsLoaded'; events: readonly LearningEvent[] }
 
 export interface GameModel {
   content: ContentDataset
+  policyConfig: PolicyConfig
+  learnerConfig: LearnerModelConfig
   puzzlesByLevel: Map<number, Puzzle[]>
   itemsById: Map<string, Item>
   levelStatus(progress: SavedProgress, level: number): Status
@@ -54,7 +80,12 @@ export interface GameModel {
   levelStars(progress: SavedProgress, level: number): { earned: number; max: number }
 }
 
-export function createGameModel(content: ContentDataset): GameModel {
+export interface ModelOptions {
+  policyConfig?: PolicyConfig
+  learnerConfig?: LearnerModelConfig
+}
+
+export function createGameModel(content: ContentDataset, options: ModelOptions = {}): GameModel {
   const puzzlesByLevel = buildPuzzles(content)
   const itemsById = new Map(content.items.map((i) => [i.id, i]))
   const allPuzzles = [...puzzlesByLevel.values()].flat()
@@ -64,6 +95,8 @@ export function createGameModel(content: ContentDataset): GameModel {
 
   return {
     content,
+    policyConfig: options.policyConfig ?? DEFAULT_POLICY_CONFIG,
+    learnerConfig: options.learnerConfig ?? DEFAULT_LEARNER_MODEL_CONFIG,
     puzzlesByLevel,
     itemsById,
     levelStatus,
@@ -85,35 +118,18 @@ export function createGameModel(content: ContentDataset): GameModel {
   }
 }
 
-export const initialGameState = (progress: SavedProgress): GameState => ({ screen: { name: 'welcome' }, progress })
+export const initialGameState = (progress: SavedProgress, sessionId: string, events: LearningEvent[] = []): GameState => ({
+  screen: { name: 'welcome' },
+  progress,
+  sessionId,
+  events,
+  decisions: [],
+})
 
-function questionScreen(
-  model: GameModel,
-  puzzle: Puzzle,
-  index: number,
-  mistakes: number,
-  random: RandomSource,
-  now: number,
-): Screen | null {
-  const itemId = puzzle.itemIds[index]
-  const item = itemId === undefined ? undefined : model.itemsById.get(itemId)
-  if (!item) return null
-  return {
-    name: 'question',
-    level: puzzle.level,
-    puzzleId: puzzle.id,
-    index,
-    question: startQuestion(buildQuestion(item, { random }), now),
-    mistakes,
-    lastOutcome: null,
-  }
-}
-
-function startPuzzle(model: GameModel, state: GameState, puzzleId: string, random: RandomSource, now: number) {
-  const puzzle = model.findPuzzle(puzzleId)
-  if (!puzzle || model.puzzleStatus(state.progress, puzzle) === 'locked') return state
-  const screen = questionScreen(model, puzzle, 0, 0, random, now)
-  return screen ? { ...state, screen } : state
+/** Puzzle words still to ask, and how many of the puzzle's own words are done. */
+export const roundProgress = (screen: Extract<Screen, { name: 'question' }>, puzzle: Puzzle | undefined) => {
+  const total = puzzle?.itemIds.length ?? screen.round.queue.length
+  return { done: total - screen.round.queue.length, total }
 }
 
 function completePuzzle(model: GameModel, state: GameState, puzzle: Puzzle, mistakes: number): GameState {
@@ -130,9 +146,53 @@ function completePuzzle(model: GameModel, state: GameState, puzzle: Puzzle, mist
   }
   const isLast = puzzle.number === (model.puzzlesByLevel.get(puzzle.level)?.length ?? 0)
   return {
+    ...state,
     progress,
     screen: { name: isLast ? 'levelComplete' : 'puzzleComplete', level: puzzle.level, puzzleId: puzzle.id, stars },
   }
+}
+
+/** Asks the policy for the next question, or completes the puzzle when it has none. */
+function nextQuestion(model: GameModel, state: GameState, puzzle: Puzzle, round: RoundState, mistakes: number, env: StepEnv): GameState {
+  const learner = buildLearnerModel(state.events, model.content, model.learnerConfig)
+  const decision = decideNext({
+    content: model.content,
+    learner,
+    round,
+    config: model.policyConfig,
+    now: env.now,
+    random: env.random,
+    newId: env.newId,
+  })
+  if (!decision) return completePuzzle(model, state, puzzle, mistakes)
+  const item = model.itemsById.get(decision.itemId)
+  if (!item) return completePuzzle(model, state, puzzle, mistakes)
+  const foils = item.foils.filter((f) => decision.foilWords.includes(f.word))
+  return {
+    ...state,
+    decisions: [...state.decisions, decision],
+    screen: {
+      name: 'question',
+      level: puzzle.level,
+      puzzleId: puzzle.id,
+      round,
+      decision,
+      question: startQuestion(buildQuestion(item, { random: env.random, foils }), env.now),
+      mistakes,
+      lastOutcome: null,
+    },
+  }
+}
+
+function startPuzzle(model: GameModel, state: GameState, puzzleId: string, env: StepEnv): GameState {
+  const puzzle = model.findPuzzle(puzzleId)
+  if (!puzzle || model.puzzleStatus(state.progress, puzzle) === 'locked') return state
+  return nextQuestion(model, state, puzzle, startRound(puzzle.id, puzzle.level, puzzle.itemIds), 0, env)
+}
+
+function mergeEvents(stored: readonly LearningEvent[], session: readonly LearningEvent[]): LearningEvent[] {
+  const ids = new Set(stored.map((e) => e.id))
+  return [...stored, ...session.filter((e) => !ids.has(e.id))].sort((a, b) => a.at - b.at)
 }
 
 export function gameReducer(model: GameModel, state: GameState, action: GameAction): GameState {
@@ -148,16 +208,45 @@ export function gameReducer(model: GameModel, state: GameState, action: GameActi
       return { ...state, screen: { name: 'puzzles', level: action.level } }
 
     case 'startPuzzle':
-      return startPuzzle(model, state, action.puzzleId, action.random, action.now)
+      return startPuzzle(model, state, action.puzzleId, action.env)
 
     case 'answer': {
       if (screen.name !== 'question') return state
-      const result = answer(screen.question, action.word, action.now)
+      const result = answer(screen.question, action.word, action.env.now)
       if (result.outcome.kind === 'ignored') return state
-      const added = mistakesIn(result.state) - mistakesIn(screen.question)
+      const { attempt } = result.outcome
+      const item = model.itemsById.get(screen.decision.itemId)
+      if (!item) return state
+      const event = createLearningEvent(
+        {
+          sessionId: state.sessionId,
+          questionId: screen.decision.id,
+          at: action.env.now,
+          contentVersion: model.content.contentVersion,
+          itemId: item.id,
+          skillId: item.skillId,
+          level: item.level,
+          puzzleId: screen.puzzleId,
+          presentedFoilCodes: screen.decision.foilCodes,
+          chosenWord: attempt.word,
+          correct: attempt.correct,
+          chosenFoilCode: attempt.foilCode,
+          attemptNumber: attempt.attemptNumber,
+          elapsedMs: attempt.elapsedMs,
+          decisionId: screen.decision.id,
+        },
+        action.env.newId(),
+      )
+      const costsStar = !attempt.correct && screen.decision.countsForStars
       return {
         ...state,
-        screen: { ...screen, question: result.state, mistakes: screen.mistakes + added, lastOutcome: result.outcome },
+        events: [...state.events, event],
+        screen: {
+          ...screen,
+          question: result.state,
+          mistakes: screen.mistakes + (costsStar ? 1 : 0),
+          lastOutcome: result.outcome,
+        },
       }
     }
 
@@ -165,9 +254,9 @@ export function gameReducer(model: GameModel, state: GameState, action: GameActi
       if (screen.name !== 'question' || screen.question.status !== 'correct') return state
       const puzzle = model.findPuzzle(screen.puzzleId)
       if (!puzzle) return state
-      if (screen.index + 1 >= puzzle.itemIds.length) return completePuzzle(model, state, puzzle, screen.mistakes)
-      const next = questionScreen(model, puzzle, screen.index + 1, screen.mistakes, action.random, action.now)
-      return next ? { ...state, screen: next } : state
+      const firstTryCorrect = screen.question.attempts[0]?.correct ?? false
+      const round = advanceRound(screen.round, screen.decision, firstTryCorrect)
+      return nextQuestion(model, state, puzzle, round, screen.mistakes, action.env)
     }
 
     case 'backToPuzzles':
@@ -178,12 +267,15 @@ export function gameReducer(model: GameModel, state: GameState, action: GameActi
       if (screen.name !== 'puzzleComplete') return state
       const current = model.findPuzzle(screen.puzzleId)
       const next = current && model.puzzlesByLevel.get(current.level)?.[current.number]
-      return next ? startPuzzle(model, state, next.id, action.random, action.now) : state
+      return next ? startPuzzle(model, state, next.id, action.env) : state
     }
 
     case 'nextLevel': {
       if (screen.name !== 'levelComplete') return state
       return gameReducer(model, state, { type: 'openLevel', level: screen.level + 1 })
     }
+
+    case 'eventsLoaded':
+      return { ...state, events: mergeEvents(action.events, state.events) }
   }
 }

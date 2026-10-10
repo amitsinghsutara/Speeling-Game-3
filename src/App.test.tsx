@@ -284,7 +284,6 @@ describe('App learning events', () => {
       chosenWord: wrongWord,
       correct: false,
       attemptNumber: 1,
-      decisionId: null,
       learnerId: 'local-learner',
     })
     expect(first?.chosenFoilCode).toMatch(/^(V|FC|IC)$/)
@@ -292,11 +291,23 @@ describe('App learning events', () => {
     expect(first?.elapsedMs).toBeGreaterThan(0)
     expect(second).toMatchObject({ correct: true, chosenFoilCode: null, attemptNumber: 2, questionId: first?.questionId })
     expect(first?.contentVersion).toMatch(/^[0-9a-f]{64}$/)
+    // Each attempt points at the adaptive decision that chose the question, and it was saved too.
+    expect(first?.decisionId).toBe(first?.questionId)
+    const decisions = await eventStore.loadDecisions()
+    expect(decisions.map((d) => d.id)).toContain(first?.decisionId)
+    expect(decisions[0]).toMatchObject({ strategy: 'CONTINUE_SEQUENCE', itemId: 'item-001', provisional: true })
   })
 
   it('keeps playing when storage fails', async () => {
     const user = userEvent.setup()
-    const broken = { persistent: true, append: () => Promise.reject(new Error('quota')), load: async () => ({ events: [], skipped: 0 }), clear: async () => {} }
+    const broken = {
+      persistent: true,
+      append: () => Promise.reject(new Error('quota')),
+      load: async () => ({ events: [], skipped: 0 }),
+      appendDecision: () => Promise.reject(new Error('quota')),
+      loadDecisions: async () => [],
+      clear: async () => {},
+    }
     const word = fakeAudio()
     render(<App audio={word.audio} repository={memoryRepository()} eventStore={broken} seed={1} />)
     await openFirstPuzzle(user)
