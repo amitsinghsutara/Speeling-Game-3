@@ -110,7 +110,7 @@ The grown-ups' screen gains a **"Get AI suggestions"** button. When a grown-up p
 - **Aggregates:** the same aggregate data as §3 (`stats`, built by the same code).
 - **Level labels:** the device's own label for each level the child has started, for example `practising`.
 - **Never sent:** the items listed in §4.
-- **When it is sent (changed 2026-10-10, at the owner's request: "AI first, local fallback"):** a request is sent when a grown-up **opens the grown-ups' screen**, after the press-and-hold gate, or presses "Refresh". It is never sent from play screens or in the background.
+- **When it is sent (changed 2026-10-10 at the owner's request, "AI first, local fallback"; the owner confirmed the change the same day):** a request is sent when a grown-up **opens the grown-ups' screen**, after the press-and-hold gate, or presses "Refresh". It is never sent from play screens or in the background.
 - **Caching:** a successful answer is reused for up to 10 minutes while the child's data is unchanged, so reopening the screen does not send again. Requests already in flight are shared.
 - **Fallback:** if AI is off, offline, slow, rate-limited or fails the safety checks, the same card shows suggestions from the game's own rules (`src/insights/local.ts`). These come from the device's numbers, the in-game hints and the codebook, and nothing is sent.
 

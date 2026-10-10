@@ -75,7 +75,7 @@
 - [x] T039 Adviser console messages and server metadata logs (no body, IP or key)
 - [x] T040 Grown-ups AI suggestions (on demand): shared Gemini caller, /api/insights, safety and curriculum validation on both sides, panel with an "AI-generated" label; verified locally with real Gemini
 - [x] T041 Approve privacy addendum §11, then enable in production (done 2026-10-10)
-- [x] T042 AI-first suggestions with a local-rules fallback: requested on opening the screen, cached for 10 minutes while data is unchanged, in-flight requests shared, labelled source; addendum updated (owner to confirm the "on open" change) (`INSIGHTS_ENABLED` secret, plus `VITE_INSIGHTS_ENABLED=true` in .env.adviser)
+- [x] T042 AI-first suggestions with a local-rules fallback: requested on opening the screen, cached for 10 minutes while data is unchanged, in-flight requests shared, labelled source; addendum updated; the owner confirmed the "on open" change on 2026-10-10 (`INSIGHTS_ENABLED` secret, plus `VITE_INSIGHTS_ENABLED=true` in .env.adviser)
 
 ## Phase 9: Offline, accessibility, and release [US5]
 
