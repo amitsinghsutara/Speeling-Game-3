@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "levels": [
+    {
+      "level": 1,
+      "title": "First Sounds",
+      "items": [
+        {
+          "id": "L1-001",
+          "level": 1,
+          "itemNumber": 1,
+          "sequenceInLevel": 1,
+          "skillPattern": "CVC short vowel (confirm exact source wording)",
+          "targetWord": "sat",
+          "foils": [
+            { "word": "sit", "type": "V" },
+            { "word": "sap", "type": "FC" },
+            { "word": "hat", "type": "IC" }
+          ],
+          "designNote": ""
+        }
+      ]
+    }
+  ]
+}
