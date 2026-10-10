@@ -6,6 +6,7 @@ import { buildAdviceRequest } from './adviser/request.ts'
 import { buildLearnerModel } from './learner/model.ts'
 import { buildProgressReport } from './learner/report.ts'
 import { createInsightsClient, type InsightsClient } from './insights/client.ts'
+import { buildLocalInsights } from './insights/local.ts'
 import { GrownUpsScreen } from './ui/screens/GrownUps.tsx'
 import { consoleLog } from './debug/log.ts'
 import { loadContent } from './content/loadContent.ts'
@@ -198,6 +199,18 @@ export function App({
   }, [eventStore])
 
   const env = (): StepEnv => ({ random, now: now(), newId })
+
+  // Grown-ups' report and suggestions, recomputed only when the child's data changes,
+  // so the AI-first Suggestions card asks once per change, not on every render.
+  const grownUps = useMemo(() => {
+    const learner = buildLearnerModel(state.events, model.content, model.learnerConfig)
+    const report = buildProgressReport(learner, model.content, model.policyConfig)
+    return { learner, report, local: buildLocalInsights(report, model.content) }
+  }, [state.events, model])
+  const requestInsights = useCallback(
+    (options?: { refresh?: boolean }) => insights.request(grownUps.learner, grownUps.report, options),
+    [insights, grownUps],
+  )
   const { screen } = state
 
   // On the puzzle map, ask the adviser in the background. Play never waits for it:
@@ -244,12 +257,11 @@ export function App({
         )
 
       case 'grownUps': {
-        const learner = buildLearnerModel(state.events, model.content, model.learnerConfig)
-        const report = buildProgressReport(learner, model.content, model.policyConfig)
         return (
           <GrownUpsScreen
-            report={report}
-            requestInsights={insights.enabled ? () => insights.request(learner, report) : undefined}
+            report={grownUps.report}
+            requestInsights={insights.enabled ? requestInsights : undefined}
+            localInsights={grownUps.local}
             foilName={(code) => model.content.foilCodebook.find((e) => e.code === code)?.name ?? code}
             starsOf={(n) => model.levelStars(state.progress, n)}
             adviserOn={adviser.enabled}

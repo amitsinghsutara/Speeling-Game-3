@@ -9,6 +9,7 @@ import { SignBoard } from '../components/Cartoon.tsx'
 import { ConfirmDialog } from '../components/ExitDialog.tsx'
 import { StarBadge } from '../components/StarBadge.tsx'
 import type { InsightsOutcome } from '../../insights/client.ts'
+import type { Insights } from '../../insights/schema.ts'
 import { AiSuggestions } from './AiSuggestions.tsx'
 import styles from './GrownUps.module.css'
 import screen from './Screen.module.css'
@@ -19,13 +20,15 @@ interface GrownUpsScreenProps {
   /** True when advice from the optional AI adviser can be used on this device. */
   adviserOn: boolean
   /** Present only when AI suggestions are switched on for this build. */
-  requestInsights?: (() => Promise<InsightsOutcome>) | undefined
+  requestInsights?: ((options?: { refresh?: boolean }) => Promise<InsightsOutcome>) | undefined
+  /** Suggestions from the game's own rules, shown when AI is unavailable. */
+  localInsights: Insights
   foilName: (code: string) => string
   onBack: () => void
   onReset: () => void
 }
 
-export function GrownUpsScreen({ report, starsOf, adviserOn, requestInsights, foilName, onBack, onReset }: GrownUpsScreenProps) {
+export function GrownUpsScreen({ report, starsOf, adviserOn, requestInsights, localInsights, foilName, onBack, onReset }: GrownUpsScreenProps) {
   const [confirmingReset, setConfirmingReset] = useState(false)
   const started = report.levels.filter((l) => l.status !== 'not-started')
 
@@ -61,6 +64,9 @@ export function GrownUpsScreen({ report, starsOf, adviserOn, requestInsights, fo
           </dl>
         )}
       </section>
+
+      {/* AI first; the game's own rules fill in whenever AI is unavailable. */}
+      <AiSuggestions request={requestInsights} local={localInsights} foilName={foilName} />
 
       {started.length > 0 && (
         <section className={styles.card} aria-labelledby="levels">
@@ -118,8 +124,6 @@ export function GrownUpsScreen({ report, starsOf, adviserOn, requestInsights, fo
         </section>
       )}
 
-      {requestInsights && <AiSuggestions request={requestInsights} foilName={foilName} />}
-
       <section className={styles.card} aria-labelledby="about">
         <h2 id="about" className={styles.heading}>
           About these numbers
@@ -127,7 +131,7 @@ export function GrownUpsScreen({ report, starsOf, adviserOn, requestInsights, fo
         <p className={styles.muted}>
           The numbers and labels on this page are worked out on this device from your child&apos;s answers.
           {requestInsights
-            ? ' Only if you press “Get AI suggestions” are the practice numbers (never your child’s name or answers) sent to an AI service.'
+            ? ' To write the Suggestions, opening this page sends the practice numbers (never your child’s name or answers) to an AI service; if that is not available, the game’s own rules are used instead.'
             : ' Nothing is sent anywhere to make this page.'}
           {report.provisional && ' The rules behind the labels are still provisional and may change once they are reviewed by a teacher.'}
           {adviserOn && ' Optional teaching suggestions from an AI adviser are switched on: it only ever picks between options the game already allows.'}

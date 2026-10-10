@@ -110,7 +110,9 @@ The grown-ups' screen gains a **"Get AI suggestions"** button. When a grown-up p
 - **Aggregates:** the same aggregate data as §3 (`stats`, built by the same code).
 - **Level labels:** the device's own label for each level the child has started, for example `practising`.
 - **Never sent:** the items listed in §4.
-- **Only on request:** a request is sent only when a grown-up presses the button. Nothing happens automatically or in the background.
+- **When it is sent (changed 2026-10-10, at the owner's request: "AI first, local fallback"):** a request is sent when a grown-up **opens the grown-ups' screen**, after the press-and-hold gate, or presses "Refresh". It is never sent from play screens or in the background.
+- **Caching:** a successful answer is reused for up to 10 minutes while the child's data is unchanged, so reopening the screen does not send again. Requests already in flight are shared.
+- **Fallback:** if AI is off, offline, slow, rate-limited or fails the safety checks, the same card shows suggestions from the game's own rules (`src/insights/local.ts`). These come from the device's numbers, the in-game hints and the codebook, and nothing is sent.
 
 ### Safeguards
 
@@ -120,7 +122,7 @@ The grown-ups' screen gains a **"Get AI suggestions"** button. When a grown-up p
 | Contradicting the device's own numbers | Strengths are kept only for levels the device rates "doing well". Focus areas must be detected error patterns. |
 | Suggesting wrong spellings or unapproved words | Home-practice words must be approved **target** words at or below the child's level. Foils and invented words are removed. |
 | Links, products, contact details | Any link, email-like address or phone-like number discards the result. |
-| Over-trust | Shown under the label "AI-generated suggestions: they may not be right", below the device's own numbers, which stay the source of truth. |
+| Over-trust | Every suggestion is labelled with its source: "AI-generated suggestions: they may not be right", or "From the game's own rules on this device", with the reason AI is not shown. The device's own numbers on the same screen stay the source of truth. |
 | Storage | Suggestions are not stored on the device or the server. The server log is metadata only (§5): outcome, model, timings and a removed-item count. |
 | Cost or abuse | Its own rate limit (10 per device IP per 10 minutes), a client wait of 30 seconds between requests, timeouts, and the fallback model. |
 

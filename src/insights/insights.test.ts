@@ -10,6 +10,7 @@ import { answerEvents, correctAnswers } from '../test/fixtures/events.ts'
 import { buildInsightsRequest, createInsightsClient } from './client.ts'
 import type { RawInsights } from './schema.ts'
 import { INSIGHTS_RESPONSE_SCHEMA, handleInsightsRequest, type InsightsEnv, type InsightsLogEntry } from './server.ts'
+import { buildLocalInsights } from './local.ts'
 import { BANNED_TERMS, validateInsights } from './validate.ts'
 
 const content = loadContent()
@@ -158,7 +159,10 @@ describe('insights browser client', () => {
     const f = vi.fn<typeof fetch>(async () => Response.json({ status: 'ok', model: 'm', insights: { ...good, removed: [] } }))
     const client = createInsightsClient({ enabled: true, content, policy: DEFAULT_POLICY_CONFIG, fetch: f, now: () => NOW, isOnline: () => true, log: () => {} })
     expect((await client.request(learner, report)).kind).toBe('insights')
-    expect(await client.request(learner, report)).toEqual({ kind: 'none', reason: 'too-soon' })
+    // Same data again: the earlier answer is reused, with no new request.
+    expect(await client.request(learner, report)).toMatchObject({ kind: 'insights', cached: true })
+    // Refresh skips the cache but still respects the minimum interval.
+    expect(await client.request(learner, report, { refresh: true })).toEqual({ kind: 'none', reason: 'too-soon' })
     const empty = buildProgressReport(buildLearnerModel([], content, DEFAULT_LEARNER_MODEL_CONFIG), content, DEFAULT_POLICY_CONFIG)
     expect(await createInsightsClient({ enabled: true, content, policy: DEFAULT_POLICY_CONFIG, fetch: f, log: () => {} }).request(learner, empty)).toEqual({ kind: 'none', reason: 'no-data' })
     expect(f).toHaveBeenCalledTimes(1)
@@ -171,5 +175,53 @@ describe('insights browser client', () => {
     )
     const client = createInsightsClient({ enabled: true, content, policy: DEFAULT_POLICY_CONFIG, fetch: compromised, now: () => NOW, isOnline: () => true, log: () => {} })
     expect(await client.request(learner, report)).toEqual({ kind: 'none', reason: 'invalid' })
+  })
+})
+
+describe('insights client cache and sharing', () => {
+  const okFetch = () => vi.fn<typeof fetch>(async () => Response.json({ status: 'ok', model: 'm', insights: { ...good, removed: [] } }))
+
+  it('shares one request when asked twice at once (for example, opening the screen twice)', async () => {
+    const { learner, report } = child()
+    const f = okFetch()
+    const client = createInsightsClient({ enabled: true, content, policy: DEFAULT_POLICY_CONFIG, fetch: f, now: () => NOW, isOnline: () => true, log: () => {} })
+    const [a, b] = await Promise.all([client.request(learner, report), client.request(learner, report)])
+    expect(a.kind).toBe('insights')
+    expect(b.kind).toBe('insights')
+    expect(f).toHaveBeenCalledTimes(1)
+  })
+
+  it('asks again once the data changes, after the minimum interval', async () => {
+    let clock = NOW
+    const f = okFetch()
+    const client = createInsightsClient({ enabled: true, content, policy: DEFAULT_POLICY_CONFIG, fetch: f, now: () => clock, isOnline: () => true, log: () => {} })
+    const first = child()
+    await client.request(first.learner, first.report)
+    const events = [...['item-010', 'item-011'].flatMap((itemId) => answerEvents({ itemId, picks: ['FC', 'target'] }))]
+    const moreLearner = buildLearnerModel([...first.learner.questions.flatMap((q) => q.attempts), ...events], content, DEFAULT_LEARNER_MODEL_CONFIG)
+    const moreReport = buildProgressReport(moreLearner, content, DEFAULT_POLICY_CONFIG)
+    clock += 31_000
+    expect((await client.request(moreLearner, moreReport)).kind).toBe('insights')
+    expect(f).toHaveBeenCalledTimes(2)
+  })
+})
+
+describe('local suggestions (fallback)', () => {
+  it('has the same shape as AI suggestions and uses only the device’s facts and the in-game hints', () => {
+    const { report } = child()
+    const local = buildLocalInsights(report, content)
+    expect(local.summary).toMatch(/^\d+ questions answered so far, \d+% right first time\. Level 1: still practising\./)
+    expect(local.strengths).toEqual([])
+    expect(local.focusAreas).toEqual([{ foilCode: 'V', tip: expect.stringContaining('Listen to the middle sound.') }])
+    expect(local.homeActivities[0]?.words).toEqual(report.practiseWords.slice(0, 6))
+    // It passes the same safety checks the AI version must pass.
+    expect(validateInsights(local, content, child().request).kind).toBe('ok')
+  })
+
+  it('lists strengths only for levels doing well, and is honest with no data', () => {
+    const well = buildProgressReport(buildLearnerModel(correctAnswers(level1.slice(0, 10)), content, DEFAULT_LEARNER_MODEL_CONFIG), content, DEFAULT_POLICY_CONFIG)
+    expect(buildLocalInsights(well, content).strengths).toEqual([{ level: 1, note: 'Doing well recently: 100% right first time lately.' }])
+    const empty = buildProgressReport(buildLearnerModel([], content, DEFAULT_LEARNER_MODEL_CONFIG), content, DEFAULT_POLICY_CONFIG)
+    expect(buildLocalInsights(empty, content)).toMatchObject({ summary: expect.stringMatching(/^No answers yet/), focusAreas: [], homeActivities: [] })
   })
 })

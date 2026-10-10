@@ -5,6 +5,7 @@ import { App } from './App.tsx'
 import type { AudioProvider, PlayOutcome } from './audio/AudioProvider.ts'
 import type { UiSound, UiSoundPlayer } from './audio/uiSounds.ts'
 import type { AdviceOutcome, AdviserClient } from './adviser/client.ts'
+import type { InsightsClient } from './insights/client.ts'
 import type { AdviceRequest } from './adviser/schema.ts'
 import { memoryLearningEventStore } from './persistence/learningEventStore.ts'
 import { localPreferencesRepository } from './persistence/preferences.ts'
@@ -435,5 +436,79 @@ describe('App grown-ups screen', () => {
     expect(repository.load().completedPuzzleIds).toEqual([])
     expect((await eventStore.load()).events).toEqual([])
     expect(await eventStore.loadDecisions()).toEqual([])
+  }, 15_000)
+})
+
+describe('App grown-ups suggestions (AI first, local fallback)', () => {
+  const aiInsights = {
+    summary: 'AI summary: practice is going steadily.',
+    strengths: [],
+    focusAreas: [],
+    homeActivities: [{ title: 'Word hunt', description: 'Find the word.', words: ['sat'] }],
+    removed: [],
+  }
+
+  async function openGrownUpsAfterOneAnswer(insights: InsightsClient) {
+    const user = userEvent.setup()
+    const word = fakeAudio()
+    render(<App audio={word.audio} repository={memoryRepository()} eventStore={memoryLearningEventStore()} insights={insights} seed={1} />)
+    await openFirstPuzzle(user)
+    await user.click(screen.getByRole('button', { name: word.lastWord() }))
+    await tap(user, screen.getByRole('button', { name: 'Back to the puzzle map' }))
+    await tap(user, screen.getByRole('button', { name: 'Back to levels' }))
+    const hold = screen.getByRole('button', { name: /For grown-ups: press and hold/ })
+    fireEvent.pointerDown(hold, { button: 0 })
+    await act(() => new Promise<void>((r) => setTimeout(r, HOLD_MS + 50)))
+    fireEvent.pointerUp(hold)
+    return user
+  }
+
+  it('shows AI suggestions first when they are available, asking exactly once', async () => {
+    const request = vi.fn<InsightsClient['request']>(async () => ({ kind: 'insights' as const, insights: aiInsights }))
+    await openGrownUpsAfterOneAnswer({ enabled: true, request })
+    expect(await screen.findByText('AI summary: practice is going steadily.')).toBeInTheDocument()
+    expect(screen.getByText(/AI-generated suggestions: they may not be right/)).toBeInTheDocument()
+    await act(() => new Promise<void>((r) => setTimeout(r, 50)))
+    expect(request).toHaveBeenCalledTimes(1)
+  }, 15_000)
+
+  it('falls back to the game’s own rules, saying why, when AI is unavailable', async () => {
+    const request = vi.fn<InsightsClient['request']>(async () => ({ kind: 'none' as const, reason: 'timeout' as const }))
+    await openGrownUpsAfterOneAnswer({ enabled: true, request })
+    expect(await screen.findByText(/From the game.s own rules on this device\. AI suggestions aren.t shown because the AI took too long/)).toBeInTheDocument()
+    expect(screen.getByText(/1 question answered so far/)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Try AI suggestions again' })).toBeInTheDocument()
+  }, 15_000)
+
+  it('uses the game’s own rules without any request when AI is switched off', async () => {
+    const request = vi.fn<InsightsClient['request']>()
+    await openGrownUpsAfterOneAnswer({ enabled: false, request })
+    expect(screen.getByText(/^From the game.s own rules on this device.$/)).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /AI suggestions/ })).not.toBeInTheDocument()
+    expect(request).not.toHaveBeenCalled()
+  }, 15_000)
+})
+
+describe('App grown-ups suggestions refresh', () => {
+  it('keeps a good AI answer on screen when a refresh fails', async () => {
+    const user = userEvent.setup()
+    const word = fakeAudio()
+    const request = vi
+      .fn<InsightsClient['request']>()
+      .mockResolvedValueOnce({ kind: 'insights', insights: { summary: 'First AI answer.', strengths: [], focusAreas: [], homeActivities: [], removed: [] } })
+      .mockResolvedValueOnce({ kind: 'none', reason: 'too-soon' })
+    render(<App audio={word.audio} repository={memoryRepository()} eventStore={memoryLearningEventStore()} insights={{ enabled: true, request }} seed={1} />)
+    await openFirstPuzzle(user)
+    await user.click(screen.getByRole('button', { name: word.lastWord() }))
+    await tap(user, screen.getByRole('button', { name: 'Back to the puzzle map' }))
+    await tap(user, screen.getByRole('button', { name: 'Back to levels' }))
+    const hold = screen.getByRole('button', { name: /For grown-ups: press and hold/ })
+    fireEvent.pointerDown(hold, { button: 0 })
+    await act(() => new Promise<void>((r) => setTimeout(r, HOLD_MS + 50)))
+    fireEvent.pointerUp(hold)
+    expect(await screen.findByText('First AI answer.')).toBeInTheDocument()
+    await tap(user, screen.getByRole('button', { name: 'Refresh suggestions' }))
+    expect(await screen.findByText('First AI answer.')).toBeInTheDocument()
+    expect(screen.queryByText(/From the game.s own rules/)).not.toBeInTheDocument()
   }, 15_000)
 })

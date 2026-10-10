@@ -143,7 +143,11 @@ To deploy with the adviser switched on in the browser, use `npm run deploy:advis
 
 **Production status (2026-10-10): on.** Privacy addendum §11 approved, with open items deferred, including a parent notice.
 
-On the grown-ups' screen, **"Get AI suggestions"** asks Gemini, on demand only, for a short summary, focus tips and home practice ideas. It uses the same aggregate data as the adviser, plus the device's own level labels.
+**AI first, local fallback.** Opening the grown-ups' screen, after the press-and-hold gate, asks Gemini for a short summary, focus tips and home practice ideas. It uses the same aggregate data as the adviser, plus the device's own level labels.
+
+If AI is off, offline, slow, rate-limited or fails the safety checks, the same Suggestions card shows a version built from the game's own rules (`src/insights/local.ts`: device numbers, in-game hints, codebook names), with the reason AI isn't shown.
+
+- **Reuse:** a good AI answer is reused for 10 minutes while the data is unchanged. A failed "Refresh" keeps the current answer.
 
 - **Safety checks:** unsafe or labelling language (diagnoses, "behind", "mastered"…) discards the whole result. Strengths must match the device's own "doing well" levels. Practice words must be approved target words. Checks run on the server and again in the browser (`src/insights/validate.ts`).
 - **Separate switches:** `INSIGHTS_ENABLED=true` on the server (an encrypted secret), plus `VITE_INSIGHTS_ENABLED=true` in `.env.adviser`. Both are on in production. Kill switch: set `INSIGHTS_ENABLED` to `false` and redeploy.

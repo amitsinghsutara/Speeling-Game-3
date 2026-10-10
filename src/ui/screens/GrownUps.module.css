@@ -119,3 +119,13 @@
 .card [role='status'] > * + * {
   margin-top: 10px;
 }
+
+.localLabel {
+  display: inline-block;
+  padding: 2px 10px;
+  border: 2px solid var(--ink-soft);
+  border-radius: var(--radius-md);
+  background: #f3efe6;
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+}
