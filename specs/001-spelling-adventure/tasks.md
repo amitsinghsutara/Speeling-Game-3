@@ -18,15 +18,15 @@
 - [x] T007 Implement `validate.ts`: missing fields, unknown codes, duplicate IDs/targets/choices, sequence gaps, LevelGuide word counts, and Summary per-code counts
 - [x] T008 Implement `scripts/import-content.ts` (xlsx → JSON, contentVersion hash, non-zero exit on errors)
 - [x] T009 [P] Add unit tests for normalize and validate using small fixtures (valid and each invalid case)
-- [x] T010 Generate (commit pending) `src/content/content.generated.json`, and add a test asserting 200 items and 0 errors
+- [x] T010 Generate and commit `src/content/content.generated.json`, and add a test asserting 200 items and 0 errors
 - [x] T011 Implement `loadContent.ts` (runtime Zod parse) with a test
 
 ## Phase 3: Game core [US1]
 
-- [ ] T012 `buildQuestion` with an injected RNG and a foil subset (for scaffolding), plus invariant tests
-- [ ] T013 `evaluateAnswer` and the per-question state machine (retry, disabled tiles, no double advance)
-- [ ] T014 `starsForMistakes` (0 mistakes → 3, 1–3 → 2, 4+ → 1), best-kept merge, and tests
-- [ ] T015 Puzzle splitting and sequential unlock, with tests
+- [x] T012 `buildQuestion` with an injected RNG and a foil subset (for scaffolding), plus invariant tests
+- [x] T013 `evaluateAnswer` and the per-question state machine (retry, disabled tiles, no double advance)
+- [x] T014 `starsForMistakes` (0 mistakes → 3, 1–3 → 2, 4+ → 1), best-kept merge, and tests
+- [x] T015 Puzzle splitting and sequential unlock, with tests
 
 ## Phase 4: UI and audio [US1]
 
