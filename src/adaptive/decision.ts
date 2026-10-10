@@ -3,7 +3,7 @@
  * referenced by the learning events it produces, and replayable from its inputs.
  */
 import { z } from 'zod'
-import { PRESENTATION_REASONS, REASON_CODES_VERSION, SKIP_REASONS, STRATEGY_REASONS } from './reasons.ts'
+import { ADVISER_REASONS, PRESENTATION_REASONS, SKIP_REASONS, STRATEGY_REASONS } from './reasons.ts'
 
 export const DECISION_SCHEMA_VERSION = 1
 
@@ -13,7 +13,7 @@ export const adaptiveDecisionSchema = z.object({
   at: z.number().int().nonnegative(),
   policyVersion: z.string().min(1),
   learnerModelVersion: z.string().min(1),
-  reasonCodesVersion: z.literal(REASON_CODES_VERSION),
+  reasonCodesVersion: z.union([z.literal(1), z.literal(2)]),
   /** True while any setting behind this decision is unconfirmed. */
   provisional: z.boolean(),
   puzzleId: z.string().min(1),
@@ -36,6 +36,10 @@ export const adaptiveDecisionSchema = z.object({
     reviewSkillLastSeenAt: z.number().optional(),
     heldFoilCodes: z.array(z.string()).optional(),
   }),
+  /** The adviser's part in this decision (absent on decisions saved before Phase 8). */
+  adviser: z
+    .object({ status: z.enum(ADVISER_REASONS), adviceId: z.string().optional(), rejected: z.array(z.string()).optional() })
+    .optional(),
   /** Strategies looked at before this one, and why each was not used. */
   considered: z.array(z.object({ strategy: z.enum(STRATEGY_REASONS), skipped: z.enum(SKIP_REASONS) })),
 })

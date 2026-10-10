@@ -8,6 +8,9 @@ import { answerEvents } from '../test/fixtures/events.ts'
 import { DEFAULT_POLICY_CONFIG, type PolicyConfig } from './config.ts'
 import { decideNext, startRound, type RoundState } from './policy.ts'
 import { tierLookup } from './presentation.ts'
+import { buildAdviceRequest } from '../adviser/request.ts'
+import type { RawAdvice, ValidatedAdvice } from '../adviser/schema.ts'
+import { validateAdvice } from '../adviser/validate.ts'
 
 const content = loadContent()
 const tierOf = tierLookup(content)
@@ -42,7 +45,13 @@ function missed(itemId: string, code: string, at = NOW - 60_000): LearningEvent[
   )
 }
 
-function decide(events: LearningEvent[], round: RoundState, config: PolicyConfig = DEFAULT_POLICY_CONFIG, seed = 1) {
+function decide(
+  events: LearningEvent[],
+  round: RoundState,
+  config: PolicyConfig = DEFAULT_POLICY_CONFIG,
+  seed = 1,
+  advice: ValidatedAdvice | null = null,
+) {
   let n = 0
   return decideNext({
     content,
@@ -52,7 +61,20 @@ function decide(events: LearningEvent[], round: RoundState, config: PolicyConfig
     now: NOW,
     random: seededRandom(seed),
     newId: () => `d-${++n}`,
+    advice,
   })
+}
+
+/** Builds validated advice the same way the client does, for a given learner history. */
+function adviceFor(events: LearningEvent[], level: number, raw: Partial<RawAdvice>): ValidatedAdvice {
+  const learner = buildLearnerModel(events, content, DEFAULT_LEARNER_MODEL_CONFIG)
+  const request = buildAdviceRequest(learner, content, level, DEFAULT_POLICY_CONFIG, NOW)
+  const advice = validateAdvice(
+    { focusFoilCode: null, reviewSkillId: null, preferItemIds: [], candidateFoils: [], rationale: '', ...raw },
+    { content, request, adviceId: 'advice-1', receivedAt: NOW },
+  )
+  if (!advice) throw new Error('fixture advice did not validate')
+  return advice
 }
 
 const round = (levelNumber: number, queue: string[], extra: Partial<RoundState> = {}): RoundState => ({
@@ -126,7 +148,7 @@ describe('scaffolding', () => {
   })
 
   it('goes back to every choice once answers recover', () => {
-    const recovered = [...struggling, ...asked('item-006', ['target']), ...asked('item-007', ['target'])]
+    const recovered = [...struggling, ...asked('item-006', ['target'], NOW - 2000), ...asked('item-007', ['target'], NOW - 1000)]
     expect(decide(recovered, round(1, ['item-001']))?.presentation).toBe('FULL_SET')
   })
 })
@@ -270,5 +292,61 @@ describe('policy guarantees', () => {
       // A sequence step is always the puzzle's next new word.
       expect(d.strategy !== 'CONTINUE_SEQUENCE' || d.itemId === queue[0]).toBe(true)
     }
+  })
+})
+
+describe('optional AI advice', () => {
+  const vowelPattern = [...missed('item-002', 'V'), ...missed('item-003', 'V'), ...missed('item-004', 'V')]
+
+  it('records that local rules decided alone when there is no advice', () => {
+    expect(decide([], round(1, level1Puzzle1))?.adviser).toEqual({ status: 'ADVISER_UNAVAILABLE' })
+  })
+
+  it('may choose which detected pattern to practise first', () => {
+    // Two equal patterns: by default the policy picks FC (alphabetical tie-break).
+    const both = [...vowelPattern, ...missed('item-006', 'FC'), ...missed('item-007', 'FC'), ...missed('item-008', 'FC')]
+    const r = round(1, ['item-005'])
+    expect(decide(both, r)?.evidence.errorPattern?.foilCode).toBe('FC')
+    const d = decide(both, r, DEFAULT_POLICY_CONFIG, 1, adviceFor(both, 1, { focusFoilCode: 'V' }))
+    expect(d).toMatchObject({ strategy: 'FOCUS_ERROR_PATTERN', adviser: { status: 'ADVISER_ACCEPTED', adviceId: 'advice-1' } })
+    expect(d?.evidence.errorPattern?.foilCode).toBe('V')
+    expect(d?.foilCodes).toContain('V')
+  })
+
+  it('cannot create a focus session when no pattern was detected', () => {
+    const advice = adviceFor([], 1, { focusFoilCode: 'V' })
+    expect(advice.focusFoilCode).toBeNull()
+    const d = decide([], round(1, level1Puzzle1), DEFAULT_POLICY_CONFIG, 1, advice)
+    expect(d).toMatchObject({ strategy: 'CONTINUE_SEQUENCE', itemId: 'item-001', adviser: { status: 'ADVISER_NOT_APPLICABLE' } })
+    expect(d?.adviser?.rejected?.[0]).toMatch(/not a detected error pattern/)
+  })
+
+  it('may pick which eligible word to practise, but never the puzzle’s queued word or the last word', () => {
+    const r = round(1, ['item-005'], { asked: [{ itemId: 'item-004', strategy: 'CONTINUE_SEQUENCE', firstTryCorrect: false }] })
+    const chosen = decide(vowelPattern, r, DEFAULT_POLICY_CONFIG, 1, adviceFor(vowelPattern, 1, { preferItemIds: ['item-003'] }))
+    expect(chosen).toMatchObject({ itemId: 'item-003', adviser: { status: 'ADVISER_ACCEPTED' } })
+
+    const sneaky = decide(vowelPattern, r, DEFAULT_POLICY_CONFIG, 1, adviceFor(vowelPattern, 1, { preferItemIds: ['item-005', 'item-004'] }))
+    expect(['item-005', 'item-004']).not.toContain(sneaky?.itemId)
+    expect(sneaky?.adviser?.status).toBe('ADVISER_NOT_APPLICABLE')
+  })
+
+  it('may pick which approved foils stay when scaffolding, within the same count', () => {
+    const struggling = [...missed('item-002', 'V'), ...missed('item-003', 'FC'), ...missed('item-004', 'IC')]
+    const advice = adviceFor(struggling, 1, { candidateFoils: [{ itemId: 'item-001', word: 'sit' }] })
+    const d = decide(struggling, round(1, ['item-001']), DEFAULT_POLICY_CONFIG, 1, advice)
+    expect(d).toMatchObject({ presentation: 'SCAFFOLD_REDUCE_CHOICES', foilWords: ['sit', 'sap'], adviser: { status: 'ADVISER_ACCEPTED' } })
+  })
+
+  it('never changes the curriculum order of new words', () => {
+    const advice = adviceFor([], 1, { preferItemIds: ['item-010'] })
+    const d = decide([], round(1, level1Puzzle1), DEFAULT_POLICY_CONFIG, 1, advice)
+    expect(d).toMatchObject({ strategy: 'CONTINUE_SEQUENCE', itemId: 'item-001', countsForStars: true })
+  })
+
+  it('keeps decisions deterministic with the same advice', () => {
+    const advice = adviceFor(vowelPattern, 1, { preferItemIds: ['item-002', 'item-003'] })
+    const r = round(1, ['item-005'])
+    expect(decide(vowelPattern, r, DEFAULT_POLICY_CONFIG, 3, advice)).toEqual(decide(vowelPattern, r, DEFAULT_POLICY_CONFIG, 3, advice))
   })
 })

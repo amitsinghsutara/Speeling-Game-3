@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
 import { createDefaultAudioProvider, type AudioProvider } from './audio/AudioProvider.ts'
 import { isUiSound, webAudioUiSounds, type UiSound, type UiSoundPlayer } from './audio/uiSounds.ts'
+import { createAdviserClient, type AdviserClient } from './adviser/client.ts'
+import { buildAdviceRequest } from './adviser/request.ts'
+import { buildLearnerModel } from './learner/model.ts'
 import { loadContent } from './content/loadContent.ts'
 import { hintFor } from './game/hints.ts'
 import { newId } from './learner/events.ts'
@@ -40,6 +43,8 @@ export interface AppProps {
   modelOptions?: ModelOptions
   /** Service worker status (offline readiness, waiting updates). */
   pwa?: PwaStatus
+  /** Optional AI adviser. Off unless the build sets VITE_ADVISER_ENABLED=true (and the server agrees). */
+  adviser?: AdviserClient
   /** Seed for shuffles; fixed in tests, random in play. */
   seed?: number
   now?: () => number
@@ -67,6 +72,7 @@ export function App({
   eventStore: eventStoreProp,
   modelOptions,
   pwa = inertPwaStatus,
+  adviser: adviserProp,
   seed,
   now = Date.now,
 }: AppProps) {
@@ -79,6 +85,9 @@ export function App({
   const uiSounds = useMemo(() => uiSoundsProp ?? webAudioUiSounds(), [uiSoundsProp])
   const [random] = useState(() => seededRandom(seed ?? Math.floor(Math.random() * 2 ** 32)))
 
+  const [adviser] = useState(
+    () => adviserProp ?? createAdviserClient({ enabled: import.meta.env.VITE_ADVISER_ENABLED === 'true', content: model.content }),
+  )
   const [state, setState] = useState(() => initialGameState(repository.load(), newId()))
   // Latest state, so taps landing before a re-render still apply in order.
   const latest = useRef(state)
@@ -167,6 +176,21 @@ export function App({
 
   const env = (): StepEnv => ({ random, now: now(), newId })
   const { screen } = state
+
+  // On the puzzle map, ask the adviser in the background. Play never waits for it:
+  // advice that arrives later is used for later decisions, or not at all.
+  const mapLevel = screen.name === 'puzzles' ? screen.level : null
+  useEffect(() => {
+    if (mapLevel === null || !adviser.enabled) return
+    const current = latest.current
+    const learner = buildLearnerModel(current.events, model.content, model.learnerConfig)
+    const body = buildAdviceRequest(learner, model.content, mapLevel, model.policyConfig, now())
+    void adviser.request(body).then((outcome) => {
+      if (outcome.kind === 'advice') dispatch({ type: 'adviceReceived', advice: outcome.advice })
+    })
+    // dispatch and now read through refs/props that do not change the request's meaning.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [adviser, mapLevel, model])
 
   // A waiting update is applied only on the Welcome or level screens, never mid-puzzle.
   // Progress is saved on every change, so the reload loses nothing.

@@ -9,6 +9,8 @@
 import { DEFAULT_POLICY_CONFIG, type PolicyConfig } from '../adaptive/config.ts'
 import type { AdaptiveDecision } from '../adaptive/decision.ts'
 import { advanceRound, decideNext, startRound, type RoundState } from '../adaptive/policy.ts'
+import { isAdviceUsable } from '../adviser/client.ts'
+import type { ValidatedAdvice } from '../adviser/schema.ts'
 import type { ContentDataset, Item } from '../content/schema.ts'
 import { DEFAULT_LEARNER_MODEL_CONFIG, type LearnerModelConfig } from '../learner/config.ts'
 import { createLearningEvent, type LearningEvent } from '../learner/events.ts'
@@ -46,6 +48,8 @@ export interface GameState {
   events: LearningEvent[]
   /** Decisions made in this session (persisted by the app). */
   decisions: AdaptiveDecision[]
+  /** Latest validated adviser output, if any. The policy uses it only while fresh and for its level. */
+  advice: ValidatedAdvice | null
 }
 
 /** What a step needs from the outside world, injected so steps stay pure. */
@@ -67,6 +71,8 @@ export type GameAction =
   | { type: 'nextLevel' }
   /** Stored events finished loading; merge them under anything recorded meanwhile. */
   | { type: 'eventsLoaded'; events: readonly LearningEvent[] }
+  /** Validated advice arrived in the background. */
+  | { type: 'adviceReceived'; advice: ValidatedAdvice }
 
 export interface GameModel {
   content: ContentDataset
@@ -124,6 +130,7 @@ export const initialGameState = (progress: SavedProgress, sessionId: string, eve
   sessionId,
   events,
   decisions: [],
+  advice: null,
 })
 
 /** Puzzle words still to ask, and how many of the puzzle's own words are done. */
@@ -163,6 +170,7 @@ function nextQuestion(model: GameModel, state: GameState, puzzle: Puzzle, round:
     now: env.now,
     random: env.random,
     newId: env.newId,
+    advice: isAdviceUsable(state.advice, puzzle.level, env.now) ? state.advice : null,
   })
   if (!decision) return completePuzzle(model, state, puzzle, mistakes)
   const item = model.itemsById.get(decision.itemId)
@@ -277,5 +285,8 @@ export function gameReducer(model: GameModel, state: GameState, action: GameActi
 
     case 'eventsLoaded':
       return { ...state, events: mergeEvents(action.events, state.events) }
+
+    case 'adviceReceived':
+      return { ...state, advice: action.advice }
   }
 }

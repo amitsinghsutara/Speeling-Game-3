@@ -15,7 +15,8 @@ export interface AnswerSpec {
 
 /** Builds the events for one question, attempts in order, ending however `picks` ends. */
 export function answerEvents({ itemId, shown = ['V', 'FC', 'IC'], picks, skillId = 'level-1', level = 1 }: AnswerSpec): LearningEvent[] {
-  const questionId = `q-${++counter}`
+  // Zero-padded so string order matches creation order (equal timestamps sort by id).
+  const questionId = `q-${String(++counter).padStart(5, '0')}`
   const shownAt = (clock += 10_000)
   return picks.map((pick, i) =>
     createLearningEvent(

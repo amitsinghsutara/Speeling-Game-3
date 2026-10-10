@@ -71,3 +71,29 @@ npm run deploy   # check + build + upload dist/ to production (branch "main")
 - **Icons:** regenerate them with `npm run gen:icons` (dependency-free; it draws Fern's face).
 - **Dev server:** `npm run dev` does not register the service worker. To test offline, use `npm run build && npx vite preview`.
 - **Local testing:** old service workers from Game 2 can linger on `localhost` ports and serve Game 2. Use a fresh port, or `127.0.0.1`.
+
+## Optional AI adviser (Gemini): off by default
+
+The adviser can suggest which detected error pattern to practise first, which eligible words to use, which due skill to review, and which approved foils to keep when scaffolding. Its limits:
+
+- **Only choices the policy already allows.** It picks among options the local policy has already made eligible.
+- **Cannot change the rules.** It cannot add strategies, change the curriculum order, score, declare mastery or alter answers.
+- **Checked twice.** Every suggestion is validated against the curriculum, on the server and again in the browser.
+- **Never in the way.** Advice is fetched in the background on the puzzle map, so play never waits. With no advice, local rules decide alone, and every decision records `ADVISER_UNAVAILABLE`, `ADVISER_ACCEPTED` or `ADVISER_NOT_APPLICABLE`.
+- **Minimal data.** Only aggregate statistics and the approved word list are sent: no learner id, events or timestamps. See `src/adviser/request.ts` and its tests.
+
+It stays off unless **both** switches are on. Constitution VI requires a recorded privacy review before production use.
+
+```bash
+# Server (Cloudflare Pages project settings, or the CLI):
+npx wrangler pages secret put GEMINI_API_KEY --project-name=spelling-adventure   # paste the key when prompted
+# Also set ADVISER_ENABLED=true and GEMINI_MODEL=<model id> as environment variables in the dashboard.
+
+# Client: build with the flag on
+VITE_ADVISER_ENABLED=true npm run deploy
+```
+
+- **Endpoint:** `functions/api/advice.ts` is the Pages Function; all logic is in `src/adviser/server.ts`.
+- **Timeouts:** 6 s on the server and 8 s in the client, which is never on the child's path.
+- **Rate limits:** 20 requests per device IP per 10 minutes, best effort and per serverless instance. Use Cloudflare rate-limiting rules for a hard limit. The client also allows at most one request per 2 minutes.
+- **Freshness:** advice is used only for its own level, and only for 30 minutes.

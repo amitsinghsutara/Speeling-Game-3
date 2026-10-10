@@ -60,10 +60,13 @@
 
 ## Phase 8: Gemini adviser [US4]
 
-- [ ] T029 Define Zod schemas for the advice request and response, plus a minimal-data request builder
-- [ ] T030 Build the `functions/api/advice.ts` endpoint (secret key, timeout, rate limit, validation)
-- [ ] T031 Build the client adviser (timeout, curriculum check, eligible-only application, fallback reason codes)
-- [ ] T032 Add adversarial tests (unknown words, invalid JSON, slow or failing responses)
+- [x] T029 Define Zod schemas for the advice request and response, plus a minimal-data request builder
+- [x] T030 Build the `functions/api/advice.ts` endpoint (secret key, timeout, rate limit, validation)
+- [x] T031 Build the client adviser (timeout, curriculum check, eligible-only application, fallback reason codes)
+- [x] T032 Add adversarial tests (unknown words, invalid JSON, slow or failing responses)
+
+- [ ] T032a Privacy review recorded, then the adviser enabled in production (constitution VI): set ADVISER_ENABLED, GEMINI_MODEL and the GEMINI_API_KEY secret, and build with VITE_ADVISER_ENABLED=true
+- [ ] T032b Choose the Gemini model and run a live check of real model output quality against the curriculum
 
 ## Phase 9: Offline, accessibility, and release [US5]
 

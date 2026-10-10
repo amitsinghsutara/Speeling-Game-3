@@ -4,6 +4,8 @@ import { describe, expect, it, vi } from 'vitest'
 import { App } from './App.tsx'
 import type { AudioProvider, PlayOutcome } from './audio/AudioProvider.ts'
 import type { UiSound, UiSoundPlayer } from './audio/uiSounds.ts'
+import type { AdviceOutcome, AdviserClient } from './adviser/client.ts'
+import type { AdviceRequest } from './adviser/schema.ts'
 import { memoryLearningEventStore } from './persistence/learningEventStore.ts'
 import { localPreferencesRepository } from './persistence/preferences.ts'
 import { createPwaStatus } from './pwa/status.ts'
@@ -340,5 +342,41 @@ describe('App updates', () => {
     pwa.setUpdateReady(apply)
     render(<App audio={fakeAudio().audio} repository={memoryRepository()} pwa={pwa} seed={1} />)
     expect(apply).toHaveBeenCalledTimes(1)
+  })
+})
+
+describe('App adviser', () => {
+  it('asks in the background on the puzzle map, and play never waits for it', async () => {
+    const user = userEvent.setup()
+    let resolveAdvice: (outcome: AdviceOutcome) => void = () => {}
+    const requests: AdviceRequest[] = []
+    const adviser: AdviserClient = {
+      enabled: true,
+      request: (body) => {
+        requests.push(body)
+        return new Promise((resolve) => (resolveAdvice = resolve))
+      },
+    }
+    const eventStore = memoryLearningEventStore()
+    const word = fakeAudio()
+    render(<App audio={word.audio} repository={memoryRepository()} eventStore={eventStore} adviser={adviser} seed={1} />)
+    await openFirstPuzzle(user)
+
+    expect(requests).toHaveLength(1)
+    expect(requests[0]?.currentLevel).toBe(1)
+    // The adviser has not answered, yet the first question is already on screen.
+    expect(tiles()).toHaveLength(4)
+    resolveAdvice({ kind: 'none', reason: 'timeout' })
+
+    const decisions = await eventStore.loadDecisions()
+    expect(decisions[0]?.adviser).toEqual({ status: 'ADVISER_UNAVAILABLE' })
+  })
+
+  it('makes no request when the adviser is disabled (the default)', async () => {
+    const user = userEvent.setup()
+    const request = vi.fn<AdviserClient['request']>()
+    render(<App audio={fakeAudio().audio} repository={memoryRepository()} adviser={{ enabled: false, request }} seed={1} />)
+    await openFirstPuzzle(user)
+    expect(request).not.toHaveBeenCalled()
   })
 })

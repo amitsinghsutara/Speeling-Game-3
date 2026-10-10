@@ -7,6 +7,7 @@
  */
 import type { ContentDataset, Item } from '../content/schema.ts'
 import type { RandomSource } from '../game/random.ts'
+import type { ValidatedAdvice } from '../adviser/schema.ts'
 import type { LearnerModel } from '../learner/model.ts'
 import type { PolicyConfig } from './config.ts'
 import { DECISION_SCHEMA_VERSION, type AdaptiveDecision } from './decision.ts'
@@ -42,10 +43,21 @@ export interface PolicyInput {
   now: number
   random: RandomSource
   newId: () => string
+  /** Validated, fresh adviser output for this level, if any. It can only choose among eligible options. */
+  advice?: ValidatedAdvice | null
 }
 
 type Considered = AdaptiveDecision['considered']
 type Pick = { item: Item; keepCode?: string; evidence?: AdaptiveDecision['evidence'] }
+
+/**
+ * Narrows candidates to those the adviser prefers, if any overlap; otherwise leaves them.
+ * Advice can never add a candidate the policy did not already consider eligible.
+ */
+function preferAdvised<T extends { id: string }>(candidates: readonly T[], advised: readonly string[]): { list: readonly T[]; used: boolean } {
+  const preferred = candidates.filter((c) => advised.includes(c.id))
+  return preferred.length > 0 && preferred.length < candidates.length ? { list: preferred, used: true } : { list: candidates, used: false }
+}
 
 /** Deterministic pick: best by `rank` (lower first), seeded random among exact ties. */
 function pickBest<T>(candidates: readonly T[], rank: (c: T) => number[], random: RandomSource): T | undefined {
@@ -65,6 +77,9 @@ function pickBest<T>(candidates: readonly T[], rank: (c: T) => number[], random:
 
 export function decideNext(input: PolicyInput): AdaptiveDecision | null {
   const { content, learner, round, config, random } = input
+  const advice = input.advice ?? null
+  const advised = advice?.preferItemIds ?? []
+  let adviceUsed = false
   const tierOf = tierLookup(content)
   const itemsById = new Map(content.items.map((i) => [i.id, i]))
   const skillId = `level-${round.level}`
@@ -90,7 +105,9 @@ export function decideNext(input: PolicyInput): AdaptiveDecision | null {
   }
 
   const decide = (strategy: StrategyReason, pick: Pick, countsForStars: boolean): AdaptiveDecision => {
-    const presentation = choosePresentation(pick.item, learner, tierOf, config, pick.keepCode)
+    const preferFoils = (advice?.candidateFoils ?? []).filter((f) => f.itemId === pick.item.id).map((f) => f.word)
+    const presentation = choosePresentation(pick.item, learner, tierOf, config, pick.keepCode, preferFoils)
+    if (presentation.usedPreferredFoils) adviceUsed = true
     const stats = learner.bySkill.get(pick.item.skillId)
     return {
       schemaVersion: DECISION_SCHEMA_VERSION,
@@ -114,19 +131,32 @@ export function decideNext(input: PolicyInput): AdaptiveDecision | null {
         skillQuestions: stats?.questions ?? 0,
         ...(presentation.heldFoilCodes.length > 0 && { heldFoilCodes: presentation.heldFoilCodes }),
       },
+      adviser: advice
+        ? {
+            status: adviceUsed ? 'ADVISER_ACCEPTED' : 'ADVISER_NOT_APPLICABLE',
+            adviceId: advice.adviceId,
+            ...(advice.rejected.length > 0 && { rejected: advice.rejected }),
+          }
+        : { status: 'ADVISER_UNAVAILABLE' },
       considered,
     }
   }
 
   // 1. Focused practice on a repeated error pattern, from words up to this level.
   const focus = tryExtra('FOCUS_ERROR_PATTERN', config.focus.maxPerPuzzle, () => {
-    const pattern = [...learner.errorPatterns].sort((a, b) => b.errorRate - a.errorRate || a.foilCode.localeCompare(b.foilCode))[0]
+    const ranked = [...learner.errorPatterns].sort((a, b) => b.errorRate - a.errorRate || a.foilCode.localeCompare(b.foilCode))
+    // The adviser may choose which detected pattern to practise first; it cannot create one.
+    const advisedPattern = ranked.find((p) => p.foilCode === advice?.focusFoilCode)
+    if (advisedPattern && advisedPattern !== ranked[0]) adviceUsed = true
+    const pattern = advisedPattern ?? ranked[0]
     if (!pattern) return 'NO_ERROR_PATTERN'
     const candidates = content.items.filter(
       (i) => i.level <= round.level && notLast(i) && notQueued(i) && i.foils.some((f) => f.code === pattern.foilCode),
     )
     // Familiar words first (practise the pattern, not new vocabulary), then least recently seen.
-    const item = pickBest(candidates, (i) => [seen(i.id) ? 0 : 1, recency(i)], random)
+    const narrowed = preferAdvised(candidates, advised)
+    if (narrowed.used) adviceUsed = true
+    const item = pickBest(narrowed.list, (i) => [seen(i.id) ? 0 : 1, recency(i)], random)
     if (!item) return 'NO_CANDIDATE_WORD'
     return {
       item,
@@ -143,9 +173,15 @@ export function decideNext(input: PolicyInput): AdaptiveDecision | null {
     const due = [...learner.bySkill.values()].filter(
       (s) => s.level < round.level && s.lastSeenAt !== null && input.now - s.lastSeenAt >= config.review.dueAfterMs,
     )
-    const skill = pickBest(due, (s) => [s.lastSeenAt ?? 0], random)
+    const defaultSkill = pickBest(due, (s) => [s.lastSeenAt ?? 0], random)
+    const advisedSkill = due.find((s) => s.skillId === advice?.reviewSkillId)
+    if (advisedSkill && advisedSkill !== defaultSkill) adviceUsed = true
+    const skill = advisedSkill ?? defaultSkill
     if (!skill) return 'NOT_DUE'
-    const candidates = content.items.filter((i) => i.skillId === skill.skillId && seen(i.id) && notLast(i))
+    const eligible = content.items.filter((i) => i.skillId === skill.skillId && seen(i.id) && notLast(i))
+    const narrowed = preferAdvised(eligible, advised)
+    if (narrowed.used) adviceUsed = true
+    const candidates = narrowed.list
     // Weakest first, then the one seen longest ago.
     const item = pickBest(
       candidates,
@@ -196,7 +232,9 @@ export function decideNext(input: PolicyInput): AdaptiveDecision | null {
   const mixed = tryExtra('MIXED_PRACTICE', config.mixed.maxPerPuzzle, () => {
     const earlier = content.items.filter((i) => i.level < round.level && seen(i.id) && notLast(i))
     if (earlier.length === 0) return 'NO_EARLIER_SKILL'
-    const item = pickBest(earlier, (i) => [recency(i)], random)
+    const narrowed = preferAdvised(earlier, advised)
+    if (narrowed.used) adviceUsed = true
+    const item = pickBest(narrowed.list, (i) => [recency(i)], random)
     return item ? { item } : 'NO_CANDIDATE_WORD'
   })
   if (mixed) return decide('MIXED_PRACTICE', mixed, false)

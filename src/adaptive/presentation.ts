@@ -53,7 +53,9 @@ export function choosePresentation(
   config: PolicyConfig,
   /** A foil type that must stay on screen (focused practice on it). */
   keepCode?: string,
-): Presentation {
+  /** Validated adviser suggestion: approved foil words to prefer when showing fewer choices. */
+  preferFoilWords: readonly string[] = [],
+): Presentation & { usedPreferredFoils: boolean } {
   const isHard = (f: Foil) => tierOf(f.code) >= config.tierGate.hardTierFrom
   const hard = item.foils.filter(isHard)
   let foils: Foil[] = [...item.foils]
@@ -74,8 +76,18 @@ export function choosePresentation(
     }
   }
 
+  let usedPreferredFoils = false
   if (isStruggling(learner, item.skillId, config) && foils.length > config.scaffold.foilCount) {
-    foils = inItemOrder(item, byTier(foils, tierOf).slice(0, config.scaffold.foilCount))
+    // Advised foils first (only ones already allowed here), then the easiest by tier.
+    const byDefault = byTier(foils, tierOf).slice(0, config.scaffold.foilCount)
+    const preferred = foils.filter((f) => preferFoilWords.includes(f.word))
+    const rest = byTier(
+      foils.filter((f) => !preferred.includes(f)),
+      tierOf,
+    )
+    const chosen = [...preferred, ...rest].slice(0, config.scaffold.foilCount)
+    usedPreferredFoils = !byDefault.every((f) => chosen.includes(f))
+    foils = inItemOrder(item, chosen)
     reason = 'SCAFFOLD_REDUCE_CHOICES'
   }
 
@@ -90,5 +102,6 @@ export function choosePresentation(
     foils,
     reason,
     heldFoilCodes: item.foils.filter((f) => !foils.includes(f)).map((f) => f.code),
+    usedPreferredFoils,
   }
 }

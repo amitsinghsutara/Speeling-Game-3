@@ -3,7 +3,8 @@
  * a strategy reason (why this word) and a presentation reason (why these choices).
  * Add codes by bumping REASON_CODES_VERSION; never reuse or rename a code.
  */
-export const REASON_CODES_VERSION = 1
+// v2 (Phase 8) added ADVISER_REASONS. Decisions saved under v1 remain valid.
+export const REASON_CODES_VERSION = 2
 
 export const STRATEGY_REASONS = [
   /** The next new word in curriculum order. */
@@ -45,6 +46,17 @@ export const SKIP_REASONS = [
   'NEW_WORDS_REMAIN',
 ] as const
 
+/** What the optional AI adviser contributed to a decision. */
+export const ADVISER_REASONS = [
+  /** No usable advice (disabled, offline, failed, stale, or for another level): local rules decided alone. */
+  'ADVISER_UNAVAILABLE',
+  /** Validated advice chose among options the local policy had already made eligible. */
+  'ADVISER_ACCEPTED',
+  /** Advice was available but had nothing to say about this decision. */
+  'ADVISER_NOT_APPLICABLE',
+] as const
+
+export type AdviserReason = (typeof ADVISER_REASONS)[number]
 export type StrategyReason = (typeof STRATEGY_REASONS)[number]
 export type PresentationReason = (typeof PRESENTATION_REASONS)[number]
 export type SkipReason = (typeof SKIP_REASONS)[number]
