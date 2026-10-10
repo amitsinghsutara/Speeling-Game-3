@@ -5,6 +5,11 @@ dev-dist
 .env
 .env.*
 !.env.example
+# Not secret: only switches the adviser on in the browser build.
+!.env.adviser
 .wrangler
 coverage
 .DS_Store
+
+# Local Pages Function secrets (wrangler pages dev)
+.dev.vars

@@ -90,10 +90,30 @@ npx wrangler pages secret put GEMINI_API_KEY --project-name=spelling-adventure  
 # Also set ADVISER_ENABLED=true and GEMINI_MODEL=<model id> as environment variables in the dashboard.
 
 # Client: build with the flag on
-VITE_ADVISER_ENABLED=true npm run deploy
+npm run deploy:adviser
 ```
 
 - **Endpoint:** `functions/api/advice.ts` is the Pages Function; all logic is in `src/adviser/server.ts`.
 - **Timeouts:** 6 s on the server and 8 s in the client, which is never on the child's path.
 - **Rate limits:** 20 requests per device IP per 10 minutes, best effort and per serverless instance. Use Cloudflare rate-limiting rules for a hard limit. The client also allows at most one request per 2 minutes.
 - **Freshness:** advice is used only for its own level, and only for 30 minutes.
+
+### Testing the adviser locally
+
+The local key file is **`.dev.vars`** (git-ignored; copy `.dev.vars.example` to create it). It is read by the local server only, and never committed or deployed.
+
+**With your real key:**
+
+1. In `.dev.vars`, set `GEMINI_API_KEY` and `GEMINI_MODEL`, and leave `GEMINI_API_BASE` commented out.
+2. Run `npm run dev:full`. This builds with the adviser switched on and serves the site and `/api/advice` at http://127.0.0.1:8788.
+3. Open the puzzle map. That triggers one background request (at most one every 2 minutes).
+
+**Without a key, against a fake Gemini:**
+
+1. Run `npm run mock:gemini` in one terminal.
+2. Uncomment `GEMINI_API_BASE=http://127.0.0.1:8790` in `.dev.vars`, and put any value in `GEMINI_API_KEY`.
+3. Run `npm run dev:full` in another terminal.
+
+The fake deliberately suggests an invented word and an invented foil, so you can watch validation remove them. For safety, the function only sends the key to Google's endpoint or to `127.0.0.1`/`localhost`.
+
+To deploy with the adviser switched on in the browser, use `npm run deploy:adviser`. The server stays off until `ADVISER_ENABLED`, `GEMINI_MODEL` and the `GEMINI_API_KEY` secret are set on the Cloudflare project.

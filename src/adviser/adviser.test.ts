@@ -8,7 +8,7 @@ import { answerEvents } from '../test/fixtures/events.ts'
 import { createAdviserClient, isAdviceUsable, ADVICE_MAX_AGE_MS } from './client.ts'
 import { buildAdviceRequest } from './request.ts'
 import type { AdviceRequest, RawAdvice } from './schema.ts'
-import { GEMINI_RESPONSE_SCHEMA, handleAdviceRequest, slidingWindowLimiter, type AdviserEnv, type ServerDeps } from './server.ts'
+import { GEMINI_RESPONSE_SCHEMA, geminiBase, handleAdviceRequest, slidingWindowLimiter, type AdviserEnv, type ServerDeps } from './server.ts'
 import { validateAdvice } from './validate.ts'
 
 const content = loadContent()
@@ -192,5 +192,29 @@ describe('browser client', () => {
     expect(isAdviceUsable(advice, 2, NOW + 1000)).toBe(false)
     expect(isAdviceUsable(advice, 1, NOW + ADVICE_MAX_AGE_MS + 1)).toBe(false)
     expect(isAdviceUsable(null, 1, NOW)).toBe(false)
+  })
+})
+
+describe('where the API key may be sent', () => {
+  it('allows only Google’s endpoint or this machine', () => {
+    expect(geminiBase({})).toBe('https://generativelanguage.googleapis.com')
+    expect(geminiBase({ GEMINI_API_BASE: 'https://generativelanguage.googleapis.com/' })).toBe('https://generativelanguage.googleapis.com')
+    expect(geminiBase({ GEMINI_API_BASE: 'http://127.0.0.1:8790' })).toBe('http://127.0.0.1:8790')
+    expect(geminiBase({ GEMINI_API_BASE: 'http://localhost:8790' })).toBe('http://localhost:8790')
+    for (const bad of ['https://evil.example', 'http://127.0.0.1.evil.example', 'https://generativelanguage.googleapis.com.evil', 'http://127.0.0.1:8790/steal', 'not a url']) {
+      expect({ bad, base: geminiBase({ GEMINI_API_BASE: bad }) }).toEqual({ bad, base: null })
+    }
+  })
+
+  it('refuses to call anywhere else, so the key cannot leak through misconfiguration', async () => {
+    const gemini = vi.fn<typeof fetch>()
+    const env: AdviserEnv = { ADVISER_ENABLED: 'true', GEMINI_API_KEY: 'k', GEMINI_MODEL: 'm', GEMINI_API_BASE: 'https://evil.example' }
+    const response = await handleAdviceRequest(
+      new Request('https://example.test/api/advice', { method: 'POST', body: JSON.stringify(request()) }),
+      env,
+      { fetch: gemini, now: () => NOW, newId: () => 'x', content, rateLimiter: slidingWindowLimiter(9, 1000) },
+    )
+    expect(response.status).toBe(503)
+    expect(gemini).not.toHaveBeenCalled()
   })
 })

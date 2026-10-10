@@ -17,6 +17,26 @@ export interface AdviserEnv {
   GEMINI_API_KEY?: string
   /** Required: the Gemini model id to call. Not defaulted, so nothing is guessed. */
   GEMINI_MODEL?: string
+  /** Local testing only: point at a fake Gemini on this machine. Leave unset in production. */
+  GEMINI_API_BASE?: string
+}
+
+export const GEMINI_API_BASE = 'https://generativelanguage.googleapis.com'
+
+/**
+ * The API key is only ever sent to Google's real endpoint or to this machine
+ * (for the local fake). Any other base is treated as misconfiguration.
+ */
+export function geminiBase(env: Pick<AdviserEnv, 'GEMINI_API_BASE'>): string | null {
+  const base = (env.GEMINI_API_BASE ?? GEMINI_API_BASE).replace(/\/+$/, '')
+  if (base === GEMINI_API_BASE) return base
+  try {
+    const url = new URL(base)
+    const local = url.protocol === 'http:' && (url.hostname === '127.0.0.1' || url.hostname === 'localhost')
+    return local && url.pathname === '/' ? base : null
+  } catch {
+    return null
+  }
 }
 
 export interface ServerDeps {
@@ -112,6 +132,8 @@ export async function handleAdviceRequest(request: Request, env: AdviserEnv, dep
   if (request.method !== 'POST') return unavailable('method-not-allowed', 405)
   if (env.ADVISER_ENABLED !== 'true') return unavailable('disabled', 503)
   if (!env.GEMINI_API_KEY || !env.GEMINI_MODEL) return unavailable('not-configured', 503)
+  const base = geminiBase(env)
+  if (!base) return unavailable('not-configured', 503)
 
   const clientKey = request.headers.get('cf-connecting-ip') ?? 'unknown'
   if (!deps.rateLimiter.allow(clientKey, deps.now())) return unavailable('rate-limited', 429)
@@ -130,7 +152,7 @@ export async function handleAdviceRequest(request: Request, env: AdviserEnv, dep
   let upstream: Response
   try {
     upstream = await deps.fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(env.GEMINI_MODEL)}:generateContent`,
+      `${base}/v1beta/models/${encodeURIComponent(env.GEMINI_MODEL)}:generateContent`,
       {
         method: 'POST',
         headers: { 'content-type': 'application/json', 'x-goog-api-key': env.GEMINI_API_KEY },
