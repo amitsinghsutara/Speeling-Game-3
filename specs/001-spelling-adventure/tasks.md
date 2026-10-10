@@ -42,9 +42,9 @@
 
 ## Phase 5: Learner model [US2]
 
-- [ ] T020 Define the LearningEvent schema and an IndexedDB repository (versioned, with migration and reset)
-- [ ] T021 Derive learner-model statistics per skill and per foil code (pure)
-- [ ] T022 Implement error-pattern detection using the repeated-evidence threshold, with tests (a single mistake never triggers it)
+- [x] T020 Define the LearningEvent schema and an IndexedDB repository (versioned, with migration and reset)
+- [x] T021 Derive learner-model statistics per skill and per foil code (pure)
+- [x] T022 Implement error-pattern detection using the repeated-evidence threshold, with tests (a single mistake never triggers it)
 
 ## Phase 6: Adaptive policy [US3]
 

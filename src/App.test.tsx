@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { App } from './App.tsx'
 import type { AudioProvider, PlayOutcome } from './audio/AudioProvider.ts'
 import type { UiSound, UiSoundPlayer } from './audio/uiSounds.ts'
+import { memoryLearningEventStore } from './persistence/learningEventStore.ts'
 import { localPreferencesRepository } from './persistence/preferences.ts'
 import { localProgressRepository } from './persistence/progressRepository.ts'
 import { PRESS_ACTION_DELAY_MS } from './ui/press.ts'
@@ -253,5 +254,53 @@ describe('App exit button', () => {
     await tap(user, screen.getByRole('button', { name: 'Yes, leave' }))
     expect(exit).toHaveBeenCalledTimes(1)
     expect(word.audio.stop).toHaveBeenCalled()
+  })
+})
+
+describe('App learning events', () => {
+  it('records every attempt with the facts the learner model needs', async () => {
+    const user = userEvent.setup()
+    const eventStore = memoryLearningEventStore()
+    const word = fakeAudio()
+    let clock = 50_000
+    render(<App audio={word.audio} repository={memoryRepository()} eventStore={eventStore} seed={1} now={() => (clock += 700)} />)
+    await openFirstPuzzle(user)
+
+    const wrong = tiles().find((t) => t.textContent !== word.lastWord())
+    if (!wrong) throw new Error('no foil tile')
+    const wrongWord = wrong.textContent
+    await user.click(wrong)
+    await user.click(wrong) // a repeat tap on a disabled tile is not an attempt
+    await user.click(screen.getByRole('button', { name: word.lastWord() }))
+
+    const { events } = await eventStore.load()
+    expect(events).toHaveLength(2)
+    const [first, second] = events
+    expect(first).toMatchObject({
+      itemId: 'item-001',
+      skillId: 'level-1',
+      level: 1,
+      puzzleId: 'level-1/puzzle-1',
+      chosenWord: wrongWord,
+      correct: false,
+      attemptNumber: 1,
+      decisionId: null,
+      learnerId: 'local-learner',
+    })
+    expect(first?.chosenFoilCode).toMatch(/^(V|FC|IC)$/)
+    expect([...(first?.presentedFoilCodes ?? [])].sort()).toEqual(['FC', 'IC', 'V'])
+    expect(first?.elapsedMs).toBeGreaterThan(0)
+    expect(second).toMatchObject({ correct: true, chosenFoilCode: null, attemptNumber: 2, questionId: first?.questionId })
+    expect(first?.contentVersion).toMatch(/^[0-9a-f]{64}$/)
+  })
+
+  it('keeps playing when storage fails', async () => {
+    const user = userEvent.setup()
+    const broken = { persistent: true, append: () => Promise.reject(new Error('quota')), load: async () => ({ events: [], skipped: 0 }), clear: async () => {} }
+    const word = fakeAudio()
+    render(<App audio={word.audio} repository={memoryRepository()} eventStore={broken} seed={1} />)
+    await openFirstPuzzle(user)
+    await user.click(screen.getByRole('button', { name: word.lastWord() }))
+    expect(screen.getByRole('status')).toHaveTextContent(/yes!/i)
   })
 })

@@ -160,6 +160,11 @@ The game installs as a PWA, reloads offline, and resumes progress.
 
 - **FR-024**: Whether foils may be drawn from other items' approved foils, and how the general alternatives to L1 foils are supplied, is [NEEDS CLARIFICATION: approved foil pool beyond each item's 3].
 - **FR-025**: The numeric thresholds for error patterns, readiness, mastery, tier unlock, review intervals, and transfer are [NEEDS CLARIFICATION: confirmed pedagogical thresholds]. Until confirmed, they ship as provisional configuration and are clearly labeled.
+  - Provisional learner-model values in use (`src/learner/config.ts`, version `learner-model/1-provisional`), awaiting confirmation:
+    - **Error pattern:** a foil type counts as a pattern when it was picked at least **3** times, across at least **2** different words, at a rate of at least **30%**, within the last **10** questions where that foil type was on screen.
+    - **First choices only:** only the first choice in each question counts as evidence, because retries come after a wrong tile is disabled.
+    - **Evidence floor:** a skill with fewer than **8** questions is reported as "insufficient evidence".
+    - **Hard limits:** the settings check refuses `minErrors < 2` and `minDistinctItems < 2`, so a single mistake, or a single tricky word, can never be a pattern.
 
 ### Key Entities
 

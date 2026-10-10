@@ -3,8 +3,10 @@ import { createDefaultAudioProvider, type AudioProvider } from './audio/AudioPro
 import { isUiSound, webAudioUiSounds, type UiSound, type UiSoundPlayer } from './audio/uiSounds.ts'
 import { loadContent } from './content/loadContent.ts'
 import { hintFor } from './game/hints.ts'
+import { createLearningEvent, newId } from './learner/events.ts'
 import { seededRandom } from './game/random.ts'
 import { createGameModel, gameReducer, initialGameState, type GameAction, type Screen } from './game/session.ts'
+import { openLearningEventStore, type LearningEventStore } from './persistence/learningEventStore.ts'
 import { localPreferencesRepository, type PreferencesRepository } from './persistence/preferences.ts'
 import { detectExitBridge, type ExitBridge } from './platform/containerBridge.ts'
 import { ExitDialog } from './ui/components/ExitDialog.tsx'
@@ -22,6 +24,8 @@ export interface AppProps {
   preferences?: PreferencesRepository
   /** The container app's exit hook; detected from window.Android by default. */
   exitBridge?: ExitBridge
+  /** Where learning events go; IndexedDB by default. */
+  eventStore?: LearningEventStore
   /** Seed for shuffles; fixed in tests, random in play. */
   seed?: number
   now?: () => number
@@ -37,6 +41,39 @@ function outcomeSound(action: GameAction, previous: Screen, next: Screen): UiSou
   return finished(next) && !finished(previous) ? 'celebrate' : null
 }
 
+/** Records one attempt as a learning event, if the action produced one. Never blocks play. */
+function recordAttempt(
+  model: ReturnType<typeof createGameModel>,
+  store: Promise<LearningEventStore>,
+  sessionId: string,
+  action: GameAction,
+  next: Screen,
+): void {
+  if (action.type !== 'answer' || next.name !== 'question' || next.lastOutcome?.kind === 'ignored' || !next.lastOutcome) return
+  const { attempt } = next.lastOutcome
+  const { question, shownAt } = next.question
+  const item = model.itemsById.get(question.itemId)
+  if (!item) return
+  const event = createLearningEvent({
+    sessionId,
+    questionId: `${sessionId}:${next.puzzleId}:${next.index}:${shownAt}`,
+    at: shownAt + attempt.elapsedMs,
+    contentVersion: model.content.contentVersion,
+    itemId: item.id,
+    skillId: item.skillId,
+    level: item.level,
+    puzzleId: next.puzzleId,
+    presentedFoilCodes: question.choices.flatMap((c) => (c.foilCode === undefined ? [] : [c.foilCode])),
+    chosenWord: attempt.word,
+    correct: attempt.correct,
+    chosenFoilCode: attempt.foilCode,
+    attemptNumber: attempt.attemptNumber,
+    elapsedMs: attempt.elapsedMs,
+  })
+  // Storage problems must never interrupt a child's game.
+  void store.then((s) => s.append(event)).catch(() => {})
+}
+
 /** Identifies one shown question, so a new question (even of the same word) replays its sound. */
 const questionKeyOf = (screen: Screen): string | null =>
   screen.name === 'question' ? `${screen.puzzleId}#${screen.index}` : null
@@ -47,6 +84,7 @@ export function App({
   uiSounds: uiSoundsProp,
   preferences: preferencesProp,
   exitBridge: exitBridgeProp,
+  eventStore: eventStoreProp,
   seed,
   now = Date.now,
 }: AppProps) {
@@ -62,6 +100,8 @@ export function App({
   // Latest state, so taps landing before a re-render still apply in order.
   const latest = useRef(state)
   const [sound, setSound] = useState<SoundNotice>('none')
+  const [sessionId] = useState(newId)
+  const eventStore = useMemo(() => (eventStoreProp ? Promise.resolve(eventStoreProp) : openLearningEventStore()), [eventStoreProp])
   const exitBridge = useMemo(() => exitBridgeProp ?? detectExitBridge(), [exitBridgeProp])
   const [confirmingExit, setConfirmingExit] = useState(false)
   const onExit = exitBridge.canExit ? () => setConfirmingExit(true) : undefined
@@ -100,6 +140,7 @@ export function App({
     if (next === previous) return
     latest.current = next
     setState(next)
+    recordAttempt(model, eventStore, sessionId, action, next.screen)
     const effect = outcomeSound(action, previous.screen, next.screen)
     if (effect) uiSounds.play(effect)
     const key = questionKeyOf(next.screen)
