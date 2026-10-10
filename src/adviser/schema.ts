@@ -87,7 +87,13 @@ export const validatedAdviceSchema = z.object({
 export type ValidatedAdvice = z.infer<typeof validatedAdviceSchema>
 
 export const adviceResponseSchema = z.discriminatedUnion('status', [
-  z.object({ status: z.literal('ok'), advice: rawAdviceSchema, model: z.string().optional() }),
+  z.object({
+    status: z.literal('ok'),
+    advice: rawAdviceSchema,
+    model: z.string().optional(),
+    /** What server-side curriculum validation removed (for debugging; no personal data). */
+    rejected: z.array(z.string()).optional(),
+  }),
   z.object({ status: z.literal('unavailable'), reason: z.string() }),
 ])
 

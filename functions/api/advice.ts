@@ -19,4 +19,6 @@ export const onRequest = (context: { request: Request; env: AdviserEnv }): Promi
     newId: () => crypto.randomUUID(),
     content,
     rateLimiter,
+    // Metadata only (see ServerLogEntry). View with: npx wrangler pages deployment tail --project-name=spelling-adventure
+    log: (entry) => console.log(JSON.stringify(entry)),
   })

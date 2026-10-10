@@ -149,7 +149,7 @@ describe('server function', () => {
 describe('browser client', () => {
   const ok = (advice: unknown) => vi.fn<typeof fetch>(async () => Response.json({ status: 'ok', advice }))
   const client = (fetchImpl: typeof fetch, extra: Partial<Parameters<typeof createAdviserClient>[0]> = {}) =>
-    createAdviserClient({ enabled: true, content, fetch: fetchImpl, now: () => NOW, newId: () => 'adv-1', isOnline: () => true, ...extra })
+    createAdviserClient({ enabled: true, content, fetch: fetchImpl, now: () => NOW, newId: () => 'adv-1', isOnline: () => true, log: () => {}, ...extra })
 
   it('never calls the network when disabled or offline', async () => {
     const f = ok(goodAdvice)
@@ -274,5 +274,64 @@ describe('fallback model', () => {
     })
     await run(f, env, () => clock)
     expect(f).toHaveBeenCalledTimes(1)
+  })
+})
+
+describe('logging', () => {
+  const env: AdviserEnv = { ADVISER_ENABLED: 'true', GEMINI_API_KEY: 'secret-key-123', GEMINI_MODEL: 'main-model', GEMINI_FALLBACK_MODEL: 'backup-model' }
+  const reply = (advice: unknown) => Response.json({ candidates: [{ content: { parts: [{ text: JSON.stringify(advice) }] } }] })
+  const post = () =>
+    new Request('https://example.test/api/advice', { method: 'POST', body: JSON.stringify(request()), headers: { 'cf-connecting-ip': '203.0.113.7' } })
+
+  it('logs one metadata line per request on the server: never the IP, the body or the key', async () => {
+    const entries: unknown[] = []
+    const f = vi.fn<typeof fetch>(async (url) =>
+      String(url).includes('main-model') ? new Response('quota', { status: 429 }) : reply({ ...goodAdvice, preferItemIds: ['item-999', 'item-003'] }),
+    )
+    await handleAdviceRequest(post(), env, { fetch: f, now: () => NOW, newId: () => 'x', content, rateLimiter: slidingWindowLimiter(9, 1000), log: (e) => entries.push(e) })
+    expect(entries).toEqual([
+      {
+        event: 'advice',
+        outcome: 'ok',
+        model: 'backup-model',
+        fallbackUsed: true,
+        attempts: [
+          { model: 'main-model', outcome: 'upstream-429', ms: 0 },
+          { model: 'backup-model', outcome: 'ok', ms: 0 },
+        ],
+        rejectedSuggestions: 1,
+        totalMs: 0,
+      },
+    ])
+    const text = JSON.stringify(entries)
+    for (const leak of ['203.0.113.7', 'secret-key-123', 'approvedItems', 'item-003', 'sat']) expect(text).not.toContain(leak)
+  })
+
+  it('logs refusals too, with their reason', async () => {
+    const entries: unknown[] = []
+    await handleAdviceRequest(post(), { ...env, ADVISER_ENABLED: 'false' }, { fetch: vi.fn<typeof fetch>(), now: () => NOW, newId: () => 'x', content, rateLimiter: slidingWindowLimiter(9, 1000), log: (e) => entries.push(e) })
+    expect(entries).toEqual([{ event: 'advice', outcome: 'unavailable', reason: 'disabled', totalMs: 0 }])
+  })
+
+  it('tells the browser what server-side validation removed', async () => {
+    const f = vi.fn<typeof fetch>(async () => reply({ ...goodAdvice, preferItemIds: ['item-999'] }))
+    const body = await (await handleAdviceRequest(post(), env, { fetch: f, now: () => NOW, newId: () => 'x', content, rateLimiter: slidingWindowLimiter(9, 1000) })).json()
+    expect(body.rejected).toEqual(['item "item-999" is not an approved, offered word'])
+  })
+
+  it('writes [adviser] console messages in the browser: request, advice and failures', async () => {
+    const lines: string[] = []
+    const log = (message: string) => lines.push(message)
+    const ok = vi.fn<typeof fetch>(async () => Response.json({ status: 'ok', model: 'main-model', advice: goodAdvice, rejected: [] }))
+    const c = createAdviserClient({ enabled: true, content, fetch: ok, now: () => NOW, isOnline: () => true, minIntervalMs: 0, log })
+    await c.request(request())
+    const down = vi.fn<typeof fetch>(async () => Response.json({ status: 'unavailable', reason: 'upstream-429' }, { status: 502 }))
+    await createAdviserClient({ enabled: true, content, fetch: down, now: () => NOW, isOnline: () => true, log }).request(request())
+    expect(lines).toEqual([
+      'asking for advice: level 1, 1 error pattern(s)',
+      'advice from main-model in 0 ms',
+      'asking for advice: level 1, 1 error pattern(s)',
+      'no advice (unavailable); local rules decide',
+    ])
   })
 })

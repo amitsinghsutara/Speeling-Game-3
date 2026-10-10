@@ -47,6 +47,8 @@ export interface ServerDeps {
   newId: () => string
   content: ContentDataset
   rateLimiter: RateLimiter
+  /** One metadata line per request. Never receives request bodies, IPs or the key. */
+  log?: (entry: ServerLogEntry) => void
   /** Per-model limit. */
   timeoutMs?: number
   /** Total time for the main model and the fallback together. */
@@ -136,43 +138,69 @@ function geminiText(body: unknown): string | null {
   return text.length > 0 ? text : null
 }
 
+/** Metadata only: what happened, which model, how long. Safe to keep in platform logs. */
+export interface ServerLogEntry {
+  event: 'advice'
+  outcome: 'ok' | 'unavailable'
+  reason?: string
+  model?: string
+  fallbackUsed?: boolean
+  attempts?: { model: string; outcome: string; ms: number }[]
+  rejectedSuggestions?: number
+  totalMs: number
+}
+
 export async function handleAdviceRequest(request: Request, env: AdviserEnv, deps: ServerDeps): Promise<Response> {
-  if (request.method !== 'POST') return unavailable('method-not-allowed', 405)
-  if (env.ADVISER_ENABLED !== 'true') return unavailable('disabled', 503)
-  if (!env.GEMINI_API_KEY || !env.GEMINI_MODEL) return unavailable('not-configured', 503)
+  const started = deps.now()
+  const log = (entry: Omit<ServerLogEntry, 'event' | 'totalMs'>) => deps.log?.({ event: 'advice', ...entry, totalMs: deps.now() - started })
+  const refuse = (reason: string, status: number) => {
+    log({ outcome: 'unavailable', reason })
+    return unavailable(reason, status)
+  }
+
+  if (request.method !== 'POST') return refuse('method-not-allowed', 405)
+  if (env.ADVISER_ENABLED !== 'true') return refuse('disabled', 503)
+  if (!env.GEMINI_API_KEY || !env.GEMINI_MODEL) return refuse('not-configured', 503)
   const base = geminiBase(env)
-  if (!base) return unavailable('not-configured', 503)
+  if (!base) return refuse('not-configured', 503)
 
   const clientKey = request.headers.get('cf-connecting-ip') ?? 'unknown'
-  if (!deps.rateLimiter.allow(clientKey, deps.now())) return unavailable('rate-limited', 429)
+  if (!deps.rateLimiter.allow(clientKey, deps.now())) return refuse('rate-limited', 429)
 
   const text = await request.text()
-  if (text.length > LIMITS.requestBytes) return unavailable('too-large', 413)
+  if (text.length > LIMITS.requestBytes) return refuse('too-large', 413)
   let body: unknown
   try {
     body = JSON.parse(text)
   } catch {
-    return unavailable('bad-json', 400)
+    return refuse('bad-json', 400)
   }
   const parsed = adviceRequestSchema.safeParse(body)
-  if (!parsed.success) return unavailable('bad-request', 400)
+  if (!parsed.success) return refuse('bad-request', 400)
 
   // The main model first, then the fallback once, all inside one time budget that ends
   // before the browser gives up. Any failure on the last model means "no advice".
   const models = [env.GEMINI_MODEL, env.GEMINI_FALLBACK_MODEL].filter((m): m is string => !!m && m.length > 0)
   const deadline = deps.now() + (deps.budgetMs ?? GEMINI_BUDGET_MS)
   let failure = { reason: 'upstream-unreachable', status: 502 }
+  const attempts: NonNullable<ServerLogEntry['attempts']> = []
   for (const model of [...new Set(models)]) {
     const remaining = deadline - deps.now()
     if (remaining <= 0) break
+    const attemptStarted = deps.now()
     const attempt = await askModel(base, model, env.GEMINI_API_KEY, parsed.data, Math.min(remaining, deps.timeoutMs ?? GEMINI_TIMEOUT_MS), deps)
-    if (attempt.kind === 'advice') return json({ status: 'ok', model, advice: attempt.advice }, 200)
+    attempts.push({ model, outcome: attempt.kind === 'advice' ? 'ok' : attempt.reason, ms: deps.now() - attemptStarted })
+    if (attempt.kind === 'advice') {
+      log({ outcome: 'ok', model, fallbackUsed: attempts.length > 1, attempts, rejectedSuggestions: attempt.rejected.length })
+      return json({ status: 'ok', model, advice: attempt.advice, rejected: attempt.rejected }, 200)
+    }
     failure = attempt
   }
+  log({ outcome: 'unavailable', reason: failure.reason, attempts })
   return unavailable(failure.reason, failure.status)
 }
 
-type Attempt = { kind: 'advice'; advice: RawAdvice } | { kind: 'failed'; reason: string; status: number }
+type Attempt = { kind: 'advice'; advice: RawAdvice; rejected: string[] } | { kind: 'failed'; reason: string; status: number }
 
 async function askModel(
   base: string,
@@ -216,5 +244,6 @@ async function askModel(
       candidateFoils: validated.candidateFoils,
       rationale: validated.rationale,
     },
+    rejected: validated.rejected,
   }
 }

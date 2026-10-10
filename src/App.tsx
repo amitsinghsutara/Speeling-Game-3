@@ -4,6 +4,7 @@ import { isUiSound, webAudioUiSounds, type UiSound, type UiSoundPlayer } from '.
 import { createAdviserClient, type AdviserClient } from './adviser/client.ts'
 import { buildAdviceRequest } from './adviser/request.ts'
 import { buildLearnerModel } from './learner/model.ts'
+import { consoleLog } from './debug/log.ts'
 import { loadContent } from './content/loadContent.ts'
 import { hintFor } from './game/hints.ts'
 import { newId } from './learner/events.ts'
@@ -59,6 +60,8 @@ function outcomeSound(action: GameAction, previous: Screen, next: Screen): UiSou
   const finished = (s: Screen) => s.name === 'puzzleComplete' || s.name === 'levelComplete'
   return finished(next) && !finished(previous) ? 'celebrate' : null
 }
+
+const adviserLog = consoleLog('adviser')
 
 /** Identifies one shown question, so a new question (even of the same word) replays its sound. */
 const questionKeyOf = (screen: Screen): string | null => (screen.name === 'question' ? screen.decision.id : null)
@@ -148,6 +151,15 @@ export function App({
     if (next === previous) return
     latest.current = next
     setState(next)
+    const decision = next.decisions.length > previous.decisions.length ? next.decisions.at(-1) : undefined
+    if (decision?.adviser?.status === 'ADVISER_ACCEPTED') {
+      adviserLog(`advice used: ${decision.strategy} on ${decision.itemId}`, {
+        foilWords: decision.foilWords,
+        presentation: decision.presentation,
+        focus: decision.evidence.errorPattern?.foilCode ?? null,
+        adviceId: decision.adviser.adviceId,
+      })
+    }
     const effect = outcomeSound(action, previous.screen, next.screen)
     if (effect) uiSounds.play(effect)
     const key = questionKeyOf(next.screen)

@@ -48,9 +48,9 @@ The request body is built only by `buildAdviceRequest` in `src/adviser/request.t
 
 ## 5. What each party can see
 
-- **Cloudflare (hosting):** receives the HTTPS request, including the device's **IP address** and normal browser headers, as it does for every page load. The function keeps the IP only in memory for rate limiting (up to 10 minutes, per server instance). It logs no request bodies. Cloudflare's own platform logging follows the Cloudflare account settings.
+- **Cloudflare (hosting):** receives the HTTPS request, including the device's **IP address** and normal browser headers, as it does for every page load. The function keeps the IP only in memory for rate limiting (up to 10 minutes, per server instance). It logs no request bodies. Since 2026-10-10 it writes one **metadata line** per request (outcome, model, whether the fallback was used, timings, how many suggestions validation removed), with no body, IP or key. A test enforces this. Cloudflare's own platform logging follows the Cloudflare account settings.
 - **Google (Gemini API):** receives the aggregate JSON above, server-to-server. Google sees Cloudflare's address, not the child's. **Google's use of this data depends on the API tier.** Google's terms have historically allowed content sent through unpaid tiers to be used to improve its products, while paid tiers do not. Check the current Gemini API terms, and use a **billing-enabled (paid) key** if prompts must not be used for training.
-- **The device:** keeps the validated advice in memory only. Saved decisions store the advice id and any rejected suggestions, never the model's text.
+- **The device:** keeps the validated advice in memory only. The browser console shows `[adviser]` messages (requests, advice, the model's rationale, removed suggestions). They are visible only to someone with developer tools open on that device. Saved decisions store the advice id and any rejected suggestions, never the model's text.
 
 ## 6. Retention
 

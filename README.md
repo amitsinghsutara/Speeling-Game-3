@@ -79,6 +79,17 @@ npm run deploy   # check + build + upload dist/ to production (branch "main")
 - **Players update on their next launch.** A running game keeps its current version until it reloads.
 - **Kill switch:** `printf false | npx wrangler pages secret put ADVISER_ENABLED --project-name=spelling-adventure`, then redeploy. Settings apply to new deployments.
 
+### Watching what Gemini does
+
+- **Browser console:** open developer tools and filter on `[adviser]`. You'll see each request (level, error patterns), the advice that came back, which model gave it and how fast, the model's rationale, and what validation removed on the server and in the browser. A line appears whenever a decision actually uses the advice.
+- **Server log:** one JSON metadata line per request, with outcome, model, fallback, per-attempt timings and the number of removed suggestions. It never includes the request body, IP or key. To watch it live:
+
+  ```bash
+  npx wrangler pages deployment tail --project-name=spelling-adventure
+  ```
+
+  Locally, the same lines appear in the `npm run dev:full` terminal.
+
 ### How it works
 
 The adviser can suggest which detected error pattern to practise first, which eligible words to use, which due skill to review, and which approved foils to keep when scaffolding. Its limits:
