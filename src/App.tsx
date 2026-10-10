@@ -7,6 +7,7 @@ import { createGameModel, gameReducer, initialGameState, type GameAction, type S
 import { localProgressRepository, type ProgressRepository } from './persistence/progressRepository.ts'
 import type { TileState } from './ui/components/Play.tsx'
 import { ForestBackground } from './ui/components/decorations/ForestBackground.tsx'
+import { installPressFeedback } from './ui/press.ts'
 import { CompleteScreen, HomeScreen, PuzzleMapScreen, QuestionScreen, WelcomeScreen, type SoundNotice } from './ui/screens/Screens.tsx'
 import './ui/styles/theme.css'
 
@@ -35,6 +36,7 @@ export function App({ audio: audioProp, repository: repositoryProp, seed, now = 
 
   useEffect(() => repository.save(state.progress), [repository, state.progress])
   useEffect(() => () => audio.stop(), [audio])
+  useEffect(() => installPressFeedback(), [])
 
   const speak = useCallback(
     async (screen: Screen) => {

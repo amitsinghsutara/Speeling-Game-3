@@ -13,7 +13,8 @@
   font-weight: 700;
   color: var(--ink);
   cursor: pointer;
-  transition: transform 0.08s ease, box-shadow 0.08s ease;
+  transition: translate 0.08s ease, box-shadow 0.08s ease;
+  touch-action: manipulation;
 }
 
 .md {
@@ -25,12 +26,14 @@
   padding: 0.35em 1.6em;
 }
 
-.button:hover:not(:disabled) {
-  transform: translateY(-2px);
+@media (hover: hover) and (pointer: fine) {
+  .button:hover:not(:disabled) {
+    translate: 0 -2px;
+  }
 }
 
-.button:active:not(:disabled) {
-  transform: translateY(5px);
+.button[data-pressed='true']:not(:disabled) {
+  translate: 0 5px;
   box-shadow: var(--ledge-pressed), inset 0 -3px 0 rgba(0, 0, 0, 0.12);
 }
 

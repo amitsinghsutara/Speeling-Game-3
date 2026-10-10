@@ -13,6 +13,7 @@ import { StarBadge } from '../components/StarBadge.tsx'
 import { Confetti } from '../components/decorations/Confetti.tsx'
 import { Stars } from '../components/decorations/Stars.tsx'
 import type { Choice } from '../../game/question.ts'
+import { useAfterPress } from '../press.ts'
 import styles from './Screen.module.css'
 
 const LEVEL_COLOURS = ['--tangerine', '--bubble', '--berry', '--lime', '--grape', '--lemon'] as const
@@ -45,6 +46,7 @@ interface HomeScreenProps {
 }
 
 export function HomeScreen({ levels, statusOf, starsOf, onOpenLevel }: HomeScreenProps) {
+  const afterPress = useAfterPress()
   return (
     <main className={styles.screen}>
       <SignBoard small>
@@ -63,9 +65,10 @@ export function HomeScreen({ levels, statusOf, starsOf, onOpenLevel }: HomeScree
             <button
               key={level.level}
               type="button"
+              data-press
               className={styles.card}
               disabled={locked}
-              onClick={() => onOpenLevel(level.level)}
+              onClick={afterPress(() => onOpenLevel(level.level))}
               aria-label={`Level ${level.level}, ${level.skillPattern}${locked ? ', locked' : status === 'completed' ? ', finished' : ''}`}
             >
               <span className={styles.cardBadge} style={locked ? undefined : levelColour(level.level)} aria-hidden="true">
@@ -98,6 +101,7 @@ interface PuzzleMapScreenProps {
 }
 
 export function PuzzleMapScreen({ level, puzzles, statusOf, starsOf, onStart, onBack }: PuzzleMapScreenProps) {
+  const afterPress = useAfterPress()
   return (
     <main className={styles.screen}>
       <div className={styles.topBar}>
@@ -124,9 +128,10 @@ export function PuzzleMapScreen({ level, puzzles, statusOf, starsOf, onStart, on
               <span className={styles.step}>
                 <button
                   type="button"
+                  data-press
                   className={`${styles.stone} ${styles[status]}`}
                   disabled={status === 'locked'}
-                  onClick={() => onStart(puzzle.id)}
+                  onClick={afterPress(() => onStart(puzzle.id))}
                   aria-label={`Puzzle ${puzzle.number}, ${puzzle.itemIds.length} words${status === 'locked' ? ', locked' : status === 'completed' ? `, finished with ${stars ?? 0} stars, play again` : ', start'}`}
                 >
                   <span aria-hidden="true">{status === 'locked' ? <LockIcon /> : status === 'completed' ? <TickIcon size={44} /> : puzzle.number}</span>

@@ -7,7 +7,8 @@
   background: radial-gradient(circle at 35% 30%, #9fe0ff, var(--bubble) 65%);
   box-shadow: var(--ledge), inset 0 -6px 0 rgba(0, 0, 0, 0.15);
   cursor: pointer;
-  transition: transform 0.08s ease, box-shadow 0.08s ease;
+  transition: translate 0.08s ease, box-shadow 0.08s ease;
+  touch-action: manipulation;
 }
 
 .lg {
@@ -21,8 +22,8 @@
   height: 72px;
 }
 
-.speaker:active {
-  transform: translateY(5px);
+.speaker[data-pressed='true'] {
+  translate: 0 5px;
   box-shadow: var(--ledge-pressed);
 }
 
@@ -59,15 +60,20 @@
   box-shadow: var(--ledge), inset 0 -8px 0 rgba(0, 0, 0, 0.1), inset 0 5px 0 rgba(255, 255, 255, 0.5);
   cursor: pointer;
   animation: boing 0.5s ease-out both;
-  transition: transform 0.08s ease, box-shadow 0.08s ease, filter 0.2s ease;
+  transition: translate 0.08s ease, box-shadow 0.08s ease, filter 0.2s ease;
+  touch-action: manipulation;
 }
 
-.tile:hover.idle {
-  transform: translateY(-3px) rotate(-1deg);
+@media (hover: hover) and (pointer: fine) {
+  .tile.idle:hover {
+    translate: 0 -3px;
+    rotate: -1deg;
+  }
 }
 
-.tile:active.idle {
-  transform: translateY(5px);
+.tile.idle[data-pressed='true'] {
+  translate: 0 5px;
+  rotate: 0deg;
   box-shadow: var(--ledge-pressed);
 }
 

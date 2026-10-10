@@ -1,9 +1,10 @@
-import { render, screen, within } from '@testing-library/react'
+import { act, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { App } from './App.tsx'
 import type { AudioProvider, PlayOutcome } from './audio/AudioProvider.ts'
 import { localProgressRepository } from './persistence/progressRepository.ts'
+import { PRESS_ACTION_DELAY_MS } from './ui/press.ts'
 
 function fakeAudio(outcome: PlayOutcome = 'played') {
   const played: string[] = []
@@ -27,19 +28,27 @@ function memoryRepository() {
   })
 }
 
+/** Screen-changing buttons act after a short press delay; wait it out. */
+const settle = () => act(() => new Promise<void>((resolve) => setTimeout(resolve, PRESS_ACTION_DELAY_MS + 20)))
+
 const tiles = () => within(screen.getByRole('group', { name: /choose the spelling/i })).getAllByRole('button')
 
+async function tap(user: ReturnType<typeof userEvent.setup>, element: HTMLElement) {
+  await user.click(element)
+  await settle()
+}
+
 async function openFirstPuzzle(user: ReturnType<typeof userEvent.setup>) {
-  await user.click(screen.getByRole('button', { name: 'Play!' }))
-  await user.click(screen.getByRole('button', { name: /^Level 1,/ }))
-  await user.click(screen.getByRole('button', { name: /^Puzzle 1, 5 words, start/ }))
+  await tap(user, screen.getByRole('button', { name: 'Play!' }))
+  await tap(user, screen.getByRole('button', { name: /^Level 1,/ }))
+  await tap(user, screen.getByRole('button', { name: /^Puzzle 1, 5 words, start/ }))
 }
 
 describe('App', () => {
   it('locks every level but the first at the start', async () => {
     const user = userEvent.setup()
     render(<App audio={fakeAudio().audio} repository={memoryRepository()} seed={1} />)
-    await user.click(screen.getByRole('button', { name: 'Play!' }))
+    await tap(user, screen.getByRole('button', { name: 'Play!' }))
     expect(screen.getByRole('button', { name: /^Level 1,/ })).toBeEnabled()
     expect(screen.getByRole('button', { name: /^Level 2, .*locked/ })).toBeDisabled()
   })
@@ -81,15 +90,15 @@ describe('App', () => {
     await openFirstPuzzle(user)
     for (let i = 0; i < 5; i++) {
       await user.click(screen.getByRole('button', { name: lastWord() }))
-      await user.click(screen.getByRole('button', { name: /next/i }))
+      await tap(user, screen.getByRole('button', { name: /next/i }))
     }
     expect(screen.getByRole('heading', { name: 'Puzzle 1 done!' })).toBeInTheDocument()
     expect(screen.getByRole('img', { name: '3 of 3 stars' })).toBeInTheDocument()
 
     unmount()
     render(<App audio={audio} repository={repository} seed={2} />)
-    await user.click(screen.getByRole('button', { name: 'Play!' }))
-    await user.click(screen.getByRole('button', { name: /^Level 1,/ }))
+    await tap(user, screen.getByRole('button', { name: 'Play!' }))
+    await tap(user, screen.getByRole('button', { name: /^Level 1,/ }))
     expect(screen.getByRole('button', { name: /^Puzzle 1, .*finished with 3 stars/ })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /^Puzzle 2, 5 words, start/ })).toBeEnabled()
   })

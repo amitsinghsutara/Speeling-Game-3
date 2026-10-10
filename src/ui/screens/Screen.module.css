@@ -75,15 +75,20 @@
   box-shadow: var(--ledge);
   text-align: left;
   cursor: pointer;
-  transition: transform 0.08s ease, box-shadow 0.08s ease;
+  transition: translate 0.08s ease, box-shadow 0.08s ease;
+  touch-action: manipulation;
 }
 
-.card:hover:not(:disabled) {
-  transform: translateY(-3px) rotate(-0.6deg);
+@media (hover: hover) and (pointer: fine) {
+  .card:hover:not(:disabled) {
+    translate: 0 -3px;
+    rotate: -0.6deg;
+  }
 }
 
-.card:active:not(:disabled) {
-  transform: translateY(5px);
+.card[data-pressed='true']:not(:disabled) {
+  translate: 0 5px;
+  rotate: 0deg;
   box-shadow: var(--ledge-pressed);
 }
 
@@ -174,11 +179,12 @@
   font-size: 2.4rem;
   font-weight: 700;
   cursor: pointer;
-  transition: transform 0.08s ease, box-shadow 0.08s ease;
+  transition: translate 0.08s ease, box-shadow 0.08s ease;
+  touch-action: manipulation;
 }
 
-.stone:active:not(:disabled) {
-  transform: translateY(5px);
+.stone[data-pressed='true'] {
+  translate: 0 5px;
   box-shadow: var(--ledge-pressed);
 }
 

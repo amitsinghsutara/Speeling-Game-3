@@ -14,6 +14,7 @@ export function AudioButton({ onPlay, size = 'lg', label }: AudioButtonProps) {
   return (
     <button
       type="button"
+      data-press
       className={`${styles.speaker} ${styles[size]}`}
       aria-label={label}
       onClick={() => {
@@ -52,6 +53,7 @@ export function AnswerGrid({ choices, stateOf, onChoose }: AnswerGridProps) {
           <button
             key={choice.word}
             type="button"
+            data-press
             className={`${styles.tile} ${styles[colour]} ${styles[state]}`}
             style={{ animationDelay: `${index * 80}ms` }}
             // Tried tiles stay focusable but inert, so focus is not lost mid-question.
