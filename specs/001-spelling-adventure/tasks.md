@@ -38,6 +38,7 @@
 - [x] T019b Check the layout at phone widths (320, 360, 390 x 640) in a browser; fix overlaps, tile overflow, hidden choices
 - [ ] T019c Check on a real phone and inside the container app
 - [x] T019d Exit button for the container app: shown only when window.Android exposes an exit method; friendly confirm dialog; Welcome and level screens
+- [x] T045 Back from a puzzle asks "Leave this puzzle?" first (Keep playing / Yes, go back; Escape stays)
 - [x] T044 Exit button during play too (puzzle map and question screens); mid-puzzle the dialog says the puzzle starts again next time; long titles take their own row below 440px
 - [ ] T019e Confirm the container's real exit method name and replace EXIT_METHOD_CANDIDATES in src/platform/containerBridge.ts
 

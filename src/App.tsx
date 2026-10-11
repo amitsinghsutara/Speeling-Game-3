@@ -29,7 +29,7 @@ import { describeContainer, detectExitBridge, type ExitBridge } from './platform
 import { BUILD, describeBuild } from './pwa/buildInfo.ts'
 import { inertPwaStatus, type PwaStatus } from './pwa/status.ts'
 import { UpdateBanner } from './ui/components/UpdateBanner.tsx'
-import { ExitDialog } from './ui/components/ExitDialog.tsx'
+import { ConfirmDialog, ExitDialog } from './ui/components/ExitDialog.tsx'
 import { localProgressRepository, type ProgressRepository } from './persistence/progressRepository.ts'
 import type { TileState } from './ui/components/Play.tsx'
 import { ForestBackground } from './ui/components/decorations/ForestBackground.tsx'
@@ -114,6 +114,8 @@ export function App({
   const eventStore = useMemo(() => (eventStoreProp ? Promise.resolve(eventStoreProp) : openLearningEventStore()), [eventStoreProp])
   const exitBridge = useMemo(() => exitBridgeProp ?? detectExitBridge(), [exitBridgeProp])
   const [confirmingExit, setConfirmingExit] = useState(false)
+  // Back from a puzzle loses the words answered so far, so ask first.
+  const [confirmingLeavePuzzle, setConfirmingLeavePuzzle] = useState(false)
   // What the native container exposes, shown to grown-ups to confirm the exit method.
   const container = useMemo(() => describeContainer(), [])
   useEffect(() => {
@@ -340,7 +342,7 @@ export function App({
             onReplay={() => void speak(screen)}
             onChoose={(word) => dispatch({ type: 'answer', word, env: env() })}
             onNext={() => dispatch({ type: 'next', env: env() })}
-            onBack={() => dispatch({ type: 'backToPuzzles' })}
+            onBack={() => setConfirmingLeavePuzzle(true)}
             onExit={onExit}
           />
         )
@@ -374,6 +376,19 @@ export function App({
         {showUpdateBanner && <UpdateBanner onUpdate={() => pwa.applyUpdate()} onLater={() => setUpdateDismissed(true)} />}
         {content}
       </div>
+      {confirmingLeavePuzzle && screen.name === 'question' && (
+        <ConfirmDialog
+          title="Leave this puzzle?"
+          text="This puzzle will start again next time."
+          stayLabel="Keep playing"
+          confirmLabel="Yes, go back"
+          onStay={() => setConfirmingLeavePuzzle(false)}
+          onConfirm={() => {
+            setConfirmingLeavePuzzle(false)
+            dispatch({ type: 'backToPuzzles' })
+          }}
+        />
+      )}
       {confirmingExit && (
         <ExitDialog
           midPuzzle={screen.name === 'question'}

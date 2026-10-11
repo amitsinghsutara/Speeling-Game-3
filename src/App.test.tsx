@@ -46,6 +46,12 @@ async function tap(user: ReturnType<typeof userEvent.setup>, element: HTMLElemen
   await settle()
 }
 
+/** Back from a puzzle, confirming the "Leave this puzzle?" question. */
+async function leavePuzzle(user: ReturnType<typeof userEvent.setup>) {
+  await tap(user, screen.getByRole('button', { name: 'Back to the puzzle map' }))
+  await tap(user, screen.getByRole('button', { name: 'Yes, go back' }))
+}
+
 async function openFirstPuzzle(user: ReturnType<typeof userEvent.setup>) {
   await tap(user, screen.getByRole('button', { name: 'Play!' }))
   await tap(user, screen.getByRole('button', { name: /^Level 1,/ }))
@@ -212,6 +218,34 @@ describe('App sound effects', () => {
   })
 })
 
+describe('App leaving a puzzle', () => {
+  it('asks before going back to the map; "Keep playing" stays on the question', async () => {
+    const user = userEvent.setup()
+    render(<App audio={fakeAudio().audio} repository={memoryRepository()} seed={1} />)
+    await openFirstPuzzle(user)
+    await tap(user, screen.getByRole('button', { name: 'Back to the puzzle map' }))
+    const dialog = screen.getByRole('dialog', { name: 'Leave this puzzle?' })
+    expect(within(dialog).getByRole('button', { name: 'Keep playing' })).toHaveFocus()
+    await tap(user, within(dialog).getByRole('button', { name: 'Keep playing' }))
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Hear the word again' })).toBeInTheDocument()
+
+    await tap(user, screen.getByRole('button', { name: 'Back to the puzzle map' }))
+    await user.keyboard('{Escape}')
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Hear the word again' })).toBeInTheDocument()
+  })
+
+  it('"Yes, go back" returns to the puzzle map', async () => {
+    const user = userEvent.setup()
+    render(<App audio={fakeAudio().audio} repository={memoryRepository()} seed={1} />)
+    await openFirstPuzzle(user)
+    await leavePuzzle(user)
+    expect(screen.getByRole('heading', { name: 'Level 1' })).toBeInTheDocument()
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+  })
+})
+
 describe('App exit button', () => {
   const exitBridge = () => {
     const exit = vi.fn<() => void>()
@@ -363,7 +397,7 @@ describe('App updates', () => {
     await openFirstPuzzle(user)
     act(() => pwa.setUpdateReady(() => {}))
     expect(screen.queryByRole('heading', { name: 'A new version is ready!' })).not.toBeInTheDocument()
-    await tap(user, screen.getByRole('button', { name: 'Back to the puzzle map' }))
+    await leavePuzzle(user)
     expect(screen.queryByRole('heading', { name: 'A new version is ready!' })).not.toBeInTheDocument()
     await tap(user, screen.getByRole('button', { name: 'Back to levels' }))
     expect(screen.getByRole('heading', { name: 'A new version is ready!' })).toBeInTheDocument()
@@ -442,7 +476,7 @@ describe('App grown-ups screen', () => {
     render(<App audio={word.audio} repository={memoryRepository()} eventStore={memoryLearningEventStore()} seed={1} />)
     await openFirstPuzzle(user)
     await user.click(screen.getByRole('button', { name: word.lastWord() }))
-    await tap(user, screen.getByRole('button', { name: 'Back to the puzzle map' }))
+    await leavePuzzle(user)
     await tap(user, screen.getByRole('button', { name: 'Back to levels' }))
 
     await user.click(screen.getByRole('button', { name: /For grown-ups: press and hold/ }))
@@ -499,7 +533,7 @@ describe('App grown-ups suggestions (AI first, local fallback)', () => {
     render(<App audio={word.audio} repository={memoryRepository()} eventStore={memoryLearningEventStore()} insights={insights} seed={1} />)
     await openFirstPuzzle(user)
     await user.click(screen.getByRole('button', { name: word.lastWord() }))
-    await tap(user, screen.getByRole('button', { name: 'Back to the puzzle map' }))
+    await leavePuzzle(user)
     await tap(user, screen.getByRole('button', { name: 'Back to levels' }))
     const hold = screen.getByRole('button', { name: /For grown-ups: press and hold/ })
     fireEvent.pointerDown(hold, { button: 0 })
@@ -545,7 +579,7 @@ describe('App grown-ups suggestions refresh', () => {
     render(<App audio={word.audio} repository={memoryRepository()} eventStore={memoryLearningEventStore()} insights={{ enabled: true, request }} seed={1} />)
     await openFirstPuzzle(user)
     await user.click(screen.getByRole('button', { name: word.lastWord() }))
-    await tap(user, screen.getByRole('button', { name: 'Back to the puzzle map' }))
+    await leavePuzzle(user)
     await tap(user, screen.getByRole('button', { name: 'Back to levels' }))
     const hold = screen.getByRole('button', { name: /For grown-ups: press and hold/ })
     fireEvent.pointerDown(hold, { button: 0 })
