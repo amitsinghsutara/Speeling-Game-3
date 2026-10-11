@@ -223,7 +223,7 @@ describe('App exit button', () => {
     expect(screen.queryByRole('button', { name: 'Leave the game' })).not.toBeInTheDocument()
   })
 
-  it('shows on the welcome and level screens but not during a puzzle', async () => {
+  it('shows on the welcome, level and puzzle map screens and during a puzzle', async () => {
     const user = userEvent.setup()
     const { bridge } = exitBridge()
     render(<App audio={fakeAudio().audio} repository={memoryRepository()} exitBridge={bridge} seed={1} />)
@@ -231,8 +231,30 @@ describe('App exit button', () => {
     await tap(user, screen.getByRole('button', { name: 'Play!' }))
     expect(screen.getByRole('button', { name: 'Leave the game' })).toBeInTheDocument()
     await tap(user, screen.getByRole('button', { name: /^Level 1,/ }))
-    expect(screen.queryByRole('button', { name: 'Leave the game' })).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Leave the game' })).toBeInTheDocument()
+    await tap(user, screen.getByRole('button', { name: /^Puzzle 1,/ }))
+    expect(screen.getByRole('button', { name: 'Leave the game' })).toBeInTheDocument()
   })
+
+  it('mid-puzzle, says the puzzle starts again and stops the word on leaving', async () => {
+    const user = userEvent.setup()
+    const { bridge, exit } = exitBridge()
+    const word = fakeAudio()
+    render(<App audio={word.audio} repository={memoryRepository()} exitBridge={bridge} seed={1} />)
+    await tap(user, screen.getByRole('button', { name: 'Play!' }))
+    await tap(user, screen.getByRole('button', { name: /^Level 1,/ }))
+    await tap(user, screen.getByRole('button', { name: /^Puzzle 1,/ }))
+    await user.click(screen.getByRole('button', { name: 'Leave the game' }))
+    const dialog = screen.getByRole('dialog', { name: 'Leave the forest?' })
+    expect(within(dialog).getByText(/This puzzle will start again next time/)).toBeInTheDocument()
+    await tap(user, within(dialog).getByRole('button', { name: 'Keep playing' }))
+    expect(screen.getByRole('button', { name: 'Hear the word again' })).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Leave the game' }))
+    await tap(user, screen.getByRole('button', { name: 'Yes, leave' }))
+    expect(exit).toHaveBeenCalledTimes(1)
+    expect(word.audio.stop).toHaveBeenCalled()
+  }, 15_000)
 
   it('asks first, and "Keep playing" stays in the game', async () => {
     const user = userEvent.setup()

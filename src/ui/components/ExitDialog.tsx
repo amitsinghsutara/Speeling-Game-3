@@ -63,11 +63,22 @@ export function ConfirmDialog({ title, text, stayLabel, confirmLabel, onStay, on
   )
 }
 
-export function ExitDialog({ onStay, onLeave }: { onStay: () => void; onLeave: () => void }) {
+interface ExitDialogProps {
+  onStay: () => void
+  onLeave: () => void
+  /** Mid-puzzle: only finished puzzles are saved, so say this one starts again. */
+  midPuzzle?: boolean | undefined
+}
+
+export function ExitDialog({ onStay, onLeave, midPuzzle = false }: ExitDialogProps) {
   return (
     <ConfirmDialog
       title="Leave the forest?"
-      text="Your stars are saved. Come back soon!"
+      text={
+        midPuzzle
+          ? 'Your stars are saved. This puzzle will start again next time. Come back soon!'
+          : 'Your stars are saved. Come back soon!'
+      }
       stayLabel="Keep playing"
       confirmLabel="Yes, leave"
       onStay={onStay}

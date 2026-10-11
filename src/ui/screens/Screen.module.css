@@ -112,6 +112,29 @@
   }
 }
 
+/* A long title ("Level 10 · Puzzle 5") between two controls needs its own row on most phones. */
+@media (max-width: 440px) {
+  .topBarLong:has(> .topEnd) {
+    grid-template-columns: var(--tap-min) minmax(0, 1fr) var(--tap-min);
+    grid-template-areas:
+      'start . end'
+      'title title title';
+    row-gap: 6px;
+  }
+
+  .topBarLong:has(> .topEnd) > .topStart {
+    grid-area: start;
+  }
+
+  .topBarLong:has(> .topEnd) > .topTitle {
+    grid-area: title;
+  }
+
+  .topBarLong:has(> .topEnd) > .topEnd {
+    grid-area: end;
+  }
+}
+
 /* Fern keeps a fixed size; the speech bubble takes whatever width is left. */
 .fernRow {
   display: flex;
