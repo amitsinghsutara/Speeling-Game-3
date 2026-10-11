@@ -25,7 +25,7 @@ import {
 } from './game/session.ts'
 import { openLearningEventStore, type LearningEventStore } from './persistence/learningEventStore.ts'
 import { localPreferencesRepository, type PreferencesRepository } from './persistence/preferences.ts'
-import { detectExitBridge, type ExitBridge } from './platform/containerBridge.ts'
+import { describeContainer, detectExitBridge, type ExitBridge } from './platform/containerBridge.ts'
 import { BUILD, describeBuild } from './pwa/buildInfo.ts'
 import { inertPwaStatus, type PwaStatus } from './pwa/status.ts'
 import { UpdateBanner } from './ui/components/UpdateBanner.tsx'
@@ -71,6 +71,7 @@ function outcomeSound(action: GameAction, previous: Screen, next: Screen): UiSou
 }
 
 const adviserLog = consoleLog('adviser')
+const containerLog = consoleLog('container')
 
 /** Identifies one shown question, so a new question (even of the same word) replays its sound. */
 const questionKeyOf = (screen: Screen): string | null => (screen.name === 'question' ? screen.decision.id : null)
@@ -113,6 +114,11 @@ export function App({
   const eventStore = useMemo(() => (eventStoreProp ? Promise.resolve(eventStoreProp) : openLearningEventStore()), [eventStoreProp])
   const exitBridge = useMemo(() => exitBridgeProp ?? detectExitBridge(), [exitBridgeProp])
   const [confirmingExit, setConfirmingExit] = useState(false)
+  // What the native container exposes, shown to grown-ups to confirm the exit method.
+  const container = useMemo(() => describeContainer(), [])
+  useEffect(() => {
+    containerLog(container.bridges.length === 0 ? 'no container bridge found' : 'bridges found', JSON.stringify(container))
+  }, [container])
   const onExit = exitBridge.canExit ? () => setConfirmingExit(true) : undefined
 
   useEffect(() => repository.save(state.progress), [repository, state.progress])
@@ -267,6 +273,7 @@ export function App({
             localInsights={grownUps.local}
             version={describeBuild(BUILD)}
             pwa={pwaState}
+            container={container}
             onCheckUpdates={() => {
               setUpdateDismissed(false)
               void pwa.checkForUpdates()

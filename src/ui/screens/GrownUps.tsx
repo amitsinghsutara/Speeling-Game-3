@@ -13,6 +13,8 @@ import type { Insights } from '../../insights/schema.ts'
 import { AiSuggestions } from './AiSuggestions.tsx'
 import type { PwaSnapshot } from '../../pwa/status.ts'
 import { AppVersion } from './AppVersion.tsx'
+import type { ContainerReport } from '../../platform/containerBridge.ts'
+import { ContainerInfo } from './ContainerInfo.tsx'
 import styles from './GrownUps.module.css'
 import screen from './Screen.module.css'
 
@@ -28,6 +30,7 @@ interface GrownUpsScreenProps {
   foilName: (code: string) => string
   version: string
   pwa: PwaSnapshot
+  container: ContainerReport
   onCheckUpdates: () => void
   onUpdate: () => void
   onBack: () => void
@@ -43,6 +46,7 @@ export function GrownUpsScreen({
   foilName,
   version,
   pwa,
+  container,
   onCheckUpdates,
   onUpdate,
   onBack,
@@ -158,6 +162,7 @@ export function GrownUpsScreen({
       </section>
 
       <AppVersion version={version} pwa={pwa} onCheck={onCheckUpdates} onUpdate={onUpdate} />
+      <ContainerInfo report={container} />
 
       <section className={styles.card} aria-labelledby="reset">
         <h2 id="reset" className={styles.heading}>

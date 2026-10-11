@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { EXIT_METHOD_CANDIDATES, detectExitBridge } from './containerBridge.ts'
+import { EXIT_METHOD_CANDIDATES, describeContainer, detectExitBridge } from './containerBridge.ts'
 
 describe('detectExitBridge', () => {
   it('cannot exit in a normal browser', () => {
@@ -22,6 +22,21 @@ describe('detectExitBridge', () => {
     expect(bridge.canExit).toBe(true)
     bridge.exit()
     expect(method).toHaveBeenCalledTimes(1)
+  })
+
+  it('describes the bridge and its methods without calling them', () => {
+    const closeApp = vi.fn<() => void>()
+    const report = describeContainer({ Android: { cachedStatus: () => {}, quit: () => {}, closeApp, version: '1' } })
+    expect(report.bridges).toEqual([{ name: 'Android', methods: ['cachedStatus', 'closeApp', 'quit'] }])
+    expect(report.exitMethod).toBe('closeApp')
+    expect(closeApp).not.toHaveBeenCalled()
+  })
+
+  it('finds a bridge under another name, and reports when there is no exit method', () => {
+    const report = describeContainer({ NativeApp: { shutDown: () => {} }, Math } as never)
+    expect(report.bridges).toEqual([{ name: 'NativeApp', methods: ['shutDown'] }])
+    expect(report.exitMethod).toBeNull()
+    expect(describeContainer({}).bridges).toEqual([])
   })
 
   it('stays in the game if the container throws', () => {
