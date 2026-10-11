@@ -77,4 +77,5 @@ sequenceDiagram
 - **Same answer size for every tile.** One text size per question, set by the longest word. A smaller word would hint that it has extra letters.
 - **Long words stack.** On narrow phones, words of 8 or more letters stack one tile per row so they stay large. Words never wrap.
 - **Press feedback without `:active`.** Elements with `data-press` get `data-pressed` from pointer-down for at least 140 ms. Screen-changing buttons wait 120 ms so the squish is visible.
+- **Fixed headers on the level and puzzle screens.** Only the level list and the stepping-stone trail scroll (`.scrollArea`); the title, Fern and buttons stay put. Below 480px tall (landscape phones) the whole page scrolls instead.
 - **AI can only narrow choices.** Advice picks among candidates the policy already made eligible. It cannot add, reorder curriculum, score, or change answers.

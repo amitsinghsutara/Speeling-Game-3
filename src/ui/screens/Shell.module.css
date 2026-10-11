@@ -1,0 +1,20 @@
+/* Holds the update banner and the current screen in one viewport-tall column. */
+.shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+/* Level list and puzzle map: the page itself never scrolls; only their list does. */
+.fixed {
+  height: 100dvh;
+  overflow: hidden;
+}
+
+/* Too short for a fixed header (landscape phones): scroll the whole page instead. */
+@media (max-height: 480px) {
+  .fixed {
+    height: auto;
+    overflow: visible;
+  }
+}
