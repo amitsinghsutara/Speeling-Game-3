@@ -10,6 +10,7 @@ import { describe, expect, it } from 'vitest'
 import { App } from './App.tsx'
 import type { AudioProvider } from './audio/AudioProvider.ts'
 import { localProgressRepository } from './persistence/progressRepository.ts'
+import { createPwaStatus } from './pwa/status.ts'
 import { HOLD_MS } from './ui/components/HoldButton.tsx'
 import { PRESS_ACTION_DELAY_MS } from './ui/press.ts'
 
@@ -77,6 +78,14 @@ describe('accessibility (axe)', () => {
     await user.click(screen.getByRole('button', { name: 'Reset progress' }))
     await settle()
     expect(await violations(), 'reset dialog').toEqual([])
+  })
+
+  it('has no violations with the update banner showing', async () => {
+    const pwa = createPwaStatus()
+    pwa.setUpdateReady(() => {})
+    render(<App audio={audio} repository={memoryRepository()} pwa={pwa} seed={1} />)
+    expect(screen.getByRole('heading', { name: 'A new version is ready!' })).toBeInTheDocument()
+    expect(await violations(), 'update banner').toEqual([])
   })
 
   it('gives the page one main region and a top-level heading on every menu screen', async () => {

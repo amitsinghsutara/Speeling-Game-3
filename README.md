@@ -81,7 +81,7 @@ npm run deploy   # check + build + upload dist/ to production (branch "main")
 ## Offline and install
 
 - **Precache:** a service worker (vite-plugin-pwa / Workbox) caches the app, content, fonts, icons and every word MP3 on the first visit, so the game installs and plays offline.
-- **Updates:** a new version downloads in the background and is applied only on the Welcome or level screens, never mid-puzzle. Progress is saved on every change.
+- **Updates:** the app checks for new versions while open (every 30 minutes, on returning to the foreground, and on reconnecting). It offers them with a banner on the Welcome and level screens, never mid-puzzle, and also installs them on the next launch. The grown-ups' screen shows the version and has **Check for updates**. See [docs/operations.md](docs/operations.md#updates).
 - **Container:** in the container app, the game calls `window.Android.cachedStatus(true)` once it is fully cached.
 - **Icons:** regenerate them with `npm run gen:icons` (dependency-free; it draws Fern's face).
 - **Dev server:** `npm run dev` does not register the service worker. To test offline, use `npm run build && npx vite preview`.

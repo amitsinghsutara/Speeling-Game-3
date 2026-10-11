@@ -11,6 +11,8 @@ import { StarBadge } from '../components/StarBadge.tsx'
 import type { InsightsOutcome } from '../../insights/client.ts'
 import type { Insights } from '../../insights/schema.ts'
 import { AiSuggestions } from './AiSuggestions.tsx'
+import type { PwaSnapshot } from '../../pwa/status.ts'
+import { AppVersion } from './AppVersion.tsx'
 import styles from './GrownUps.module.css'
 import screen from './Screen.module.css'
 
@@ -24,11 +26,28 @@ interface GrownUpsScreenProps {
   /** Suggestions from the game's own rules, shown when AI is unavailable. */
   localInsights: Insights
   foilName: (code: string) => string
+  version: string
+  pwa: PwaSnapshot
+  onCheckUpdates: () => void
+  onUpdate: () => void
   onBack: () => void
   onReset: () => void
 }
 
-export function GrownUpsScreen({ report, starsOf, adviserOn, requestInsights, localInsights, foilName, onBack, onReset }: GrownUpsScreenProps) {
+export function GrownUpsScreen({
+  report,
+  starsOf,
+  adviserOn,
+  requestInsights,
+  localInsights,
+  foilName,
+  version,
+  pwa,
+  onCheckUpdates,
+  onUpdate,
+  onBack,
+  onReset,
+}: GrownUpsScreenProps) {
   const [confirmingReset, setConfirmingReset] = useState(false)
   const started = report.levels.filter((l) => l.status !== 'not-started')
 
@@ -137,6 +156,8 @@ export function GrownUpsScreen({ report, starsOf, adviserOn, requestInsights, lo
           {adviserOn && ' Optional teaching suggestions from an AI adviser are switched on: it only ever picks between options the game already allows.'}
         </p>
       </section>
+
+      <AppVersion version={version} pwa={pwa} onCheck={onCheckUpdates} onUpdate={onUpdate} />
 
       <section className={styles.card} aria-labelledby="reset">
         <h2 id="reset" className={styles.heading}>

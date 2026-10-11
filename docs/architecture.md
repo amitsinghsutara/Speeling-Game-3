@@ -34,7 +34,7 @@ flowchart TD
 | `src/insights/` | Grown-ups' suggestions: request, safety validation, local fallback, client, server | Optional; AI first with a local fallback |
 | `src/persistence/` | Progress (localStorage), preferences (localStorage), events and decisions (IndexedDB v2) | Validated reads; failures never block play |
 | `src/audio/` | Word audio (bundled MP3, then speech, then notice) and synthesized UI sounds | Behind small interfaces |
-| `src/pwa/` | Service worker registration and an update/status store | Updates apply only on the Welcome and level screens |
+| `src/pwa/` | Service worker registration, update checks, status store, build info | Periodic and foreground checks; updates offered on the Welcome and level screens; the app reloads itself to apply them |
 | `src/platform/` | Android container bridge (`window.Android`) | Capability-detected |
 | `src/ui/` | Screens, cartoon components, press feedback, theme | Views only; rules live elsewhere |
 | `functions/api/` | `advice.ts` and `insights.ts` Pages Functions | Thin wrappers over `src/adviser/server.ts` and `src/insights/server.ts` |
@@ -55,7 +55,7 @@ The app adds side effects around the reducer, but the reducer never depends on t
 - **Saving:** progress goes to localStorage; new events and decisions go to IndexedDB.
 - **Sound:** the word plays from the tap that opens a question, which browsers require for audio. Sound effects play on presses and outcomes.
 - **Background advice:** a request is made on the puzzle map, and the result arrives as an `adviceReceived` action.
-- **Updates:** a waiting update is applied only when it is safe.
+- **Updates:** a waiting update is offered with a banner on the Welcome and level screens only.
 
 ```mermaid
 sequenceDiagram

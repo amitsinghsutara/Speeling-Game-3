@@ -7,10 +7,10 @@ describe('PWA status', () => {
     const status = createPwaStatus()
     const listener = vi.fn<() => void>()
     status.subscribe(listener)
-    expect(status.getSnapshot()).toEqual({ offlineReady: false, updateReady: false })
+    expect(status.getSnapshot()).toEqual({ offlineReady: false, updateReady: false, checking: false, lastCheck: null })
     status.setOfflineReady()
     status.setUpdateReady(() => {})
-    expect(status.getSnapshot()).toEqual({ offlineReady: true, updateReady: true })
+    expect(status.getSnapshot()).toMatchObject({ offlineReady: true, updateReady: true })
     expect(listener).toHaveBeenCalledTimes(2)
   })
 

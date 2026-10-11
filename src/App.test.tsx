@@ -322,29 +322,52 @@ describe('App learning events', () => {
 })
 
 describe('App updates', () => {
-  it('waits until the child is off a puzzle before switching to a new version', async () => {
+  it('offers a new version on the Welcome screen, and Update now applies it', async () => {
     const user = userEvent.setup()
-    const pwa = createPwaStatus()
-    const apply = vi.fn<() => void>()
-    render(<App audio={fakeAudio().audio} repository={memoryRepository()} pwa={pwa} seed={1} />)
-    await openFirstPuzzle(user)
-
-    act(() => pwa.setUpdateReady(apply))
-    expect(apply).not.toHaveBeenCalled() // mid-puzzle: never interrupt
-
-    await tap(user, screen.getByRole('button', { name: 'Back to the puzzle map' }))
-    expect(apply).not.toHaveBeenCalled() // the puzzle map is still part of play
-    await tap(user, screen.getByRole('button', { name: 'Back to levels' }))
-    expect(apply).toHaveBeenCalledTimes(1)
-  })
-
-  it('applies a waiting update straight away on the Welcome screen', () => {
     const pwa = createPwaStatus()
     const apply = vi.fn<() => void>()
     pwa.setUpdateReady(apply)
     render(<App audio={fakeAudio().audio} repository={memoryRepository()} pwa={pwa} seed={1} />)
+    expect(screen.getByRole('heading', { name: 'A new version is ready!' })).toBeInTheDocument()
+    expect(apply).not.toHaveBeenCalled() // never silently: the grown-up or child chooses
+    await tap(user, screen.getByRole('button', { name: 'Update now' }))
     expect(apply).toHaveBeenCalledTimes(1)
   })
+
+  it('never shows the banner during play, and "Later" hides it for this session', async () => {
+    const user = userEvent.setup()
+    const pwa = createPwaStatus()
+    render(<App audio={fakeAudio().audio} repository={memoryRepository()} pwa={pwa} seed={1} />)
+    await openFirstPuzzle(user)
+    act(() => pwa.setUpdateReady(() => {}))
+    expect(screen.queryByRole('heading', { name: 'A new version is ready!' })).not.toBeInTheDocument()
+    await tap(user, screen.getByRole('button', { name: 'Back to the puzzle map' }))
+    expect(screen.queryByRole('heading', { name: 'A new version is ready!' })).not.toBeInTheDocument()
+    await tap(user, screen.getByRole('button', { name: 'Back to levels' }))
+    expect(screen.getByRole('heading', { name: 'A new version is ready!' })).toBeInTheDocument()
+    await tap(user, screen.getByRole('button', { name: 'Later' }))
+    expect(screen.queryByRole('heading', { name: 'A new version is ready!' })).not.toBeInTheDocument()
+  }, 15_000)
+
+  it('shows the version and checks for updates from the grown-ups screen', async () => {
+    const user = userEvent.setup()
+    const pwa = createPwaStatus()
+    let finish: (r: 'up-to-date') => void = () => {}
+    pwa.setChecker(() => new Promise((r) => (finish = r)), () => new Date(2026, 9, 11, 9, 30).getTime())
+    render(<App audio={fakeAudio().audio} repository={memoryRepository()} pwa={pwa} seed={1} />)
+    await tap(user, screen.getByRole('button', { name: 'Play!' }))
+    const hold = screen.getByRole('button', { name: /For grown-ups: press and hold/ })
+    fireEvent.pointerDown(hold, { button: 0 })
+    await act(() => new Promise<void>((r) => setTimeout(r, HOLD_MS + 50)))
+    fireEvent.pointerUp(hold)
+
+    expect(screen.getByText(/^Version /)).toBeInTheDocument()
+    await tap(user, screen.getByRole('button', { name: 'Check for updates' }))
+    expect(screen.getByText('Checking for updates…')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Check for updates' })).toBeDisabled()
+    await act(async () => finish('up-to-date'))
+    expect(screen.getByText(/You have the latest version\. \(checked at/)).toBeInTheDocument()
+  }, 15_000)
 })
 
 describe('App adviser', () => {

@@ -26,7 +26,9 @@ import {
 import { openLearningEventStore, type LearningEventStore } from './persistence/learningEventStore.ts'
 import { localPreferencesRepository, type PreferencesRepository } from './persistence/preferences.ts'
 import { detectExitBridge, type ExitBridge } from './platform/containerBridge.ts'
+import { BUILD, describeBuild } from './pwa/buildInfo.ts'
 import { inertPwaStatus, type PwaStatus } from './pwa/status.ts'
+import { UpdateBanner } from './ui/components/UpdateBanner.tsx'
 import { ExitDialog } from './ui/components/ExitDialog.tsx'
 import { localProgressRepository, type ProgressRepository } from './persistence/progressRepository.ts'
 import type { TileState } from './ui/components/Play.tsx'
@@ -228,13 +230,11 @@ export function App({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [adviser, mapLevel, model])
 
-  // A waiting update is applied only on the Welcome or level screens, never mid-puzzle.
-  // Progress is saved on every change, so the reload loses nothing.
-  const { updateReady } = useSyncExternalStore(pwa.subscribe, pwa.getSnapshot)
-  const safeToReload = screen.name === 'welcome' || screen.name === 'home'
-  useEffect(() => {
-    if (updateReady && safeToReload) pwa.applyUpdate()
-  }, [pwa, updateReady, safeToReload])
+  // A waiting update is offered on the Welcome and level screens only, never mid-puzzle.
+  // "Later" is safe: it also installs on the next launch. Progress is saved on every change.
+  const pwaState = useSyncExternalStore(pwa.subscribe, pwa.getSnapshot)
+  const [updateDismissed, setUpdateDismissed] = useState(false)
+  const showUpdateBanner = pwaState.updateReady && !updateDismissed && (screen.name === 'welcome' || screen.name === 'home')
   const soundSetting = { on: soundEffects, onToggle: () => setSoundEffects((on) => !on) }
   const level = (n: number) => model.content.levels.find((l) => l.level === n)
 
@@ -262,6 +262,13 @@ export function App({
             report={grownUps.report}
             requestInsights={insights.enabled ? requestInsights : undefined}
             localInsights={grownUps.local}
+            version={describeBuild(BUILD)}
+            pwa={pwaState}
+            onCheckUpdates={() => {
+              setUpdateDismissed(false)
+              void pwa.checkForUpdates()
+            }}
+            onUpdate={() => pwa.applyUpdate()}
             foilName={(code) => model.content.foilCodebook.find((e) => e.code === code)?.name ?? code}
             starsOf={(n) => model.levelStars(state.progress, n)}
             adviserOn={adviser.enabled}
@@ -351,6 +358,7 @@ export function App({
   return (
     <>
       <ForestBackground />
+      {showUpdateBanner && <UpdateBanner onUpdate={() => pwa.applyUpdate()} onLater={() => setUpdateDismissed(true)} />}
       {content}
       {confirmingExit && (
         <ExitDialog

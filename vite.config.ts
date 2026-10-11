@@ -1,9 +1,26 @@
 /// <reference types="vitest/config" />
+import { execSync } from 'node:child_process'
+import { readFileSync } from 'node:fs'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
+/** What this build is, shown on the grown-ups' screen and logged at start-up. */
+function buildInfo() {
+  const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8')) as { version: string }
+  let commit = 'unknown'
+  try {
+    commit = execSync('git rev-parse --short HEAD', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim()
+  } catch {
+    // Not a git checkout (for example a CI artifact): keep 'unknown'.
+  }
+  return { version: pkg.version, commit, builtAt: new Date().toISOString() }
+}
+
 export default defineConfig({
+  define: {
+    __APP_BUILD__: JSON.stringify(buildInfo()),
+  },
   plugins: [
     react(),
     VitePWA({

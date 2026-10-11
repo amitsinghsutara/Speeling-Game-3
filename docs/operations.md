@@ -20,7 +20,7 @@ npm run deploy:adviser   # production: check + build with AI switched on in the 
 ```
 
 - **Always use `deploy:adviser` for production.** Plain `npm run deploy` builds with the browser AI switches off, which quietly stops players asking for advice and suggestions.
-- **Players update on next launch.** The service worker downloads new versions in the background and applies them only on the Welcome or level screens, never mid-puzzle. A running app keeps its version until then.
+- **How players get it:** see [Updates](#updates) below. In short, the app finds the new version by itself, offers it on the Welcome and level screens, and also installs it on the next launch.
 - **Settings need a deploy.** Secret changes apply to **new deployments**, so redeploy after changing one.
 
 ## Secrets and settings
@@ -86,7 +86,29 @@ Lines look like `{"event":"advice","outcome":"ok","model":"gemini-3.5-flash-lite
 
 For safety, the function sends the key only to Google's endpoint or to `127.0.0.1` or `localhost`.
 
-## Offline and updates
+## Updates
+
+The code is in `src/pwa/register.ts`, `src/pwa/updates.ts` and `src/pwa/status.ts`.
+
+1. **Checks:** the app checks for a new version on load, **every 30 minutes**, whenever it **returns to the foreground**, and when the device **comes back online**. The gap between checks is at least 1 minute. This matters for the container app, which may stay open for days.
+2. **Download:** a found version downloads in the background and waits.
+3. **Offer:** on the Welcome and level screens, a banner says *"A new version is ready!"* with **Update now** and **Later**. It never appears during a puzzle. "Later" is safe, because the update also installs itself on the next launch.
+4. **Apply:** "Update now" asks the waiting version to take over, then **reloads the page ourselves**. Progress is saved on every change, so nothing is lost.
+5. **Grown-ups' screen:** it shows the running version (`0.1.0 (commit, built date)`) and a **Check for updates** button, with "Checking…", "You have the latest version", "A new version is ready" (plus **Update now**), "offline" or an error.
+6. **Console:** `[updates]` messages log the running version, each check's result, and when an update is applied.
+
+**Why the app reloads itself:** vite-plugin-pwa only reloads for updates Workbox found itself. It treats versions found by our own checks as "external" and never reloads for them. Relying on it left pages running old code after the new version had taken over. The app also catches a newer version taking over from elsewhere, such as another tab, and offers a reload.
+
+**Version info:** `vite.config.ts` injects `__APP_BUILD__` (the `package.json` version, the short git commit and the build time) into every build. Bump `version` in `package.json` for releases.
+
+**Testing an update locally:**
+
+1. Run `npx vite build && npx vite preview --host 127.0.0.1 --port <fresh port>`.
+2. Open the page and let it cache.
+3. Run `npx vite build` again; a new build time counts as a new version.
+4. Open the grown-ups' screen and press **Check for updates**, go back to the level screen, and press **Update now**.
+
+## Offline
 
 - **Precache:** the service worker caches 218 entries (about 4.9 MB): the app, content, woff2 fonts, icons and all 200 word MP3s.
 - **Container notice:** once caching completes, the container is told through `window.Android.cachedStatus(true)`.

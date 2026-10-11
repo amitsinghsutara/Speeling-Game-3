@@ -1,0 +1,42 @@
+.banner {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  width: min(100% - 32px, 720px);
+  margin: 12px auto 0;
+  padding: 12px 14px;
+  background: var(--lemon);
+  border: var(--outline);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--ledge-sm);
+  animation: boing 0.45s ease-out both;
+}
+
+.badge {
+  font-size: 1.8rem;
+}
+
+.text {
+  flex: 1 1 180px;
+  min-width: 0;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.detail {
+  font-size: 1rem;
+  color: var(--ink-soft);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
